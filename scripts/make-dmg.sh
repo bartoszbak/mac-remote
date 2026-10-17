@@ -23,7 +23,8 @@ if [[ -z "${APP_PATH:-}" ]]; then
   xcodebuild -workspace "$ROOT/MacRemote.xcworkspace" -scheme MacRemoteServer -configuration Release \
     -destination 'platform=macOS' -derivedDataPath "$BUILD_DIR/dd" \
     CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM="$TEAM_ID" CODE_SIGN_IDENTITY="$SIGN_IDENTITY" \
-    OTHER_CODE_SIGN_FLAGS="--timestamp" build -quiet
+    OTHER_CODE_SIGN_FLAGS="--timestamp" build 2>&1 | grep -E "error:|warning: .*\.swift|\*\* BUILD" || true
+  [[ "${pipestatus[1]}" -eq 0 ]] || { echo "xcodebuild failed"; exit 1; }
   APP_PATH="$BUILD_DIR/dd/Build/Products/Release/MacRemoteServer.app"
 fi
 

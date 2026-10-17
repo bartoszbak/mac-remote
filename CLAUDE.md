@@ -31,11 +31,13 @@ iOS Client ←→ TCP (JSON + 4-byte length prefix) ←→ macOS Server
 - `RemoteMessage.swift` - Client→Server messages (move, click, scroll, key, media)
 - `NetworkConstants.swift` - Service type `_macremote._tcp`, port 5150 (plaintext) and 5151 (TLS-PSK), protocol version, TXT keys
 - `PairingCrypto.swift` - Key agreement, HKDF derivations and proofs for pairing. Both apps must use it verbatim. See `docs/PAIRING_PROTOCOL.md`
+- `WakeOnLAN.swift` - `NetworkInterfaceInfo` and magic-packet construction for waking the Mac. See `docs/WAKE_ON_LAN.md`
 
 **MacRemoteServer/** - macOS menubar app (LSUIElement=true, no sandbox)
 - `ServerManager.swift` - Single observable state for the UI: status, connected/paired devices, pairing session, activity. Runs two `NetworkServer`s: plaintext (discovery, pairing, legacy control) and TLS-PSK (paired devices)
 - `NetworkServer.swift` - TCP/TLS server using `NWListener`; Bonjour via `NWListener.Service` with TXT record; optional TLS 1.2 PSK with one key per paired device; all state queue-confined, callbacks on main
 - `PairedDeviceStore.swift` - Paired devices (id, name, PSK) in a 0600 JSON file under Application Support
+- `NetworkInterfaces.swift` - Active `en*` interfaces with hardware/IPv4 addresses; `WakeSettings` reads `pmset -g` for Wake for network access
 - `InputController.swift` - Mouse/keyboard injection via `CGEvent`. Cursor moves are relative to the real cursor position and clamped to the union of all displays
 - `PermissionsMonitor.swift` - Polls Accessibility and Screen Recording permissions every second; deep-links to System Settings
 - `AppSettings.swift` - UserDefaults-backed preferences, launch at login via `SMAppService`

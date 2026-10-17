@@ -169,6 +169,7 @@ Goal: the trackpad and keyboard feel like a real Mac trackpad and keyboard.
 
 ### Phase 4: Connection you never think about (2 days)
 
+- [~] **Wake the Mac from sleep.** Mac sends `wakeInfo` (hardware addresses, broadcast, Wake-for-network-access state) and surfaces the Energy setting in Settings and onboarding. iOS: Wake button + automatic magic packet on failed reconnect (see `docs/WAKE_ON_LAN.md`).
 - [ ] Persist the last connected Mac (service name + device ID) and auto-connect on launch when it is discovered.
 - [ ] Reconnect with exponential backoff on drop; keep browsing in the background.
 - [ ] Send `ping` every 5 s; treat two missed `pong`s as a dead connection on both sides.

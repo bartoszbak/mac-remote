@@ -381,6 +381,16 @@
         }
       }
     },
+    "Hardware address": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dirección de hardware"
+          }
+        }
+      }
+    },
     "Hidden": {
       "localizations": {
         "es": {
@@ -447,6 +457,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Se abrió %@ hace %@"
+          }
+        }
+      }
+    },
+    "Lets your iPhone wake this Mac from sleep.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permite que tu iPhone active este Mac desde el reposo."
           }
         }
       }
@@ -636,7 +656,27 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Apagado"
+            "value": "Desactivado"
+          }
+        }
+      }
+    },
+    "On": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activado"
+          }
+        }
+      }
+    },
+    "Open Energy Settings": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir ajustes de energía"
           }
         }
       }
@@ -1281,6 +1321,26 @@
         }
       }
     },
+    "Wake for network access": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activar para acceso a la red"
+          }
+        }
+      }
+    },
+    "Wake from Sleep": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activar desde reposo"
+          }
+        }
+      }
+    },
     "Welcome to MacRemote": {
       "localizations": {
         "es": {
@@ -1307,6 +1367,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "La contraseña de inicio de sesión de tu Mac se guarda solo en el llavero de este Mac. Los dispositivos emparejados envían una firma de un solo uso, nunca la contraseña, y el desbloqueo solo funciona mientras se muestra la pantalla de bloqueo."
+          }
+        }
+      }
+    },
+    "Your iPhone can wake this Mac with a network packet when Wake for network access is on. Works best over Ethernet, or over Wi‑Fi while plugged in.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu iPhone puede activar este Mac con un paquete de red cuando «Activar para acceso a la red» está activado. Funciona mejor por Ethernet, o por Wi‑Fi con el Mac enchufado."
           }
         }
       }

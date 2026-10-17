@@ -528,6 +528,8 @@ final class ServerManager: ObservableObject {
                 to: connection
             )
             self.sendWelcome(to: connection)
+            self.send(.wakeInfo(interfaces: NetworkInterfaces.active(),
+                                wakeForNetworkAccessEnabled: self.permissions.wakeForNetworkAccess), to: connection)
             self.send(.screenLockState(isLocked: InputController.isScreenLocked), to: connection)
             self.startLockStateMonitor()
         }

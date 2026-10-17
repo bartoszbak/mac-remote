@@ -183,6 +183,14 @@ struct OnboardingView: View {
 
                     Toggle("Open MacRemote at login", isOn: launchAtLoginBinding)
                         .font(.callout)
+
+                    Divider()
+
+                    WakeStatusRow(permissions: permissions)
+                        .font(.callout)
+                    Text("Lets your iPhone wake this Mac from sleep.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                     if let error = settings.launchAtLoginError {
                         Text(error)
                             .font(.caption)

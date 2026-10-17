@@ -164,6 +164,26 @@ struct PermissionStatusRow: View {
     }
 }
 
+// MARK: - Wake for network access
+
+struct WakeStatusRow: View {
+    @ObservedObject var permissions: PermissionsMonitor
+
+    var body: some View {
+        LabeledContent("Wake for network access") {
+            HStack(spacing: 8) {
+                if permissions.wakeForNetworkAccess {
+                    Image(systemName: "checkmark.circle.fill").foregroundStyle(.secondary)
+                    Text("On").foregroundStyle(.secondary)
+                } else {
+                    Text("Off").foregroundStyle(.secondary)
+                    Button("Open Energy Settings") { permissions.requestWakeForNetworkAccess() }
+                }
+            }
+        }
+    }
+}
+
 // MARK: - Remote unlock sheet
 
 struct RemoteUnlockSheet: View {

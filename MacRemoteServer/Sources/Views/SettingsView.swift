@@ -7,7 +7,7 @@ struct SettingsView: View {
 
     var body: some View {
         TabView {
-            GeneralSettings(manager: manager, settings: settings)
+            GeneralSettings(manager: manager, settings: settings, permissions: permissions)
                 .tabItem { Label("General", systemImage: "gearshape") }
             DevicesSettings(manager: manager, settings: settings)
                 .tabItem { Label("Devices", systemImage: "iphone") }
@@ -29,6 +29,7 @@ struct SettingsView: View {
 private struct GeneralSettings: View {
     @ObservedObject var manager: ServerManager
     @ObservedObject var settings: AppSettings
+    @ObservedObject var permissions: PermissionsMonitor
     @State private var portText = ""
 
     var body: some View {
@@ -54,6 +55,23 @@ private struct GeneralSettings: View {
             }
 
             Section {
+                WakeStatusRow(permissions: permissions)
+                let interfaces = NetworkInterfaces.active()
+                if !interfaces.isEmpty {
+                    LabeledContent("Hardware address") {
+                        Text(interfaces.map { "\($0.name) \($0.hardwareAddress)" }.joined(separator: "\n"))
+                            .font(.system(.caption, design: .monospaced))
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.trailing)
+                    }
+                }
+            } header: {
+                Text("Wake from Sleep")
+            } footer: {
+                Text("Your iPhone can wake this Mac with a network packet when Wake for network access is on. Works best over Ethernet, or over Wi‑Fi while plugged in.")
+            }
+
+            Section {
                 Picker("Display to share", selection: $settings.sharedDisplayID) {
                     Text("Main display").tag(UInt32(0))
                     ForEach(displays, id: \.id) { display in
@@ -70,7 +88,7 @@ private struct GeneralSettings: View {
             }
         }
         .formStyle(.grouped)
-        .frame(height: 360)
+        .frame(height: 480)
     }
 
     private struct DisplayOption: Identifiable {

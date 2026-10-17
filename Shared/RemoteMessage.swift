@@ -102,6 +102,10 @@ enum ServerMessage: Codable {
     /// Final pairing outcome. On success `serverProof` lets the client verify the Mac
     /// knew the code too, and both sides derive the same long-term key.
     case pairResult(success: Bool, serverProof: Data?, message: String)
+
+    /// Sent after `welcome`. Lets the client store what it needs to wake this Mac from
+    /// sleep with a Wake-on-LAN magic packet (see `WakeOnLAN`).
+    case wakeInfo(interfaces: [NetworkInterfaceInfo], wakeForNetworkAccessEnabled: Bool)
 }
 
 /// Encoded video frame for screen streaming

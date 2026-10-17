@@ -331,7 +331,7 @@ final class NetworkClient: ObservableObject {
         case .screenLockState(let locked):
             isScreenLocked = locked
 
-        case .welcome, .pairChallenge, .pairResult:
+        case .welcome, .pairChallenge, .pairResult, .wakeInfo:
             // Protocol v2 pairing and encrypted transport; client support follows.
             break
         }
