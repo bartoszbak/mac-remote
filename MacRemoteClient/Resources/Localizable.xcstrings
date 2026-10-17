@@ -11,6 +11,127 @@
         }
       }
     },
+    "Bright +" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brillo +"
+          }
+        }
+      }
+    },
+    "Bright -" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brillo -"
+          }
+        }
+      }
+    },
+    "Mute" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Silencio"
+          }
+        }
+      }
+    },
+    "Next" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siguiente"
+          }
+        }
+      }
+    },
+    "Play/Pause" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reproducir/Pausar"
+          }
+        }
+      }
+    },
+    "Previous" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anterior"
+          }
+        }
+      }
+    },
+    "Right" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Derecho"
+          }
+        }
+      }
+    },
+    "Tap to activate keyboard" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toca para activar el teclado"
+          }
+        }
+      }
+    },
+    "Type on the keyboard below" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escribe en el teclado de abajo"
+          }
+        }
+      }
+    },
+    "Vol +" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vol +"
+          }
+        }
+      }
+    },
+    "Vol -" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vol -"
+          }
+        }
+      }
+    },
     "apps_add_favorite" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -164,28 +285,6 @@
         }
       }
     },
-    "Bright -" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Brillo -"
-          }
-        }
-      }
-    },
-    "Bright +" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Brillo +"
-          }
-        }
-      }
-    },
     "cancel" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -254,6 +353,38 @@
         }
       }
     },
+    "connection_forget" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forget"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Olvidar"
+          }
+        }
+      }
+    },
+    "connection_known_section" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recently Used"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usados recientemente"
+          }
+        }
+      }
+    },
     "connection_none_message" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -284,6 +415,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No se encontraron Macs"
+          }
+        }
+      }
+    },
+    "connection_not_found" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not found on this network"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se encuentra en esta red"
           }
         }
       }
@@ -403,6 +550,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Conectar"
+          }
+        }
+      }
+    },
+    "connection_wake" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wake"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Despertar"
+          }
+        }
+      }
+    },
+    "connection_wake_disabled" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wake isn't enabled on the Mac"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El Mac no tiene activado despertar por red"
+          }
+        }
+      }
+    },
+    "connection_waking" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Waking… this can take a few seconds"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Despertando… puede tardar unos segundos"
           }
         }
       }
@@ -747,28 +942,6 @@
         }
       }
     },
-    "Mute" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Silencio"
-          }
-        }
-      }
-    },
-    "Next" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Siguiente"
-          }
-        }
-      }
-    },
     "not_connected" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -782,28 +955,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sin conexión"
-          }
-        }
-      }
-    },
-    "Play/Pause" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reproducir/Pausar"
-          }
-        }
-      }
-    },
-    "Previous" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anterior"
           }
         }
       }
@@ -872,17 +1023,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Media"
-          }
-        }
-      }
-    },
-    "Right" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Derecho"
           }
         }
       }
@@ -1172,17 +1312,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Trackpad"
-          }
-        }
-      }
-    },
-    "Tap to activate keyboard" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Toca para activar el teclado"
           }
         }
       }
@@ -1714,17 +1843,6 @@
         }
       }
     },
-    "Type on the keyboard below" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Escribe en el teclado de abajo"
-          }
-        }
-      }
-    },
     "unlock_auth_failed" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1942,28 +2060,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "El Mac está desbloqueado"
-          }
-        }
-      }
-    },
-    "Vol -" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vol -"
-          }
-        }
-      }
-    },
-    "Vol +" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vol +"
           }
         }
       }

@@ -21,6 +21,9 @@ final class NetworkClient: ObservableObject {
     @Published var unlockStatus: String?
     @Published var isAuthenticatingForUnlock = false
 
+    /// Macs seen before, with the details needed to wake them.
+    let knownMacs: KnownMacStore
+
     // Callback for received screen frames
     var onScreenFrameReceived: ((ScreenFrame) -> Void)?
 
@@ -29,7 +32,8 @@ final class NetworkClient: ObservableObject {
     private let unlockCredentialStore = UnlockCredentialStore()
     private var unlockChallenge: Data?
 
-    init() {
+    init(knownMacs: KnownMacStore = KnownMacStore()) {
+        self.knownMacs = knownMacs
         hasUnlockPairingKey = unlockCredentialStore.hasToken
     }
 
@@ -331,7 +335,12 @@ final class NetworkClient: ObservableObject {
         case .screenLockState(let locked):
             isScreenLocked = locked
 
-        case .welcome, .pairChallenge, .pairResult, .wakeInfo:
+        case .wakeInfo(let interfaces, let wakeEnabled):
+            if let name = connectedServerName {
+                knownMacs.update(name: name, interfaces: interfaces, wakeForNetworkAccessEnabled: wakeEnabled)
+            }
+
+        case .welcome, .pairChallenge, .pairResult:
             // Protocol v2 pairing and encrypted transport; client support follows.
             break
         }

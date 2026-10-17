@@ -9,13 +9,29 @@ extension NetworkClient {
                         apps: [AppInfo] = AppInfo.previewApps,
                         unlockPaired: Bool = false,
                         screenLocked: Bool? = nil) -> NetworkClient {
-        let client = NetworkClient()
+        let client = NetworkClient(knownMacs: .preview())
         client.isConnected = connected
         client.setPreviewUnlockState(paired: unlockPaired, available: connected, locked: connected ? screenLocked : nil)
         client.connectedServerName = connected ? "Studio Mac" : nil
         client.screenSize = CGSize(width: 1920, height: 1080)
         client.apps = connected ? apps : []
         return client
+    }
+}
+
+extension KnownMacStore {
+    /// In-memory store holding one Mac that can be woken and one that cannot.
+    static func preview() -> KnownMacStore {
+        let store = KnownMacStore(defaults: nil)
+        store.update(name: "Office iMac",
+                     interfaces: [NetworkInterfaceInfo(name: "en0", hardwareAddress: "fc:b2:14:96:41:8b",
+                                                       ipv4Address: "192.168.1.161", ipv4Broadcast: "192.168.1.255")],
+                     wakeForNetworkAccessEnabled: true)
+        store.update(name: "Old MacBook",
+                     interfaces: [NetworkInterfaceInfo(name: "en0", hardwareAddress: "a4:83:e7:12:34:56",
+                                                       ipv4Address: nil, ipv4Broadcast: nil)],
+                     wakeForNetworkAccessEnabled: false)
+        return store
     }
 }
 

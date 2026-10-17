@@ -5,7 +5,18 @@ import SwiftUI
 struct ConnectionView: View {
     @ObservedObject var browser: BonjourBrowser
     @ObservedObject var client: NetworkClient
+    @ObservedObject private var knownMacs: KnownMacStore
     @Environment(\.dismiss) private var dismiss
+
+    /// Macs woken from this sheet, so the row can say so and the automatic wake fires once.
+    @State private var wakingMacs: Set<String> = []
+    @State private var didAutoWake = false
+
+    init(browser: BonjourBrowser, client: NetworkClient) {
+        self.browser = browser
+        self.client = client
+        _knownMacs = ObservedObject(wrappedValue: client.knownMacs)
+    }
 
     // Layout metrics used to size the sheet to its table content.
     private let navigationBarHeight: CGFloat = 56
@@ -55,6 +66,21 @@ struct ConnectionView: View {
                         }
                     }
                 }
+
+                if !sleepingMacs.isEmpty {
+                    Section(String(localized: "connection_known_section")) {
+                        ForEach(sleepingMacs) { mac in
+                            SleepingMacRow(mac: mac, isWaking: wakingMacs.contains(mac.name)) {
+                                wake(mac)
+                            }
+                            .swipeActions {
+                                Button(String(localized: "connection_forget"), role: .destructive) {
+                                    knownMacs.forget(name: mac.name)
+                                }
+                            }
+                        }
+                    }
+                }
             }
             .listStyle(.insetGrouped)
             .scrollBounceBehavior(.basedOnSize)
@@ -79,6 +105,28 @@ struct ConnectionView: View {
         .onDisappear {
             browser.stopBrowsing()
         }
+        .task {
+            // The Mac takes a moment to be discovered; if the one used last is still missing
+            // after that, send a wake once. Browsing continues so it shows up when awake.
+            try? await Task.sleep(for: .seconds(3))
+            guard !Task.isCancelled, !didAutoWake, !client.isConnected,
+                  let mac = knownMacs.byRecency.first, mac.canWake,
+                  !browser.servers.contains(where: { $0.name == mac.name }) else { return }
+            didAutoWake = true
+            wake(mac)
+        }
+    }
+
+    /// Known Macs that are neither discovered nor connected right now.
+    private var sleepingMacs: [KnownMac] {
+        let visible = Set(browser.servers.map(\.name))
+        return knownMacs.byRecency.filter { $0.name != client.connectedServerName && !visible.contains($0.name) }
+    }
+
+    private func wake(_ mac: KnownMac) {
+        guard WakeOnLANSender.wake(mac) else { return }
+        wakingMacs.insert(mac.name)
+        browser.startBrowsing()
     }
 
     /// Discovered Macs other than the one we are connected to.
@@ -98,6 +146,10 @@ struct ConnectionView: View {
         if !client.isConnected || !otherServers.isEmpty {
             sections += 1
             rows += CGFloat(max(otherServers.count, 1))
+        }
+        if !sleepingMacs.isEmpty {
+            sections += 1
+            rows += CGFloat(sleepingMacs.count)
         }
         return navigationBarHeight + tableTopInset + tableBottomInset
             + sections * sectionHeaderHeight + rows * rowHeight
@@ -171,6 +223,40 @@ struct ServerRow: View {
     }
 }
 
+/// A Mac seen before that is not on the network right now, with a Wake button when the
+/// Mac allows waking.
+struct SleepingMacRow: View {
+    let mac: KnownMac
+    let isWaking: Bool
+    let onWake: () -> Void
+
+    var body: some View {
+        HStack(spacing: 14) {
+            ServerGlyph(systemImage: "moon.zzz")
+            VStack(alignment: .leading, spacing: 2) {
+                Text(mac.name)
+                Text(subtitle)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            if mac.canWake {
+                Button(String(localized: "connection_wake"), action: onWake)
+                    .buttonStyle(.bordered)
+                    .controlSize(.small)
+                    .tint(.white)
+                    .disabled(isWaking)
+            }
+        }
+    }
+
+    private var subtitle: String {
+        if isWaking { return String(localized: "connection_waking") }
+        if !mac.canWake { return String(localized: "connection_wake_disabled") }
+        return String(localized: "connection_not_found")
+    }
+}
+
 // MARK: - Previews
 
 #Preview("Macs found") {
@@ -199,6 +285,15 @@ struct ServerRow: View {
         .sheet(isPresented: .constant(true)) {
             ConnectionView(browser: .preview(serverNames: []), client: .preview(connected: false))
         }
+}
+
+#Preview("Sleeping Macs") {
+    List {
+        SleepingMacRow(mac: KnownMacStore.preview().byRecency[0], isWaking: false) {}
+        SleepingMacRow(mac: KnownMacStore.preview().byRecency[0], isWaking: true) {}
+        SleepingMacRow(mac: KnownMacStore.preview().byRecency[1], isWaking: false) {}
+    }
+    .listStyle(.insetGrouped)
 }
 
 #Preview("Server rows") {
