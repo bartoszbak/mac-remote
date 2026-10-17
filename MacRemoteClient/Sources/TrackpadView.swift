@@ -17,7 +17,7 @@ struct TrackpadView: View {
     private let buttonHeight: CGFloat = 100
     /// Space between the two click buttons, twice the edge inset.
     private let buttonGap: CGFloat = 20
-    private let innerRadius: CGFloat = 18
+    private let innerRadius: CGFloat = 12
 
     private var configuration: TrackpadGestureEngine.Configuration {
         var configuration = TrackpadGestureEngine.Configuration()
@@ -48,28 +48,26 @@ struct TrackpadView: View {
 
     // MARK: - Mouse buttons
 
-    /// Left and right click, edge to edge at the bottom. Outer corners are concentric with
-    /// the display corners; inner corners are regular.
+    /// Left and right click, edge to edge at the bottom. Each button's outer bottom corner is
+    /// concentric with the display corner; the other three are small and regular.
     private var mouseButtons: some View {
-        let outer = DeviceCorners.concentric(inset: edgeInset, minimum: innerRadius)
-        return HStack(spacing: buttonGap) {
+        HStack(spacing: buttonGap) {
             MouseButtonView(name: String(localized: "trackpad_left_click"),
-                            corners: RectangleCornerRadii(topLeading: innerRadius,
-                                                          bottomLeading: outer,
-                                                          bottomTrailing: innerRadius,
-                                                          topTrailing: innerRadius)) { down in
+                            outerCorner: .bottomLeading,
+                            innerRadius: innerRadius,
+                            edgeInset: edgeInset) { down in
                 client.send(down ? .mouseDown(button: .left) : .mouseUp(button: .left))
             }
 
             MouseButtonView(name: String(localized: "trackpad_right_click"),
-                            corners: RectangleCornerRadii(topLeading: innerRadius,
-                                                          bottomLeading: innerRadius,
-                                                          bottomTrailing: outer,
-                                                          topTrailing: innerRadius)) { down in
+                            outerCorner: .bottomTrailing,
+                            innerRadius: innerRadius,
+                            edgeInset: edgeInset) { down in
                 client.send(down ? .mouseDown(button: .right) : .mouseUp(button: .right))
             }
         }
-        .glassGroup(spacing: buttonGap)
+        // Spacing well below the gap, so the two glass shapes never merge into one.
+        .glassGroup(spacing: 4)
         .frame(height: buttonHeight)
         .padding(.horizontal, edgeInset)
         .padding(.bottom, edgeInset)
@@ -131,17 +129,48 @@ struct TrackpadView: View {
 /// A press-and-hold mouse button: a bare dark glass shape with no label. Sends down on
 /// touch and up on release, so the user can hold it while moving with another finger to drag.
 struct MouseButtonView: View {
+    enum OuterCorner { case bottomLeading, bottomTrailing }
+
     let name: String
-    var corners = RectangleCornerRadii(topLeading: 18, bottomLeading: 18, bottomTrailing: 18, topTrailing: 18)
+    var outerCorner: OuterCorner = .bottomLeading
+    var innerRadius: CGFloat = 12
+    /// Distance from the screen edge, used for the pre-iOS 26 concentric fallback.
+    var edgeInset: CGFloat = 10
     let onPress: (_ down: Bool) -> Void
 
     @State private var isPressed = false
 
-    private var shape: UnevenRoundedRectangle {
-        UnevenRoundedRectangle(cornerRadii: corners, style: .continuous)
+    var body: some View {
+        if #available(iOS 26, *) {
+            styled(concentricShape)
+        } else {
+            styled(legacyShape)
+        }
     }
 
-    var body: some View {
+    /// iOS 26 computes the outer corner from the actual display shape; the other corners
+    /// fall back to the fixed inner radius.
+    @available(iOS 26, *)
+    private var concentricShape: ConcentricRectangle {
+        let inner = Edge.Corner.Style.fixed(innerRadius)
+        let outer = Edge.Corner.Style.concentric(minimum: inner)
+        return ConcentricRectangle(topLeadingCorner: inner,
+                                   topTrailingCorner: inner,
+                                   bottomLeadingCorner: outerCorner == .bottomLeading ? outer : inner,
+                                   bottomTrailingCorner: outerCorner == .bottomTrailing ? outer : inner)
+    }
+
+    private var legacyShape: UnevenRoundedRectangle {
+        let outer = DeviceCorners.concentric(inset: edgeInset, minimum: innerRadius)
+        return UnevenRoundedRectangle(
+            cornerRadii: RectangleCornerRadii(topLeading: innerRadius,
+                                              bottomLeading: outerCorner == .bottomLeading ? outer : innerRadius,
+                                              bottomTrailing: outerCorner == .bottomTrailing ? outer : innerRadius,
+                                              topTrailing: innerRadius),
+            style: .continuous)
+    }
+
+    private func styled<S: Shape>(_ shape: S) -> some View {
         Color.clear
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .padGlass(in: shape, pressed: isPressed)
@@ -180,11 +209,10 @@ struct MouseButtonView: View {
         VStack {
             Spacer()
             HStack(spacing: 20) {
-                MouseButtonView(name: "Left",
-                                corners: RectangleCornerRadii(topLeading: 18, bottomLeading: 44, bottomTrailing: 18, topTrailing: 18)) { _ in }
-                MouseButtonView(name: "Right",
-                                corners: RectangleCornerRadii(topLeading: 18, bottomLeading: 18, bottomTrailing: 44, topTrailing: 18)) { _ in }
+                MouseButtonView(name: "Left", outerCorner: .bottomLeading) { _ in }
+                MouseButtonView(name: "Right", outerCorner: .bottomTrailing) { _ in }
             }
+            .glassGroup(spacing: 4)
             .frame(height: 100)
             .padding(10)
         }

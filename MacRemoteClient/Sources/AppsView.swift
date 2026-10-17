@@ -38,28 +38,6 @@ struct AppsView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // Search bar
-            HStack {
-                Image(systemName: "magnifyingglass")
-                    .foregroundStyle(.secondary)
-                TextField(String(localized: "apps_search_placeholder"), text: $searchText)
-                    .textFieldStyle(.plain)
-                if !searchText.isEmpty {
-                    Button {
-                        searchText = ""
-                    } label: {
-                        Image(systemName: "xmark.circle.fill")
-                            .foregroundStyle(.secondary)
-                    }
-                    .buttonStyle(.plain)
-                }
-            }
-            .padding(10)
-            .background(Color(.systemGray6))
-            .cornerRadius(10)
-            .padding(.horizontal)
-            .padding(.top, 8)
-
             if client.isLoadingApps {
                 Spacer()
                 ProgressView()
@@ -113,6 +91,8 @@ struct AppsView: View {
                 }
             }
         }
+        .searchable(text: $searchText, prompt: String(localized: "apps_search_placeholder"))
+        .minimizedSearchToolbar()
         .onAppear {
             if client.apps.isEmpty && !client.isLoadingApps {
                 client.requestAppList()
@@ -217,11 +197,19 @@ struct AppGridItem: View {
 // MARK: - Previews
 
 #Preview("Apps") {
-    AppsView(client: .preview())
+    NavigationStack {
+        AppsView(client: .preview())
+            .navigationTitle("Apps")
+            .navigationBarTitleDisplayMode(.inline)
+    }
 }
 
 #Preview("No apps") {
-    AppsView(client: .preview(apps: []))
+    NavigationStack {
+        AppsView(client: .preview(apps: []))
+            .navigationTitle("Apps")
+            .navigationBarTitleDisplayMode(.inline)
+    }
 }
 
 #Preview("App grid item") {

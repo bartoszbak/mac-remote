@@ -62,14 +62,14 @@ struct RemoteTabMenu: View {
     }
 }
 
-/// Toolbar status icon: a green bolt when connected, a neutral dot when not.
+/// Toolbar status icon: a bolt, green when connected and greyed out when not.
 struct ConnectionStatusButton: View {
     let isConnected: Bool
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
-            Image(systemName: isConnected ? "bolt.horizontal.fill" : "circle.fill")
+            Image(systemName: "bolt.horizontal.fill")
                 .foregroundStyle(isConnected ? Color.green : Color.secondary)
                 .contentTransition(.symbolEffect(.replace))
         }

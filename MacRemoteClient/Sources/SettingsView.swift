@@ -35,15 +35,19 @@ struct SettingsView: View {
                 }
 
                 Section {
-                    Toggle(String(localized: "trackpad_tap_to_click"), isOn: $tapToClick)
-                    Toggle(String(localized: "trackpad_natural_scrolling"), isOn: $naturalScrolling)
-                    Toggle(String(localized: "trackpad_haptics"), isOn: $hapticsEnabled)
-                } footer: {
-                    Text(String(localized: "trackpad_natural_scrolling_footer"))
+                    Toggle(isOn: $tapToClick) {
+                        SettingsLabel(String(localized: "trackpad_tap_to_click"), systemImage: "pointer.arrow.ipad.rays")
+                    }
+                    Toggle(isOn: $naturalScrolling) {
+                        SettingsLabel(String(localized: "trackpad_natural_scrolling"), systemImage: "arrow.up.and.down.text.horizontal")
+                    }
+                    Toggle(isOn: $hapticsEnabled) {
+                        SettingsLabel(String(localized: "trackpad_haptics"), systemImage: "wave.3.right")
+                    }
                 }
 
                 Section(String(localized: "trackpad_gestures_header")) {
-                    GestureRow(icon: "hand.point.up.left.fill",
+                    GestureRow(icon: "pointer.arrow.ipad",
                                title: String(localized: "trackpad_gesture_move"),
                                detail: String(localized: "trackpad_gesture_move_how"))
                     GestureRow(icon: "hand.tap.fill",
@@ -79,6 +83,26 @@ struct SettingsView: View {
     }
 }
 
+/// Toggle label with a grey icon, matching the gesture rows.
+struct SettingsLabel: View {
+    let title: String
+    let systemImage: String
+
+    init(_ title: String, systemImage: String) {
+        self.title = title
+        self.systemImage = systemImage
+    }
+
+    var body: some View {
+        Label {
+            Text(title)
+        } icon: {
+            Image(systemName: systemImage)
+                .foregroundStyle(.secondary)
+        }
+    }
+}
+
 /// One line of the gesture cheat sheet.
 struct GestureRow: View {
     let icon: String
@@ -89,7 +113,7 @@ struct GestureRow: View {
         HStack(spacing: 12) {
             Image(systemName: icon)
                 .font(.title3)
-                .foregroundStyle(.blue)
+                .foregroundStyle(.secondary)
                 .frame(width: 28)
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
@@ -103,6 +127,14 @@ struct GestureRow: View {
 
 #Preview("Settings") {
     SettingsView()
+}
+
+#Preview("Settings label") {
+    Form {
+        Toggle(isOn: .constant(true)) {
+            SettingsLabel("Tap to Click", systemImage: "pointer.arrow.ipad.rays")
+        }
+    }
 }
 
 #Preview("Gesture row") {
