@@ -1,6 +1,26 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "%@ · since %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · desde las %@"
+          }
+        }
+      }
+    },
+    "%lld seconds remaining": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quedan %lld segundos"
+          }
+        }
+      }
+    },
     "About": {
       "localizations": {
         "es": {
@@ -71,6 +91,16 @@
         }
       }
     },
+    "Allow unencrypted connections": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permitir conexiones sin cifrar"
+          }
+        }
+      }
+    },
     "Allow unlocking this Mac from a paired iPhone": {
       "localizations": {
         "es": {
@@ -131,12 +161,42 @@
         }
       }
     },
+    "Connected": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conectado"
+          }
+        }
+      }
+    },
+    "Connected Now": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conectados ahora"
+          }
+        }
+      }
+    },
     "Connected since %@": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Conectado desde las %@"
+          }
+        }
+      }
+    },
+    "Connecting to %@…": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conectando con %@…"
           }
         }
       }
@@ -211,6 +271,16 @@
         }
       }
     },
+    "Done": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hecho"
+          }
+        }
+      }
+    },
     "Enable": {
       "localizations": {
         "es": {
@@ -227,6 +297,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "Activar desbloqueo remoto"
+          }
+        }
+      }
+    },
+    "Encrypted connection": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conexión cifrada"
+          }
+        }
+      }
+    },
+    "Encrypted port": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Puerto cifrado"
+          }
+        }
+      }
+    },
+    "Encryption": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cifrado"
           }
         }
       }
@@ -257,6 +357,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Solucionar…"
+          }
+        }
+      }
+    },
+    "Forget Device": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Olvidar dispositivo"
           }
         }
       }
@@ -317,6 +427,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "En Ajustes del Sistema, activa MacRemote Server en Grabación de pantalla y audio del sistema."
+          }
+        }
+      }
+    },
+    "Last seen %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Visto por última vez %@"
           }
         }
       }
@@ -421,6 +541,16 @@
         }
       }
     },
+    "Name": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nombre"
+          }
+        }
+      }
+    },
     "Needed only for Screen Sharing, so you can see your Mac's screen on your iPhone. You can skip this and enable it later.": {
       "localizations": {
         "es": {
@@ -451,12 +581,32 @@
         }
       }
     },
+    "New Code": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nuevo código"
+          }
+        }
+      }
+    },
     "No devices connected": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "No hay dispositivos conectados"
+          }
+        }
+      }
+    },
+    "No paired devices yet. Pairing gives a device its own encrypted connection to this Mac.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay dispositivos emparejados. El emparejamiento da a cada dispositivo su propia conexión cifrada con este Mac."
           }
         }
       }
@@ -501,6 +651,16 @@
         }
       }
     },
+    "Open MacRemote on your iPhone, choose “%@”, and enter this code.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre MacRemote en tu iPhone, elige “%@” e introduce este código."
+          }
+        }
+      }
+    },
     "Open System Settings": {
       "localizations": {
         "es": {
@@ -531,12 +691,92 @@
         }
       }
     },
+    "Pair a Device": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Emparejar un dispositivo"
+          }
+        }
+      }
+    },
+    "Pair a Device…": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Emparejar un dispositivo…"
+          }
+        }
+      }
+    },
+    "Paired %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Emparejado el %@"
+          }
+        }
+      }
+    },
+    "Paired Devices": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dispositivos emparejados"
+          }
+        }
+      }
+    },
+    "Paired devices always connect over TLS. Turn this off once every device you use is paired, and unpaired devices on your network will no longer be able to control this Mac.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los dispositivos emparejados siempre se conectan mediante TLS. Desactívalo cuando todos tus dispositivos estén emparejados; los dispositivos sin emparejar de tu red ya no podrán controlar este Mac."
+          }
+        }
+      }
+    },
+    "Paired with %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Emparejado con %@"
+          }
+        }
+      }
+    },
+    "Paired with %@ %@ ago": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Emparejado con %@ hace %@"
+          }
+        }
+      }
+    },
     "Pairing key": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Clave de emparejamiento"
+          }
+        }
+      }
+    },
+    "Pairing lets this device connect over an encrypted link, even when unencrypted connections are turned off.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El emparejamiento permite que este dispositivo se conecte mediante un enlace cifrado, incluso con las conexiones sin cifrar desactivadas."
           }
         }
       }
@@ -651,6 +891,16 @@
         }
       }
     },
+    "Rename…": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Renombrar…"
+          }
+        }
+      }
+    },
     "Required. Lets MacRemote move the mouse and type.": {
       "localizations": {
         "es": {
@@ -677,6 +927,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Repetir la configuración…"
+          }
+        }
+      }
+    },
+    "Save": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guardar"
           }
         }
       }
@@ -861,12 +1121,42 @@
         }
       }
     },
+    "The code entered on the device was wrong.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El código introducido en el dispositivo era incorrecto."
+          }
+        }
+      }
+    },
+    "The code expired.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El código ha caducado."
+          }
+        }
+      }
+    },
     "The password never leaves this Mac. Your iPhone proves it holds the pairing key with a one-time signature and must authenticate with Face ID or Touch ID first. Unlocking only works while the lock screen is showing.": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "La contraseña nunca sale de este Mac. Tu iPhone demuestra que tiene la clave de emparejamiento con una firma de un solo uso y antes debe autenticarse con Face ID o Touch ID. El desbloqueo solo funciona mientras se muestra la pantalla de bloqueo."
+          }
+        }
+      }
+    },
+    "The server is off. Turn it on from the menu bar first.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El servidor está apagado. Enciéndelo primero desde la barra de menús."
           }
         }
       }
@@ -901,12 +1191,32 @@
         }
       }
     },
+    "Turn on the server from the menu bar to pair.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enciende el servidor desde la barra de menús para emparejar."
+          }
+        }
+      }
+    },
     "Turn on the switch to let your iPhone find this Mac.": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Activa el interruptor para que tu iPhone encuentre este Mac."
+          }
+        }
+      }
+    },
+    "Unencrypted connection": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conexión sin cifrar"
           }
         }
       }

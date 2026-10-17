@@ -52,6 +52,10 @@ struct MenuBarView: View {
 
     private var overflowMenu: some View {
         Menu {
+            Button("Pair a Device…") {
+                manager.pairingRequested = true
+            }
+            .disabled(!manager.isRunning)
             Button("Settings…") {
                 showSettings()
             }
@@ -194,13 +198,16 @@ struct MenuBarView: View {
                     HStack(spacing: 10) {
                         StatusDot(color: .green)
                         VStack(alignment: .leading, spacing: 1) {
-                            Text(device.address)
+                            Text(device.displayName)
                                 .font(.callout)
                             Text("Connected since \(device.connectedAt, style: .time)")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
                         Spacer()
+                        Image(systemName: device.isSecure ? "lock.fill" : "lock.open")
+                            .foregroundStyle(.secondary)
+                            .help(device.isSecure ? "Encrypted connection" : "Unencrypted connection")
                         if device.isStreaming {
                             Image(systemName: "display")
                                 .foregroundStyle(.secondary)
@@ -230,6 +237,7 @@ struct MenuBarView: View {
         case .unlockSent: return "lock.open"
         case .unlockRejected: return "lock.trianglebadge.exclamationmark"
         case .appLaunched: return "arrow.up.forward.app"
+        case .paired: return "link"
         }
     }
 
@@ -243,6 +251,8 @@ struct MenuBarView: View {
             return Text("Unlock rejected \(date, style: .relative) ago")
         case .appLaunched(let bundleId, let date):
             return Text("Launched \(bundleId) \(date, style: .relative) ago")
+        case .paired(let name, let date):
+            return Text("Paired with \(name) \(date, style: .relative) ago")
         }
     }
 

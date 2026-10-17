@@ -120,19 +120,20 @@ Goal: a safe base to refactor on.
 - [x] Make `NetworkServer` thread-safe: confine `connections` to its queue or make it an actor.
 - [x] Rename `Tuist/Config.swift` → `Tuist.swift`.
 - [ ] Delete `KeyboardView` struct (keep `KeyCodes` in its own file), the `MagnificationGesture` stub, and the no-op in `ScreenView.handleDragEnd`.
-- [ ] Add a `hello(version:)` client message and `welcome(version:)` server reply. Reject mismatched versions with a user-visible error.
+- [~] Add a `hello(version:)` client message and `welcome(version:)` server reply (done on the Mac; iOS to send `hello`).
 - [ ] Localize every remaining string on iOS and the Mac popover. Add a Mac `Localizable.xcstrings`.
 
 ### Phase 2: Security (3–4 days)
 
 Goal: only paired devices can talk to the Mac, and the traffic is encrypted.
 
-- [ ] **Pairing flow.** Mac shows a 6-digit code in the popover for 60 seconds. iOS enters the code. Both sides derive a 32-byte key with HKDF from the code plus a server-generated salt sent in the clear. Store the key in both Keychains, keyed by a stable device ID.
-- [ ] **TLS with pre-shared keys.** Use `NWProtocolTLS.Options` and `sec_protocol_options_add_pre_shared_key` on both sides. The PSK identity is the device ID; the PSK is the derived key. No certificates are needed. Unpaired devices cannot complete the handshake.
+- [~] **Pairing flow.** Mac half done (see `docs/PAIRING_PROTOCOL.md`): 6-digit code for 60 s, X25519 key agreement with HKDF-derived keys, code proven by HMAC, one attempt per code. iOS half pending.
+- [~] **TLS with pre-shared keys.** Mac listener done on port+1 with one PSK per paired device (loopback-tested: second identity connects; wrong key, unknown identity and plaintext are rejected). iOS client pending.
+- [~] **Refuse all input from unpaired devices.** Gated by Security → Allow unencrypted connections (default on until the iOS client ships pairing).
 - [x] **Frame length cap.** Reject any frame larger than a configurable limit (e.g. 16 MB for video, 64 KB for control) and close the connection.
-- [ ] **Paired devices list** in the Mac popover with per-device revoke.
+- [x] **Paired devices list** in Settings → Devices with Rename and Forget; connected devices show a lock for encrypted links.
 - [x] **Lock-state check before unlock.** Read `CGSessionCopyCurrentDictionary()["CGSSessionScreenIsLocked"]` and refuse to type the password unless the screen is locked. Drop the "wake with Space" keystroke in favour of a harmless key (e.g. Shift) or `IOPMAssertionDeclareUserActivity`.
-- [ ] Reuse the new shared key for the unlock HMAC and remove the separate pairing-key copy/paste flow.
+- [~] Reuse the new shared key for the unlock HMAC (done; legacy pairing-key flow kept for v1 clients).
 
 ### Phase 3: Input that feels native (4–5 days)
 
@@ -213,7 +214,7 @@ Goal: the Mac app looks and behaves like a first-class macOS menu bar utility. S
 - [x] Problem state replaces the body: one icon, one sentence, one button. Examples: "Accessibility access is required to control the mouse and keyboard. → Grant Access"; "Port 5150 is already in use. → Choose Another Port".
 
 **Pairing sheet (triggered by intent)**
-- [ ] `Pair a device…` opens a compact sheet with a large 6-digit code, a 60 s countdown ring, and the instruction "Open MacRemote on your iPhone and enter this code". The code is never shown anywhere else. Sheet dismisses itself on success with a checkmark animation.
+- [x] `Pair a device…` opens a compact window with a large 6-digit code, a 60 s countdown ring, and the instruction "Open MacRemote on your iPhone and enter this code". The code is never shown anywhere else. Closes itself on success with a checkmark.
 
 **Remote Unlock (moved out of the popover)**
 - [x] Lives in Settings → Security as a single toggle. Turning it on presents a modal sheet explaining what is stored and where, with the `SecureField`. The password is never visible again after saving; the UI shows "Enabled · Password stored in Keychain" with a Change… and Disable button.
@@ -221,7 +222,7 @@ Goal: the Mac app looks and behaves like a first-class macOS menu bar utility. S
 
 **Settings window (⌘,)**
 - [x] General: Launch at login, Start server automatically, Mac name as shown on the phone, Port.
-- [ ] Devices: paired devices table with Forget and Rename; a "Pair a device…" button.
+- [x] Devices: paired devices table with Forget and Rename; a "Pair a device…" button.
 - [ ] Security: Remote Unlock toggle (above), "Require pairing for new devices" (always on, informational), option to auto-lock when the last device disconnects.
 - [x] Screen Sharing: default quality, which display to share, show cursor.
 - [x] About: version, link to repository, acknowledgements.

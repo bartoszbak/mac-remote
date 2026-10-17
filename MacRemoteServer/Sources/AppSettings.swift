@@ -12,6 +12,7 @@ final class AppSettings: ObservableObject {
         static let hasCompletedOnboarding = "hasCompletedOnboarding"
         static let showCursorInStream = "showCursorInStream"
         static let sharedDisplayID = "sharedDisplayID"
+        static let allowUnencryptedConnections = "allowUnencryptedConnections"
     }
 
     private let defaults: UserDefaults
@@ -42,6 +43,12 @@ final class AppSettings: ObservableObject {
         didSet { defaults.set(Int(sharedDisplayID), forKey: Keys.sharedDisplayID) }
     }
 
+    /// Legacy mode: accept control messages on the plaintext port from unpaired
+    /// devices. Pairing and encryption always work regardless of this flag.
+    @Published var allowUnencryptedConnections: Bool {
+        didSet { defaults.set(allowUnencryptedConnections, forKey: Keys.allowUnencryptedConnections) }
+    }
+
     @Published private(set) var launchAtLogin: Bool
     @Published var launchAtLoginError: String?
 
@@ -56,7 +63,8 @@ final class AppSettings: ObservableObject {
             Keys.port: Int(NetworkConstants.defaultPort),
             Keys.hasCompletedOnboarding: false,
             Keys.showCursorInStream: true,
-            Keys.sharedDisplayID: 0
+            Keys.sharedDisplayID: 0,
+            Keys.allowUnencryptedConnections: true
         ])
         autoStartServer = defaults.bool(forKey: Keys.autoStartServer)
         serviceName = defaults.string(forKey: Keys.serviceName) ?? Self.defaultServiceName
@@ -64,11 +72,17 @@ final class AppSettings: ObservableObject {
         hasCompletedOnboarding = defaults.bool(forKey: Keys.hasCompletedOnboarding)
         showCursorInStream = defaults.bool(forKey: Keys.showCursorInStream)
         sharedDisplayID = UInt32(clamping: max(0, defaults.integer(forKey: Keys.sharedDisplayID)))
+        allowUnencryptedConnections = defaults.bool(forKey: Keys.allowUnencryptedConnections)
         launchAtLogin = SMAppService.mainApp.status == .enabled
     }
 
     var effectivePort: UInt16 {
         UInt16(clamping: max(1, min(port, 65535)))
+    }
+
+    /// Port of the encrypted listener.
+    var tlsPort: UInt16 {
+        effectivePort == UInt16.max ? effectivePort - 1 : effectivePort + NetworkConstants.tlsPortOffset
     }
 
     var effectiveServiceName: String {

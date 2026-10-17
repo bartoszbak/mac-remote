@@ -30,6 +30,13 @@ struct MacRemoteServerApp: App {
         .windowStyle(.hiddenTitleBar)
         .defaultPosition(.center)
 
+        Window("Pair a Device", id: WindowID.pairing) {
+            PairingView(manager: serverManager, settings: settings)
+        }
+        .windowResizability(.contentSize)
+        .windowStyle(.hiddenTitleBar)
+        .defaultPosition(.center)
+
         Settings {
             SettingsView(manager: serverManager, settings: settings, permissions: permissions)
         }
@@ -38,6 +45,7 @@ struct MacRemoteServerApp: App {
 
 enum WindowID {
     static let onboarding = "onboarding"
+    static let pairing = "pairing"
 }
 
 /// The status-bar item. Also the one view that is alive for the whole app
@@ -57,6 +65,13 @@ struct MenuBarLabel: View {
             .onChange(of: manager.requestedOnboardingStep) { _, step in
                 if step != nil {
                     showOnboarding()
+                }
+            }
+            .onChange(of: manager.pairingRequested) { _, requested in
+                if requested {
+                    manager.pairingRequested = false
+                    openWindow(id: WindowID.pairing)
+                    NSApp.activate(ignoringOtherApps: true)
                 }
             }
     }

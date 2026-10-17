@@ -29,11 +29,13 @@ iOS Client ←→ TCP (JSON + 4-byte length prefix) ←→ macOS Server
 
 **Shared/** - Protocol definitions shared between client and server
 - `RemoteMessage.swift` - Client→Server messages (move, click, scroll, key, media)
-- `NetworkConstants.swift` - Service type `_macremote._tcp`, port 5150
+- `NetworkConstants.swift` - Service type `_macremote._tcp`, port 5150 (plaintext) and 5151 (TLS-PSK), protocol version, TXT keys
+- `PairingCrypto.swift` - Key agreement, HKDF derivations and proofs for pairing. Both apps must use it verbatim. See `docs/PAIRING_PROTOCOL.md`
 
 **MacRemoteServer/** - macOS menubar app (LSUIElement=true, no sandbox)
-- `ServerManager.swift` - Single observable state for the UI: status, connected devices, activity; coordinates server, input, streaming, unlock
-- `NetworkServer.swift` - TCP server using `NWListener`; advertises itself over Bonjour via `NWListener.Service`; all state queue-confined, callbacks on main
+- `ServerManager.swift` - Single observable state for the UI: status, connected/paired devices, pairing session, activity. Runs two `NetworkServer`s: plaintext (discovery, pairing, legacy control) and TLS-PSK (paired devices)
+- `NetworkServer.swift` - TCP/TLS server using `NWListener`; Bonjour via `NWListener.Service` with TXT record; optional TLS 1.2 PSK with one key per paired device; all state queue-confined, callbacks on main
+- `PairedDeviceStore.swift` - Paired devices (id, name, PSK) in a 0600 JSON file under Application Support
 - `InputController.swift` - Mouse/keyboard injection via `CGEvent`. Cursor moves are relative to the real cursor position and clamped to the union of all displays
 - `PermissionsMonitor.swift` - Polls Accessibility and Screen Recording permissions every second; deep-links to System Settings
 - `AppSettings.swift` - UserDefaults-backed preferences, launch at login via `SMAppService`
@@ -41,6 +43,7 @@ iOS Client ←→ TCP (JSON + 4-byte length prefix) ←→ macOS Server
 - `Views/MenuBarView.swift` - Popover: status + switch, devices list, problem state, footer
 - `Views/OnboardingView.swift` - First-run window: permissions with live polling, start, launch at login
 - `Views/SettingsView.swift` - Settings scene (General, Devices, Security, Permissions, About)
+- `Views/PairingView.swift` - "Pair a Device" window: code, countdown, outcome
 - `Views/Components.swift` - Menu bar icon renderer (template `MenuBarIcon` asset + state badge), shared rows
 
 **MacRemoteClient/** - iOS app
@@ -51,7 +54,13 @@ iOS Client ←→ TCP (JSON + 4-byte length prefix) ←→ macOS Server
 
 ### Message Framing
 
-All TCP messages use 4-byte big-endian length prefix + JSON payload. See `MessageFrame` in RemoteMessage.swift.
+All TCP messages use 4-byte big-endian length prefix + JSON payload. See `MessageFrame` in RemoteMessage.swift. The same framing runs inside the TLS connection.
+
+### Security model
+
+- Pairing happens once per device over the plaintext port while the Mac shows a 6-digit code; it yields a per-device 32-byte pre-shared key.
+- Paired devices connect to the TLS-PSK port (identity = device ID). Unpaired devices can only pair, or use legacy plaintext control while **Allow unencrypted connections** is on.
+- Adding enum cases to `RemoteMessage`/`ServerMessage` is backward compatible on the wire (unknown cases fail to decode and are dropped), but every `switch` over them must stay exhaustive in both apps.
 
 ## Development Notes
 

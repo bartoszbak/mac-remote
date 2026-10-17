@@ -315,6 +315,10 @@ final class NetworkClient: ObservableObject {
 
         case .unlockChallenge(let challenge):
             unlockChallenge = challenge
+
+        case .welcome, .pairChallenge, .pairResult:
+            // Protocol v2 pairing and encrypted transport; client support follows.
+            break
         }
     }
 }

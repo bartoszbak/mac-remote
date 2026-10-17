@@ -11,7 +11,7 @@ struct SettingsView: View {
                 .tabItem { Label("General", systemImage: "gearshape") }
             DevicesSettings(manager: manager, settings: settings)
                 .tabItem { Label("Devices", systemImage: "iphone") }
-            SecuritySettings(manager: manager)
+            SecuritySettings(manager: manager, settings: settings)
                 .tabItem { Label("Security", systemImage: "lock.shield") }
             PermissionsSettings(manager: manager, permissions: permissions)
                 .tabItem { Label("Permissions", systemImage: "hand.raised") }
@@ -109,43 +109,128 @@ private struct GeneralSettings: View {
 private struct DevicesSettings: View {
     @ObservedObject var manager: ServerManager
     @ObservedObject var settings: AppSettings
+    @State private var renamingID: String?
+    @State private var renameText = ""
 
     var body: some View {
-        Group {
-            if manager.devices.isEmpty {
-                ContentUnavailableView {
-                    Label("No devices connected", systemImage: "iphone.slash")
-                } description: {
-                    if manager.isRunning {
-                        Text("Open MacRemote on your iPhone and choose “\(manager.advertisedName ?? settings.effectiveServiceName)”.")
-                    } else {
-                        Text("Turn on the server from the menu bar so your iPhone can find this Mac.")
+        Form {
+            Section {
+                if manager.pairedDevices.isEmpty {
+                    Text("No paired devices yet. Pairing gives a device its own encrypted connection to this Mac.")
+                        .foregroundStyle(.secondary)
+                } else {
+                    ForEach(manager.pairedDevices) { device in
+                        pairedRow(device)
                     }
                 }
-            } else {
-                List(manager.devices) { device in
-                    HStack(spacing: 12) {
-                        Image(systemName: "iphone")
-                            .font(.title2)
-                            .foregroundStyle(.secondary)
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(device.address)
-                            Text("Connected since \(device.connectedAt, style: .time)")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                        Spacer()
-                        if device.isStreaming {
-                            Label("Streaming", systemImage: "display")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                    .padding(.vertical, 4)
+                Button("Pair a Device…") {
+                    manager.pairingRequested = true
+                }
+                .disabled(!manager.isRunning)
+            } header: {
+                Text("Paired Devices")
+            } footer: {
+                if !manager.isRunning {
+                    Text("Turn on the server from the menu bar to pair.")
                 }
             }
+
+            Section {
+                if manager.devices.isEmpty {
+                    Text(manager.isRunning
+                         ? "Open MacRemote on your iPhone and choose “\(manager.advertisedName ?? settings.effectiveServiceName)”."
+                         : "Turn on the server from the menu bar so your iPhone can find this Mac.")
+                        .foregroundStyle(.secondary)
+                } else {
+                    ForEach(manager.devices) { device in
+                        HStack(spacing: 10) {
+                            Image(systemName: device.isSecure ? "lock.fill" : "lock.open")
+                                .foregroundStyle(.secondary)
+                                .help(device.isSecure ? "Encrypted connection" : "Unencrypted connection")
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(device.displayName)
+                                Text("\(device.address) · since \(device.connectedAt, style: .time)")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            if device.isStreaming {
+                                Label("Streaming", systemImage: "display")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                }
+            } header: {
+                Text("Connected Now")
+            }
         }
-        .frame(height: 320)
+        .formStyle(.grouped)
+        .frame(height: 380)
+    }
+
+    @ViewBuilder
+    private func pairedRow(_ device: PairedDevice) -> some View {
+        HStack(spacing: 10) {
+            Image(systemName: "iphone")
+                .foregroundStyle(.secondary)
+            VStack(alignment: .leading, spacing: 2) {
+                if renamingID == device.id {
+                    TextField("Name", text: $renameText)
+                        .textFieldStyle(.roundedBorder)
+                        .onSubmit { commitRename(device) }
+                        .onExitCommand { renamingID = nil }
+                } else {
+                    Text(device.name)
+                }
+                Text(lastSeenText(device))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            if renamingID == device.id {
+                Button("Save") { commitRename(device) }
+                    .controlSize(.small)
+            } else {
+                Menu {
+                    Button("Rename…") {
+                        renameText = device.name
+                        renamingID = device.id
+                    }
+                    Divider()
+                    Button("Forget Device", role: .destructive) {
+                        manager.forgetDevice(id: device.id)
+                    }
+                } label: {
+                    Image(systemName: "ellipsis")
+                        .foregroundStyle(.secondary)
+                        .frame(width: 24, height: 24)
+                        .contentShape(Rectangle())
+                }
+                .menuStyle(.borderlessButton)
+                .menuIndicator(.hidden)
+                .fixedSize()
+            }
+        }
+        .padding(.vertical, 2)
+    }
+
+    private func lastSeenText(_ device: PairedDevice) -> String {
+        if manager.devices.contains(where: { $0.isPaired && $0.name == device.name && $0.isSecure }) {
+            return String(localized: "Connected")
+        }
+        if let seen = device.lastSeen {
+            let formatter = RelativeDateTimeFormatter()
+            formatter.unitsStyle = .short
+            return String(localized: "Last seen \(formatter.localizedString(for: seen, relativeTo: Date()))")
+        }
+        return String(localized: "Paired \(device.pairedAt.formatted(date: .abbreviated, time: .omitted))")
+    }
+
+    private func commitRename(_ device: PairedDevice) {
+        manager.renameDevice(id: device.id, to: renameText)
+        renamingID = nil
     }
 }
 
@@ -153,12 +238,25 @@ private struct DevicesSettings: View {
 
 private struct SecuritySettings: View {
     @ObservedObject var manager: ServerManager
+    @ObservedObject var settings: AppSettings
     @State private var showingUnlockSheet = false
     @State private var revealedPairingKey: String?
     @State private var copiedKey = false
 
     var body: some View {
         Form {
+            Section {
+                Toggle("Allow unencrypted connections", isOn: $settings.allowUnencryptedConnections)
+                LabeledContent("Encrypted port") {
+                    Text(manager.securePort.map(String.init) ?? String(settings.tlsPort))
+                        .foregroundStyle(.secondary)
+                }
+            } header: {
+                Text("Encryption")
+            } footer: {
+                Text("Paired devices always connect over TLS. Turn this off once every device you use is paired, and unpaired devices on your network will no longer be able to control this Mac.")
+            }
+
             Section {
                 Toggle("Allow unlocking this Mac from a paired iPhone", isOn: unlockBinding)
 
@@ -197,7 +295,7 @@ private struct SecuritySettings: View {
             }
         }
         .formStyle(.grouped)
-        .frame(height: 320)
+        .frame(height: 440)
         .sheet(isPresented: $showingUnlockSheet) {
             RemoteUnlockSheet(manager: manager)
         }

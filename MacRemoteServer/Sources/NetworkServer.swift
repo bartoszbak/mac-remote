@@ -32,6 +32,18 @@ final class NetworkServer {
     /// Control messages from the client are tiny; anything bigger is hostile or corrupt.
     static let maxInboundFrameLength: UInt32 = 64 * 1024
 
+    /// TLS 1.2 with pre-shared keys. Each paired device has its own identity and key.
+    struct TLSConfiguration {
+        struct PresharedKey {
+            let identity: String
+            let key: Data
+        }
+        var presharedKeys: [PresharedKey]
+    }
+
+    /// Whether this instance was started with TLS. Fixed for the lifetime of a listener.
+    private(set) var isSecure = false
+
     private var listener: NWListener?
     private var connections: [NWConnection] = []
     private let queue = DispatchQueue(label: "com.macremote.server", qos: .userInteractive)
@@ -45,9 +57,16 @@ final class NetworkServer {
 
     // MARK: - Lifecycle
 
-    func start(port: UInt16, serviceName: String) {
+    /// Starts listening.
+    /// - Parameters:
+    ///   - port: TCP port, 0 for ephemeral.
+    ///   - serviceName: Bonjour name to advertise, or nil to stay unadvertised.
+    ///   - txtRecord: extra Bonjour TXT entries, e.g. the TLS port.
+    ///   - tls: when set, the listener only accepts TLS-PSK handshakes with one of the given keys.
+    func start(port: UInt16, serviceName: String?, txtRecord: [String: String] = [:], tls: TLSConfiguration? = nil) {
         queue.async { [self] in
             guard listener == nil else { return }
+            isSecure = tls != nil
 
             let tcpOptions = NWProtocolTCP.Options()
             tcpOptions.noDelay = true
@@ -56,7 +75,7 @@ final class NetworkServer {
             tcpOptions.keepaliveInterval = 5
             tcpOptions.keepaliveCount = 3
 
-            let parameters = NWParameters(tls: nil, tcp: tcpOptions)
+            let parameters = NWParameters(tls: tls.map(Self.tlsOptions(for:)), tcp: tcpOptions)
             parameters.allowLocalEndpointReuse = true
             parameters.includePeerToPeer = true
 
@@ -68,7 +87,11 @@ final class NetworkServer {
                 return
             }
 
-            newListener.service = NWListener.Service(name: serviceName, type: NetworkConstants.serviceType)
+            if let serviceName {
+                var txt = NWTXTRecord()
+                for (key, value) in txtRecord { txt[key] = value }
+                newListener.service = NWListener.Service(name: serviceName, type: NetworkConstants.serviceType, txtRecord: txt)
+            }
 
             newListener.stateUpdateHandler = { [weak self] state in
                 guard let self else { return }
@@ -142,6 +165,31 @@ final class NetworkServer {
 
     private func notify(_ state: State) {
         DispatchQueue.main.async { [weak self] in self?.onStateChanged?(state) }
+    }
+
+    // MARK: - TLS
+
+    /// Builds TLS-PSK options. Each key is registered under its device identity, so a
+    /// client proves it is a specific paired device by completing the handshake.
+    static func tlsOptions(for configuration: TLSConfiguration) -> NWProtocolTLS.Options {
+        let options = NWProtocolTLS.Options()
+        let security = options.securityProtocolOptions
+        for psk in configuration.presharedKeys {
+            let keyData = psk.key.withUnsafeBytes { DispatchData(bytes: $0) }
+            let identityData = Data(psk.identity.utf8).withUnsafeBytes { DispatchData(bytes: $0) }
+            sec_protocol_options_add_pre_shared_key(security, keyData as __DispatchData, identityData as __DispatchData)
+        }
+        if let suite = tls_ciphersuite_t(rawValue: UInt16(TLS_PSK_WITH_AES_128_GCM_SHA256)) {
+            sec_protocol_options_append_tls_ciphersuite(security, suite)
+        }
+        sec_protocol_options_set_min_tls_protocol_version(security, .TLSv12)
+        sec_protocol_options_set_max_tls_protocol_version(security, .TLSv12)
+        return options
+    }
+
+    /// Client-side counterpart, used by tests and documented here for the iOS client.
+    static func clientTLSOptions(identity: String, key: Data) -> NWProtocolTLS.Options {
+        tlsOptions(for: TLSConfiguration(presharedKeys: [.init(identity: identity, key: key)]))
     }
 
     // MARK: - Sending

@@ -37,6 +37,18 @@ enum RemoteMessage: Codable {
     case stopScreenStream
     case unlock(signature: Data)
 
+    // MARK: Identity and pairing (protocol v2)
+
+    /// First message on a connection. `deviceID` is a stable per-install UUID.
+    case hello(deviceID: String, deviceName: String, protocolVersion: Int)
+
+    /// Starts pairing. `publicKey` is a Curve25519 key-agreement public key.
+    /// Only accepted while the Mac shows a pairing code.
+    case pairRequest(deviceID: String, deviceName: String, publicKey: Data)
+
+    /// Proves knowledge of the pairing code: `PairingCrypto.clientProof`.
+    case pairConfirm(proof: Data)
+
     enum StreamQuality: String, Codable {
         case low      // 480p, lower bitrate
         case medium   // 720p, balanced
@@ -75,6 +87,19 @@ enum ServerMessage: Codable {
     case screenStreamStopped
     case unlockResult(success: Bool, message: String)
     case unlockChallenge(Data)
+
+    // MARK: Identity and pairing (protocol v2)
+
+    /// Sent right after `connected`. Tells the client how to reach the encrypted
+    /// endpoint and whether this connection is allowed to send control messages.
+    case welcome(serverName: String, protocolVersion: Int, tlsPort: UInt16?, isPaired: Bool, controlAllowed: Bool)
+
+    /// Reply to `pairRequest`: the server's Curve25519 public key and HKDF salt.
+    case pairChallenge(publicKey: Data, salt: Data)
+
+    /// Final pairing outcome. On success `serverProof` lets the client verify the Mac
+    /// knew the code too, and both sides derive the same long-term key.
+    case pairResult(success: Bool, serverProof: Data?, message: String)
 }
 
 /// Encoded video frame for screen streaming
