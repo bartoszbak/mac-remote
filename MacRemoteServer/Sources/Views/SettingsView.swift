@@ -346,12 +346,12 @@ private struct PermissionsSettings: View {
             Section {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("Screen Recording")
-                    PermissionStatusRow(granted: permissions.screenRecording, optional: true,
+                    PermissionStatusRow(granted: permissions.screenRecording, optional: false,
                                         request: permissions.requestScreenRecording)
                 }
                 .padding(.vertical, 2)
             } footer: {
-                Text("Optional. Needed only for Screen Sharing.")
+                Text("Required. Lets MacRemote share the screen.")
             }
 
             Section {

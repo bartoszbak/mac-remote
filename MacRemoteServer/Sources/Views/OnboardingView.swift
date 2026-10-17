@@ -71,12 +71,12 @@ struct OnboardingView: View {
             permissionStep(
                 systemImage: "rectangle.inset.filled.and.person.filled",
                 title: "Allow Screen Recording",
-                explanation: "Needed only for Screen Sharing, so you can see your Mac's screen on your iPhone. You can skip this and enable it later.",
+                explanation: "MacRemote shares this Mac's screen with your iPhone. macOS requires Screen Recording access for that.",
                 hint: permissions.screenRecording
                     ? "If screen sharing does not work right away, quit and reopen MacRemote."
                     : "In System Settings, turn on MacRemote Server under Screen & System Audio Recording.",
                 granted: permissions.screenRecording,
-                optional: true,
+                optional: false,
                 request: permissions.requestScreenRecording
             )
         case .start:
@@ -224,9 +224,6 @@ struct OnboardingView: View {
                 Button("Back") { go(to: previous) }
             }
             Spacer()
-            if step == .screenRecording && !permissions.screenRecording {
-                Button("Skip") { go(to: .start) }
-            }
             Button(step == .done ? "Finish" : "Continue") {
                 if step == .done {
                     finish()

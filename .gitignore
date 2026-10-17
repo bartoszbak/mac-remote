@@ -36,3 +36,4 @@ Carthage/
 *.swp
 *~
 MacRemoteClient/Derived/
+dist/

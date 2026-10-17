@@ -12,12 +12,7 @@ final class PermissionsMonitor: ObservableObject {
         case accessibility
         case screenRecording
 
-        var isRequired: Bool {
-            switch self {
-            case .accessibility: return true
-            case .screenRecording: return false
-            }
-        }
+        var isRequired: Bool { true }
     }
 
     @Published private(set) var accessibility = false
@@ -34,8 +29,8 @@ final class PermissionsMonitor: ObservableObject {
         timer?.invalidate()
     }
 
-    /// Every permission that is required for the core feature set is granted.
-    var allRequiredGranted: Bool { accessibility }
+    /// Every permission the app needs is granted.
+    var allRequiredGranted: Bool { accessibility && screenRecording }
 
     func isGranted(_ permission: Permission) -> Bool {
         switch permission {

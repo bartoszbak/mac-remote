@@ -28,6 +28,7 @@ final class ServerManager: ObservableObject {
 
     enum Problem: Equatable {
         case accessibilityMissing
+        case screenRecordingMissing
         case portInUse(UInt16)
         case listenerFailed(String)
     }
@@ -397,8 +398,10 @@ final class ServerManager: ObservableObject {
 
     private func recomputeStatus() {
         let newStatus: Status
-        if !permissions.allRequiredGranted {
+        if !permissions.accessibility {
             newStatus = .needsAttention(.accessibilityMissing)
+        } else if !permissions.screenRecording {
+            newStatus = .needsAttention(.screenRecordingMissing)
         } else if case .failed(let failure) = secureState {
             newStatus = .needsAttention(Self.problem(for: failure))
         } else {
@@ -440,7 +443,19 @@ final class ServerManager: ObservableObject {
 
         permissions.$screenRecording
             .removeDuplicates()
-            .sink { [weak self] _ in self?.screenCaptureManager.checkPermission() }
+            .dropFirst()
+            .sink { [weak self] granted in
+                guard let self else { return }
+                self.screenCaptureManager.checkPermission()
+                self.recomputeStatus()
+                if granted, self.permissions.allRequiredGranted, self.settings.autoStartServer,
+                   !self.userStoppedExplicitly, case .stopped = self.plainState {
+                    self.start()
+                } else if !granted {
+                    self.plainServer.stop()
+                    self.secureServer.stop()
+                }
+            }
             .store(in: &cancellables)
     }
 
@@ -769,10 +784,13 @@ final class ServerManager: ObservableObject {
         let expected: Data?
         if let deviceID = contexts[id]?.deviceID, let paired = pairedStore.device(id: deviceID) {
             expected = PairingCrypto.unlockSignature(presharedKey: paired.presharedKey, challenge: challenge)
+            print("[Unlock] Verifying with paired-device key for \(paired.name)")
         } else if let token = remoteUnlockStore.token {
             expected = Data(HMAC<SHA256>.authenticationCode(for: challenge + Data("unlock".utf8), using: SymmetricKey(data: token)))
+            print("[Unlock] Verifying with legacy pairing key")
         } else {
             expected = nil
+            print("[Unlock] No pairing key available on the Mac (Keychain read denied?)")
         }
 
         let nextChallenge = RemoteUnlockStore.randomBytes(count: 32)
@@ -780,7 +798,11 @@ final class ServerManager: ObservableObject {
 
         guard let expected, PairingCrypto.constantTimeEquals(signature, expected) else {
             lastActivity = .unlockRejected(Date())
-            send(.unlockResult(success: false, message: "The pairing key is invalid."), to: connection)
+            let reason = expected == nil
+                ? "The Mac could not read its pairing key. Open Settings → Security on the Mac and re-enable Remote Unlock."
+                : "The pairing key is invalid. Copy it again from Settings → Security on the Mac."
+            print("[Unlock] Rejected: \(reason)")
+            send(.unlockResult(success: false, message: reason), to: connection)
             send(.unlockChallenge(nextChallenge), to: connection)
             return
         }

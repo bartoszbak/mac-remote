@@ -511,6 +511,26 @@
         }
       }
     },
+    "MacRemote needs Screen Recording access to share this Mac's screen with your iPhone.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MacRemote necesita acceso de grabación de pantalla para compartir la pantalla de este Mac con tu iPhone."
+          }
+        }
+      }
+    },
+    "MacRemote shares this Mac's screen with your iPhone. macOS requires Screen Recording access for that.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MacRemote comparte la pantalla de este Mac con tu iPhone. macOS requiere acceso de grabación de pantalla para ello."
+          }
+        }
+      }
+    },
     "Main display": {
       "localizations": {
         "es": {
@@ -547,16 +567,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nombre"
-          }
-        }
-      }
-    },
-    "Needed only for Screen Sharing, so you can see your Mac's screen on your iPhone. You can skip this and enable it later.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Solo es necesario para la pantalla compartida, para ver la pantalla de tu Mac en el iPhone. Puedes omitirlo y activarlo más tarde."
           }
         }
       }
@@ -667,26 +677,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Abrir Ajustes del Sistema"
-          }
-        }
-      }
-    },
-    "Optional": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Opcional"
-          }
-        }
-      }
-    },
-    "Optional. Needed only for Screen Sharing.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Opcional. Solo es necesario para la pantalla compartida."
           }
         }
       }
@@ -911,6 +901,16 @@
         }
       }
     },
+    "Required. Lets MacRemote share the screen.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obligatorio. Permite a MacRemote compartir la pantalla."
+          }
+        }
+      }
+    },
     "Reveal": {
       "localizations": {
         "es": {
@@ -947,6 +947,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Grabación de pantalla"
+          }
+        }
+      }
+    },
+    "Screen Recording access needed": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se necesita acceso de grabación de pantalla"
           }
         }
       }
@@ -1007,16 +1017,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mostrar el cursor en la pantalla compartida"
-          }
-        }
-      }
-    },
-    "Skip": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Omitir"
           }
         }
       }

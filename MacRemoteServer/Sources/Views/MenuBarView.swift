@@ -44,7 +44,7 @@ struct MenuBarView: View {
                 .toggleStyle(.switch)
                 .labelsHidden()
                 .controlSize(.small)
-                .disabled(manager.problem == .accessibilityMissing)
+                .disabled(manager.problem == .accessibilityMissing || manager.problem == .screenRecordingMissing)
                 .help(manager.isRunning ? "Stop sharing this Mac" : "Make this Mac reachable")
             overflowMenu
         }
@@ -149,6 +149,15 @@ struct MenuBarView: View {
                 buttonTitle: "Fix…"
             ) {
                 manager.requestedOnboardingStep = .accessibility
+            }
+        case .screenRecordingMissing:
+            ProblemView(
+                systemImage: "rectangle.inset.filled.and.person.filled",
+                title: "Screen Recording access needed",
+                message: "MacRemote needs Screen Recording access to share this Mac's screen with your iPhone.",
+                buttonTitle: "Fix…"
+            ) {
+                manager.requestedOnboardingStep = .screenRecording
             }
         case .portInUse(let port):
             ProblemView(

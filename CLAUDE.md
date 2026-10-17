@@ -95,6 +95,15 @@ xcodebuild -workspace MacRemote.xcworkspace -scheme MacRemoteServer -destination
 
 Tests live in `MacRemoteServer/Tests/`. `.github/workflows/ci.yml` builds both apps and runs these tests on every push and pull request. Tuist expands source and resource globs at generation time, so run `tuist generate` after adding files.
 
+## Release build and DMG
+
+```bash
+scripts/make-dmg.sh                          # Developer ID signed Release build + dist/MacRemote-<version>.dmg
+NOTARY_PROFILE=<profile> scripts/make-dmg.sh # also notarize and staple
+```
+
+Signing uses team `TJ3ALYQV5G`. Prefer installing the signed Release build into /Applications: its identity is stable, so Accessibility, Screen Recording and Keychain grants survive rebuilds. Ad-hoc Debug builds get a new identity every time and lose those grants.
+
 ## Testing macOS Server Changes
 
 When making changes to the macOS server (MacRemoteServer), after verifying the build succeeds:

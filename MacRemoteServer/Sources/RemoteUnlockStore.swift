@@ -9,19 +9,52 @@ final class RemoteUnlockStore {
 
     private let service = "com.pedrocid.MacRemoteServer.remote-unlock"
 
+    /// The legacy pairing token lives in an owner-only file, not the Keychain.
+    /// Keychain items are bound to the signing identity, and a read denied after a
+    /// rebuild made every unlock look like a wrong key. The login password stays in
+    /// the Keychain; it is only read at the moment of unlocking.
+    private let tokenFileURL: URL
+
+    init(tokenFileURL: URL? = nil) {
+        if let tokenFileURL {
+            self.tokenFileURL = tokenFileURL
+        } else {
+            let support = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+                .appendingPathComponent(Bundle.main.bundleIdentifier ?? "com.pedrocid.MacRemoteServer", isDirectory: true)
+            try? FileManager.default.createDirectory(at: support, withIntermediateDirectories: true,
+                                                     attributes: [.posixPermissions: 0o700])
+            self.tokenFileURL = support.appendingPathComponent("unlock-token")
+        }
+    }
+
     var password: String? {
         guard let data = read(account: Account.password) else { return nil }
         return String(data: data, encoding: .utf8)
     }
 
+    /// Legacy pairing token. Migrates a token stored in the Keychain by earlier
+    /// versions into the file on first successful read.
     var token: Data? {
-        read(account: Account.token)
+        if let onDisk = try? Data(contentsOf: tokenFileURL), onDisk.count == 32 {
+            return onDisk
+        }
+        guard let legacy = read(account: Account.token) else { return nil }
+        if writeToken(legacy) {
+            delete(account: Account.token)
+            print("[RemoteUnlock] Migrated pairing token from Keychain to file")
+        }
+        return legacy
     }
 
-    /// Checks for the items without reading their data, so this never triggers a
+    /// Whether a token can be used without a Keychain read.
+    var hasFileToken: Bool {
+        (try? Data(contentsOf: tokenFileURL))?.count == 32
+    }
+
+    /// Checks for the items without reading secret data, so this never triggers a
     /// Keychain access prompt. Safe to call at launch.
     var isConfigured: Bool {
-        exists(account: Account.password) && exists(account: Account.token)
+        exists(account: Account.password) && (hasFileToken || exists(account: Account.token))
     }
 
     @discardableResult
@@ -30,13 +63,26 @@ final class RemoteUnlockStore {
         guard !trimmedPassword.isEmpty else { return false }
 
         let passwordSaved = save(Data(trimmedPassword.utf8), account: Account.password)
-        let tokenSaved = token != nil || save(Self.randomBytes(count: 32), account: Account.token)
+        // Keep an existing token so already-paired phones stay valid.
+        let tokenSaved = token != nil || writeToken(Self.randomBytes(count: 32))
         return passwordSaved && tokenSaved
     }
 
     func removeConfiguration() {
         delete(account: Account.password)
         delete(account: Account.token)
+        try? FileManager.default.removeItem(at: tokenFileURL)
+    }
+
+    private func writeToken(_ data: Data) -> Bool {
+        do {
+            try data.write(to: tokenFileURL, options: .atomic)
+            try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: tokenFileURL.path)
+            return true
+        } catch {
+            print("[RemoteUnlock] Failed to write token: \(error)")
+            return false
+        }
     }
 
     var formattedPairingKey: String? {

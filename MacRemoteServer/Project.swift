@@ -36,7 +36,7 @@ let project = Project(
                     // No accent colour set exists; stop actool looking for one.
                     "ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME": "",
                     "CODE_SIGN_STYLE": "Automatic",
-                    "DEVELOPMENT_TEAM": "746CH7LGJ5",
+                    "DEVELOPMENT_TEAM": "TJ3ALYQV5G",
                     "ENABLE_HARDENED_RUNTIME": "YES"
                 ]
             )
@@ -56,7 +56,7 @@ let project = Project(
                 base: [
                     "SWIFT_VERSION": "5.9",
                     "CODE_SIGN_STYLE": "Automatic",
-                    "DEVELOPMENT_TEAM": "746CH7LGJ5"
+                    "DEVELOPMENT_TEAM": "TJ3ALYQV5G"
                 ]
             )
         )

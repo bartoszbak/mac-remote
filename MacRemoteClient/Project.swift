@@ -42,7 +42,7 @@ let project = Project(
                     // No accent colour set exists; stop actool looking for one.
                     "ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME": "",
                     "CODE_SIGN_STYLE": "Automatic",
-                    "DEVELOPMENT_TEAM": "746CH7LGJ5",
+                    "DEVELOPMENT_TEAM": "TJ3ALYQV5G",
                     "MARKETING_VERSION": "1.0",
                     "CURRENT_PROJECT_VERSION": "1"
                 ]
