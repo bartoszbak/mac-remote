@@ -411,6 +411,16 @@
         }
       }
     },
+    "More": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Más"
+          }
+        }
+      }
+    },
     "Needed only for Screen Sharing, so you can see your Mac's screen on your iPhone. You can skip this and enable it later.": {
       "localizations": {
         "es": {

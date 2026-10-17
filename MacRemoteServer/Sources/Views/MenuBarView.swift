@@ -19,12 +19,6 @@ struct MenuBarView: View {
             content
                 .padding(.horizontal, 14)
                 .padding(.vertical, 12)
-
-            Divider()
-
-            footer
-                .padding(.horizontal, 8)
-                .padding(.vertical, 6)
         }
         .frame(width: 300)
         .buttonBorderShape(.capsule)
@@ -52,7 +46,41 @@ struct MenuBarView: View {
                 .controlSize(.small)
                 .disabled(manager.problem == .accessibilityMissing)
                 .help(manager.isRunning ? "Stop sharing this Mac" : "Make this Mac reachable")
+            overflowMenu
         }
+    }
+
+    private var overflowMenu: some View {
+        Menu {
+            Button("Settings…") {
+                showSettings()
+            }
+            .keyboardShortcut(",", modifiers: .command)
+            Button("Run Setup Again…") {
+                manager.requestedOnboardingStep = .welcome
+            }
+            Divider()
+            Button("About MacRemote") {
+                NSApp.activate(ignoringOtherApps: true)
+                NSApp.orderFrontStandardAboutPanel(nil)
+            }
+            Divider()
+            Button("Quit MacRemote") {
+                NSApp.terminate(nil)
+            }
+            .keyboardShortcut("q", modifiers: .command)
+        } label: {
+            Image(systemName: "ellipsis")
+                .font(.callout.weight(.semibold))
+                .foregroundStyle(.secondary)
+                .frame(width: 26, height: 26)
+                .background(.quaternary, in: Circle())
+                .contentShape(Circle())
+        }
+        .menuStyle(.borderlessButton)
+        .menuIndicator(.hidden)
+        .fixedSize()
+        .help("More")
     }
 
     private var statusLine: Text {
@@ -223,48 +251,6 @@ struct MenuBarView: View {
         case .low: return "480p"
         case .medium: return "720p"
         case .high: return "1080p"
-        }
-    }
-
-    // MARK: - Footer
-
-    private var footer: some View {
-        HStack {
-            Button {
-                showSettings()
-            } label: {
-                Label("Settings…", systemImage: "gearshape")
-                    .font(.callout)
-            }
-            .buttonStyle(.plain)
-            .keyboardShortcut(",", modifiers: .command)
-
-            Spacer()
-
-            Menu {
-                Button("Run Setup Again…") {
-                    manager.requestedOnboardingStep = .welcome
-                }
-                Divider()
-                Button("About MacRemote") {
-                    NSApp.activate(ignoringOtherApps: true)
-                    NSApp.orderFrontStandardAboutPanel(nil)
-                }
-                Divider()
-                Button("Quit MacRemote") {
-                    NSApp.terminate(nil)
-                }
-                .keyboardShortcut("q", modifiers: .command)
-            } label: {
-                Image(systemName: "ellipsis")
-                    .font(.callout.weight(.semibold))
-                    .foregroundStyle(.secondary)
-                    .frame(width: 24, height: 24)
-                    .contentShape(Rectangle())
-            }
-            .menuStyle(.borderlessButton)
-            .menuIndicator(.hidden)
-            .fixedSize()
         }
     }
 
