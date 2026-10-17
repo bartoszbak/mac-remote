@@ -35,6 +35,7 @@ let project = Project(
                     "SWIFT_VERSION": "5.9",
                     // No accent colour set exists; stop actool looking for one.
                     "ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME": "",
+                    "ASSETCATALOG_COMPILER_APPICON_NAME": "AppIcon",
                     "CODE_SIGN_STYLE": "Automatic",
                     "DEVELOPMENT_TEAM": "TJ3ALYQV5G",
                     "ENABLE_HARDENED_RUNTIME": "YES"
