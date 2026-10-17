@@ -1,0 +1,1006 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "About": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acerca de"
+          }
+        }
+      }
+    },
+    "About MacRemote": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acerca de MacRemote"
+          }
+        }
+      }
+    },
+    "Access granted": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acceso concedido"
+          }
+        }
+      }
+    },
+    "Accessibility": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accesibilidad"
+          }
+        }
+      }
+    },
+    "Accessibility access needed": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se necesita acceso de Accesibilidad"
+          }
+        }
+      }
+    },
+    "Allow Accessibility access": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permitir acceso de Accesibilidad"
+          }
+        }
+      }
+    },
+    "Allow Screen Recording": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permitir grabación de pantalla"
+          }
+        }
+      }
+    },
+    "Allow unlocking this Mac from a paired iPhone": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permitir desbloquear este Mac desde un iPhone emparejado"
+          }
+        }
+      }
+    },
+    "Another app is using this port. Choose a different one in Settings.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otra app está usando este puerto. Elige otro en Ajustes."
+          }
+        }
+      }
+    },
+    "Back": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Atrás"
+          }
+        }
+      }
+    },
+    "Cancel": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancelar"
+          }
+        }
+      }
+    },
+    "Change…": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cambiar…"
+          }
+        }
+      }
+    },
+    "Choose Another Port…": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elegir otro puerto…"
+          }
+        }
+      }
+    },
+    "Connected since %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conectado desde las %@"
+          }
+        }
+      }
+    },
+    "Control this Mac from your iPhone: trackpad, keyboard, media keys, app launcher and screen sharing. Let's set up the permissions it needs.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controla este Mac desde tu iPhone: trackpad, teclado, teclas multimedia, lanzador de apps y pantalla compartida. Vamos a configurar los permisos necesarios."
+          }
+        }
+      }
+    },
+    "Copied": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copiado"
+          }
+        }
+      }
+    },
+    "Copy": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copiar"
+          }
+        }
+      }
+    },
+    "Couldn't start the server": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se pudo iniciar el servidor"
+          }
+        }
+      }
+    },
+    "Devices": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dispositivos"
+          }
+        }
+      }
+    },
+    "Display changes apply the next time a stream starts.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El cambio de pantalla se aplica la próxima vez que se inicie una transmisión."
+          }
+        }
+      }
+    },
+    "Display to share": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pantalla que compartir"
+          }
+        }
+      }
+    },
+    "Enable": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activar"
+          }
+        }
+      }
+    },
+    "Enable Remote Unlock": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activar desbloqueo remoto"
+          }
+        }
+      }
+    },
+    "Enter your Mac login password.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Introduce la contraseña de inicio de sesión de tu Mac."
+          }
+        }
+      }
+    },
+    "Finish": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finalizar"
+          }
+        }
+      }
+    },
+    "Fix…": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solucionar…"
+          }
+        }
+      }
+    },
+    "General": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "General"
+          }
+        }
+      }
+    },
+    "Hidden": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oculta"
+          }
+        }
+      }
+    },
+    "Hide": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ocultar"
+          }
+        }
+      }
+    },
+    "If screen sharing does not work right away, quit and reopen MacRemote.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Si la pantalla compartida no funciona de inmediato, cierra y vuelve a abrir MacRemote."
+          }
+        }
+      }
+    },
+    "In System Settings, turn on MacRemote Server under Accessibility, then come back here.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En Ajustes del Sistema, activa MacRemote Server en Accesibilidad y vuelve aquí."
+          }
+        }
+      }
+    },
+    "In System Settings, turn on MacRemote Server under Screen & System Audio Recording.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En Ajustes del Sistema, activa MacRemote Server en Grabación de pantalla y audio del sistema."
+          }
+        }
+      }
+    },
+    "Launched %@ %@ ago": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se abrió %@ hace %@"
+          }
+        }
+      }
+    },
+    "Mac login password": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contraseña de inicio de sesión del Mac"
+          }
+        }
+      }
+    },
+    "Mac name": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nombre del Mac"
+          }
+        }
+      }
+    },
+    "MacRemote Server": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MacRemote Server"
+          }
+        }
+      }
+    },
+    "MacRemote lives in your menu bar. Click its icon to see connected devices, pause sharing, or change settings.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MacRemote vive en la barra de menús. Haz clic en su icono para ver los dispositivos conectados, pausar el uso compartido o cambiar los ajustes."
+          }
+        }
+      }
+    },
+    "MacRemote moves the mouse and types on your behalf. macOS requires Accessibility access for that.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MacRemote mueve el ratón y escribe por ti. macOS requiere acceso de Accesibilidad para ello."
+          }
+        }
+      }
+    },
+    "MacRemote needs Accessibility access to move the mouse and type on your behalf.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MacRemote necesita acceso de Accesibilidad para mover el ratón y escribir por ti."
+          }
+        }
+      }
+    },
+    "Main display": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pantalla principal"
+          }
+        }
+      }
+    },
+    "Make this Mac reachable": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Haz que este Mac sea accesible"
+          }
+        }
+      }
+    },
+    "Needed only for Screen Sharing, so you can see your Mac's screen on your iPhone. You can skip this and enable it later.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo es necesario para la pantalla compartida, para ver la pantalla de tu Mac en el iPhone. Puedes omitirlo y activarlo más tarde."
+          }
+        }
+      }
+    },
+    "Needs attention": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Requiere atención"
+          }
+        }
+      }
+    },
+    "Network": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Red"
+          }
+        }
+      }
+    },
+    "No devices connected": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No hay dispositivos conectados"
+          }
+        }
+      }
+    },
+    "Not granted": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No concedido"
+          }
+        }
+      }
+    },
+    "Off": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apagado"
+          }
+        }
+      }
+    },
+    "Open MacRemote at login": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir MacRemote al iniciar sesión"
+          }
+        }
+      }
+    },
+    "Open MacRemote on your iPhone and choose “%@”.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre MacRemote en tu iPhone y elige “%@”."
+          }
+        }
+      }
+    },
+    "Open System Settings": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir Ajustes del Sistema"
+          }
+        }
+      }
+    },
+    "Optional": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opcional"
+          }
+        }
+      }
+    },
+    "Optional. Needed only for Screen Sharing.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opcional. Solo es necesario para la pantalla compartida."
+          }
+        }
+      }
+    },
+    "Pairing key": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clave de emparejamiento"
+          }
+        }
+      }
+    },
+    "Password": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contraseña"
+          }
+        }
+      }
+    },
+    "Permissions": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permisos"
+          }
+        }
+      }
+    },
+    "Port": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Puerto"
+          }
+        }
+      }
+    },
+    "Port %lld is already in use.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El puerto %lld ya está en uso."
+          }
+        }
+      }
+    },
+    "Port %lld is in use": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El puerto %lld está en uso"
+          }
+        }
+      }
+    },
+    "Quit MacRemote": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salir de MacRemote"
+          }
+        }
+      }
+    },
+    "Reachable": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accesible"
+          }
+        }
+      }
+    },
+    "Reachable as “%@”": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accesible como “%@”"
+          }
+        }
+      }
+    },
+    "Reachable · %lld devices": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accesible · %lld dispositivos"
+          }
+        }
+      }
+    },
+    "Reachable · 1 device": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accesible · 1 dispositivo"
+          }
+        }
+      }
+    },
+    "Remote Unlock": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desbloqueo remoto"
+          }
+        }
+      }
+    },
+    "Required. Lets MacRemote move the mouse and type.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obligatorio. Permite a MacRemote mover el ratón y escribir."
+          }
+        }
+      }
+    },
+    "Reveal": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar"
+          }
+        }
+      }
+    },
+    "Run Setup Again…": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repetir la configuración…"
+          }
+        }
+      }
+    },
+    "Screen Recording": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grabación de pantalla"
+          }
+        }
+      }
+    },
+    "Screen Recording permission is not granted on the Mac.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El Mac no tiene concedido el permiso de grabación de pantalla."
+          }
+        }
+      }
+    },
+    "Screen Sharing": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pantalla compartida"
+          }
+        }
+      }
+    },
+    "Security": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seguridad"
+          }
+        }
+      }
+    },
+    "Server": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Servidor"
+          }
+        }
+      }
+    },
+    "Settings…": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajustes…"
+          }
+        }
+      }
+    },
+    "Show the cursor in the shared screen": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar el cursor en la pantalla compartida"
+          }
+        }
+      }
+    },
+    "Skip": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Omitir"
+          }
+        }
+      }
+    },
+    "Start": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iniciar"
+          }
+        }
+      }
+    },
+    "Start the server automatically": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iniciar el servidor automáticamente"
+          }
+        }
+      }
+    },
+    "Starting the server…": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iniciando el servidor…"
+          }
+        }
+      }
+    },
+    "Starting…": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iniciando…"
+          }
+        }
+      }
+    },
+    "Step %lld of %lld": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paso %lld de %lld"
+          }
+        }
+      }
+    },
+    "Stop sharing this Mac": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dejar de compartir este Mac"
+          }
+        }
+      }
+    },
+    "Stored in Keychain": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guardada en el llavero"
+          }
+        }
+      }
+    },
+    "Streaming": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transmitiendo"
+          }
+        }
+      }
+    },
+    "Streaming the screen to this device": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transmitiendo la pantalla a este dispositivo"
+          }
+        }
+      }
+    },
+    "Streaming to %@ · %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transmitiendo a %@ · %@"
+          }
+        }
+      }
+    },
+    "The password never leaves this Mac. Your iPhone proves it holds the pairing key with a one-time signature and must authenticate with Face ID or Touch ID first. Unlocking only works while the lock screen is showing.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La contraseña nunca sale de este Mac. Tu iPhone demuestra que tiene la clave de emparejamiento con una firma de un solo uso y antes debe autenticarse con Face ID o Touch ID. El desbloqueo solo funciona mientras se muestra la pantalla de bloqueo."
+          }
+        }
+      }
+    },
+    "This is the name your iPhone shows when it finds this Mac. Press Return to apply changes to a running server.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Este es el nombre que muestra tu iPhone cuando encuentra este Mac. Pulsa Intro para aplicar los cambios a un servidor en marcha."
+          }
+        }
+      }
+    },
+    "Try Again": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reintentar"
+          }
+        }
+      }
+    },
+    "Turn on the server from the menu bar so your iPhone can find this Mac.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enciende el servidor desde la barra de menús para que tu iPhone pueda encontrar este Mac."
+          }
+        }
+      }
+    },
+    "Turn on the switch to let your iPhone find this Mac.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activa el interruptor para que tu iPhone encuentre este Mac."
+          }
+        }
+      }
+    },
+    "Unlock rejected %@ ago": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desbloqueo rechazado hace %@"
+          }
+        }
+      }
+    },
+    "Unlock sent %@ ago": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desbloqueo enviado hace %@"
+          }
+        }
+      }
+    },
+    "Version %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Versión %@"
+          }
+        }
+      }
+    },
+    "View on GitHub": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ver en GitHub"
+          }
+        }
+      }
+    },
+    "Waiting for a device": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esperando un dispositivo"
+          }
+        }
+      }
+    },
+    "Waiting for access…": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esperando el acceso…"
+          }
+        }
+      }
+    },
+    "Welcome to MacRemote": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bienvenido a MacRemote"
+          }
+        }
+      }
+    },
+    "You're all set": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todo listo"
+          }
+        }
+      }
+    },
+    "Your Mac login password is stored only in this Mac's Keychain. Paired devices send a one-time signature, never the password, and unlocking only works while the lock screen is showing.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La contraseña de inicio de sesión de tu Mac se guarda solo en el llavero de este Mac. Los dispositivos emparejados envían una firma de un solo uso, nunca la contraseña, y el desbloqueo solo funciona mientras se muestra la pantalla de bloqueo."
+          }
+        }
+      }
+    },
+    "Your iPhone finds this Mac automatically when both are on the same network.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu iPhone encuentra este Mac automáticamente cuando ambos están en la misma red."
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

@@ -1,0 +1,52 @@
+import ProjectDescription
+
+let project = Project(
+    name: "MacRemoteClient",
+    targets: [
+        .target(
+            name: "MacRemoteClient",
+            destinations: [.iPhone, .iPad],
+            product: .app,
+            bundleId: "com.pedrocid.MacRemoteClient",
+            deploymentTargets: .iOS("17.0"),
+            infoPlist: .extendingDefault(with: [
+                "CFBundleDisplayName": "MacRemote",
+                "UIUserInterfaceStyle": "Dark",
+                "UILaunchScreen": .dictionary([:]),
+                "UISupportedInterfaceOrientations": .array([
+                    "UIInterfaceOrientationPortrait",
+                    "UIInterfaceOrientationLandscapeLeft",
+                    "UIInterfaceOrientationLandscapeRight"
+                ]),
+                "UISupportedInterfaceOrientations~ipad": .array([
+                    "UIInterfaceOrientationPortrait",
+                    "UIInterfaceOrientationPortraitUpsideDown",
+                    "UIInterfaceOrientationLandscapeLeft",
+                    "UIInterfaceOrientationLandscapeRight"
+                ]),
+                "NSBonjourServices": .array(["_macremote._tcp"]),
+                "NSLocalNetworkUsageDescription": "MacRemote needs access to the local network to find and connect to your Mac",
+                "NSFaceIDUsageDescription": "Use Face ID to authorize unlocking your paired Mac",
+                "ITSAppUsesNonExemptEncryption": false
+            ]),
+            sources: [
+                "Sources/**",
+                "../Shared/**"
+            ],
+            resources: [
+                "Resources/**"
+            ],
+            settings: .settings(
+                base: [
+                    "SWIFT_VERSION": "5.9",
+                    // No accent colour set exists; stop actool looking for one.
+                    "ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME": "",
+                    "CODE_SIGN_STYLE": "Automatic",
+                    "DEVELOPMENT_TEAM": "746CH7LGJ5",
+                    "MARKETING_VERSION": "1.0",
+                    "CURRENT_PROJECT_VERSION": "1"
+                ]
+            )
+        )
+    ]
+)

@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build and test
+    runs-on: macos-15
+    timeout-minutes: 40
+    env:
+      SIGNING_FLAGS: CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select newest Xcode
+        # The Tuist cask is built with the current Swift toolchain, so it needs the newest Xcode on the runner.
+        run: |
+          XCODE="$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)"
+          echo "Using $XCODE"
+          sudo xcode-select -s "$XCODE"
+          xcodebuild -version
+
+      - name: Install Tuist
+        run: brew install --cask tuist
+
+      - name: Generate workspace
+        run: tuist generate --no-open
+
+      - name: Build macOS server
+        run: |
+          set -o pipefail
+          xcodebuild -workspace MacRemote.xcworkspace -scheme MacRemoteServer \
+            -configuration Debug -destination 'platform=macOS' \
+            $SIGNING_FLAGS build | xcbeautify --renderer github-actions || \
+          xcodebuild -workspace MacRemote.xcworkspace -scheme MacRemoteServer \
+            -configuration Debug -destination 'platform=macOS' \
+            $SIGNING_FLAGS build
+
+      - name: Test macOS server
+        run: |
+          set -o pipefail
+          xcodebuild -workspace MacRemote.xcworkspace -scheme MacRemoteServer \
+            -configuration Debug -destination 'platform=macOS' \
+            $SIGNING_FLAGS test -resultBundlePath TestResults.xcresult
+
+      - name: Build iOS client
+        run: |
+          set -o pipefail
+          xcodebuild -workspace MacRemote.xcworkspace -scheme MacRemoteClient \
+            -configuration Debug -destination 'generic/platform=iOS Simulator' \
+            $SIGNING_FLAGS build
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TestResults
+          path: TestResults.xcresult
+          if-no-files-found: ignore
