@@ -38,7 +38,7 @@ struct MacRemoteClientApp: App {
                 ConnectionView(browser: browser, client: client)
             }
             .sheet(isPresented: $showSettings) {
-                SettingsView()
+                SettingsView(client: client)
             }
             .onAppear {
                 if !client.isConnected {

@@ -11,127 +11,6 @@
         }
       }
     },
-    "Bright +" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Brillo +"
-          }
-        }
-      }
-    },
-    "Bright -" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Brillo -"
-          }
-        }
-      }
-    },
-    "Mute" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Silencio"
-          }
-        }
-      }
-    },
-    "Next" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Siguiente"
-          }
-        }
-      }
-    },
-    "Play/Pause" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reproducir/Pausar"
-          }
-        }
-      }
-    },
-    "Previous" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anterior"
-          }
-        }
-      }
-    },
-    "Right" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Derecho"
-          }
-        }
-      }
-    },
-    "Tap to activate keyboard" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Toca para activar el teclado"
-          }
-        }
-      }
-    },
-    "Type on the keyboard below" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Escribe en el teclado de abajo"
-          }
-        }
-      }
-    },
-    "Vol +" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vol +"
-          }
-        }
-      }
-    },
-    "Vol -" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vol -"
-          }
-        }
-      }
-    },
     "apps_add_favorite" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -281,6 +160,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Buscar apps..."
+          }
+        }
+      }
+    },
+    "Bright -" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brillo -"
+          }
+        }
+      }
+    },
+    "Bright +" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brillo +"
           }
         }
       }
@@ -846,6 +747,28 @@
         }
       }
     },
+    "Mute" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Silencio"
+          }
+        }
+      }
+    },
+    "Next" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siguiente"
+          }
+        }
+      }
+    },
     "not_connected" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -859,6 +782,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sin conexión"
+          }
+        }
+      }
+    },
+    "Play/Pause" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reproducir/Pausar"
+          }
+        }
+      }
+    },
+    "Previous" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anterior"
           }
         }
       }
@@ -931,6 +876,17 @@
         }
       }
     },
+    "Right" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Derecho"
+          }
+        }
+      }
+    },
     "screen_sharing" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -982,6 +938,40 @@
         }
       }
     },
+    "settings_unlock_not_paired" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not paired. Enter the pairing key in the System section."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin emparejar. Introduce la clave de emparejamiento en la sección Sistema."
+          }
+        }
+      }
+    },
+    "settings_unlock_paired_footer" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This iPhone can unlock the Mac with Face ID or Touch ID."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este iPhone puede desbloquear el Mac con Face ID o Touch ID."
+          }
+        }
+      }
+    },
     "start_streaming" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -995,6 +985,74 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Iniciar Transmisión"
+          }
+        }
+      }
+    },
+    "system_lock_footer" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Locks the Mac immediately. Your password is needed to unlock it at the Mac."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bloquea el Mac de inmediato. Necesitarás tu contraseña para desbloquearlo en el Mac."
+          }
+        }
+      }
+    },
+    "system_section_lock" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lock"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bloqueo"
+          }
+        }
+      }
+    },
+    "system_section_unlock" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remote Unlock"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desbloqueo remoto"
+          }
+        }
+      }
+    },
+    "system_unlock_footer" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter the pairing key shown in the Mac's Remote Unlock settings. Unlocking then requires Face ID or Touch ID."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Introduce la clave de emparejamiento que muestran los ajustes de Desbloqueo remoto del Mac. Desbloquear requerirá Face ID o Touch ID."
           }
         }
       }
@@ -1114,6 +1172,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Trackpad"
+          }
+        }
+      }
+    },
+    "Tap to activate keyboard" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toca para activar el teclado"
           }
         }
       }
@@ -1645,6 +1714,17 @@
         }
       }
     },
+    "Type on the keyboard below" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escribe en el teclado de abajo"
+          }
+        }
+      }
+    },
     "unlock_auth_failed" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1845,6 +1925,45 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Enviando comando de desbloqueo…"
+          }
+        }
+      }
+    },
+    "unlock_state_unlocked" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mac is unlocked"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El Mac está desbloqueado"
+          }
+        }
+      }
+    },
+    "Vol -" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vol -"
+          }
+        }
+      }
+    },
+    "Vol +" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vol +"
           }
         }
       }

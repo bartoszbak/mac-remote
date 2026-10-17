@@ -87,6 +87,8 @@ enum ServerMessage: Codable {
     case screenStreamStopped
     case unlockResult(success: Bool, message: String)
     case unlockChallenge(Data)
+    /// Whether the Mac's screen is currently locked. Sent on connect and on every change.
+    case screenLockState(isLocked: Bool)
 
     // MARK: Identity and pairing (protocol v2)
 

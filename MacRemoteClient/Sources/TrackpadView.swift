@@ -1,7 +1,8 @@
 import SwiftUI
 
-/// Full-bleed black trackpad tab. The whole background is the tracking surface; two large
-/// glass mouse buttons sit on top of it at the bottom of the screen and can be swiped away.
+/// Full-bleed black trackpad tab. The whole background is the tracking surface, textured
+/// with fine vertical lines that fade out towards the top. The bottom strip is split into
+/// left and right click halves by a single separator line.
 struct TrackpadView: View {
     @ObservedObject var client: NetworkClient
 
@@ -10,14 +11,7 @@ struct TrackpadView: View {
     @AppStorage(TrackpadSettings.naturalScrollingKey) private var naturalScrolling = true
     @AppStorage(TrackpadSettings.hapticsKey) private var hapticsEnabled = true
 
-    @State private var controlsVisible = true
-
-    /// Gap between the mouse buttons and the screen edges.
-    private let edgeInset: CGFloat = 10
     private let buttonHeight: CGFloat = 100
-    /// Space between the two click buttons, twice the edge inset.
-    private let buttonGap: CGFloat = 20
-    private let innerRadius: CGFloat = 12
 
     private var configuration: TrackpadGestureEngine.Configuration {
         var configuration = TrackpadGestureEngine.Configuration()
@@ -33,68 +27,34 @@ struct TrackpadView: View {
                             hapticsEnabled: hapticsEnabled,
                             onAction: perform)
                 .background(Color.black)
+                .overlay(alignment: .bottom) {
+                    SurfaceTexture()
+                        .padding(.bottom, buttonHeight)
+                }
 
-            if controlsVisible {
-                mouseButtons
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
-            } else {
-                showControlsHandle
-                    .transition(.opacity)
-            }
+            mouseButtons
         }
         .ignoresSafeArea(edges: .bottom)
-        .animation(.snappy, value: controlsVisible)
     }
 
     // MARK: - Mouse buttons
 
-    /// Left and right click, edge to edge at the bottom. Each button's outer bottom corner is
-    /// concentric with the display corner; the other three are small and regular.
+    /// Left and right click halves at the bottom, with only a separator between them.
     private var mouseButtons: some View {
-        HStack(spacing: buttonGap) {
-            MouseButtonView(name: String(localized: "trackpad_left_click"),
-                            outerCorner: .bottomLeading,
-                            innerRadius: innerRadius,
-                            edgeInset: edgeInset) { down in
+        HStack(spacing: 0) {
+            MouseButtonView(name: String(localized: "trackpad_left_click"), haptics: hapticsEnabled) { down in
                 client.send(down ? .mouseDown(button: .left) : .mouseUp(button: .left))
             }
 
-            MouseButtonView(name: String(localized: "trackpad_right_click"),
-                            outerCorner: .bottomTrailing,
-                            innerRadius: innerRadius,
-                            edgeInset: edgeInset) { down in
+            Rectangle()
+                .fill(.white.opacity(0.25))
+                .frame(width: 1, height: buttonHeight * 0.5)
+
+            MouseButtonView(name: String(localized: "trackpad_right_click"), haptics: hapticsEnabled) { down in
                 client.send(down ? .mouseDown(button: .right) : .mouseUp(button: .right))
             }
         }
-        // Spacing well below the gap, so the two glass shapes never merge into one.
-        .glassGroup(spacing: 4)
         .frame(height: buttonHeight)
-        .padding(.horizontal, edgeInset)
-        .padding(.bottom, edgeInset)
-        .highPriorityGesture(
-            DragGesture(minimumDistance: 24)
-                .onEnded { value in
-                    if value.translation.height > 40 {
-                        controlsVisible = false
-                    }
-                }
-        )
-    }
-
-    private var showControlsHandle: some View {
-        Button {
-            controlsVisible = true
-        } label: {
-            Capsule()
-                .fill(.white.opacity(0.35))
-                .frame(width: 44, height: 5)
-                .padding(.horizontal, 24)
-                .padding(.vertical, 12)
-                .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .padding(.bottom, 8)
-        .accessibilityLabel(String(localized: "trackpad_show_controls"))
     }
 
     // MARK: - Dispatch
@@ -126,67 +86,60 @@ struct TrackpadView: View {
     }
 }
 
-/// A press-and-hold mouse button: a bare dark glass shape with no label. Sends down on
-/// touch and up on release, so the user can hold it while moving with another finger to drag.
-struct MouseButtonView: View {
-    enum OuterCorner { case bottomLeading, bottomTrailing }
+/// Fine horizontal lines suggesting a physical surface. They start at the bottom of the
+/// area and fade to nothing towards the top. Decorative only; never intercepts touches.
+struct SurfaceTexture: View {
+    var spacing: CGFloat = 14
+    var lineOpacity: Double = 0.16
 
+    var body: some View {
+        Canvas { context, size in
+            var path = Path()
+            var y = size.height - spacing / 2
+            while y > 0 {
+                let py = y.rounded() + 0.5
+                path.move(to: CGPoint(x: 0, y: py))
+                path.addLine(to: CGPoint(x: size.width, y: py))
+                y -= spacing
+            }
+            context.stroke(path, with: .color(.white.opacity(lineOpacity)), lineWidth: 1)
+        }
+        .mask(
+            LinearGradient(stops: [.init(color: .clear, location: 0),
+                                   .init(color: .white, location: 0.85)],
+                           startPoint: .top, endPoint: .bottom)
+        )
+        .allowsHitTesting(false)
+    }
+}
+
+/// An invisible press-and-hold mouse button: sends down on touch and up on release, so the
+/// user can hold it while moving with another finger to drag. Lights up faintly while held.
+struct MouseButtonView: View {
     let name: String
-    var outerCorner: OuterCorner = .bottomLeading
-    var innerRadius: CGFloat = 12
-    /// Distance from the screen edge, used for the pre-iOS 26 concentric fallback.
-    var edgeInset: CGFloat = 10
+    var haptics = true
     let onPress: (_ down: Bool) -> Void
 
     @State private var isPressed = false
+    private let impact = UIImpactFeedbackGenerator(style: .light)
 
     var body: some View {
-        if #available(iOS 26, *) {
-            styled(concentricShape)
-        } else {
-            styled(legacyShape)
-        }
-    }
-
-    /// iOS 26 computes the outer corner from the actual display shape; the other corners
-    /// fall back to the fixed inner radius.
-    @available(iOS 26, *)
-    private var concentricShape: ConcentricRectangle {
-        let inner = Edge.Corner.Style.fixed(innerRadius)
-        let outer = Edge.Corner.Style.concentric(minimum: inner)
-        return ConcentricRectangle(topLeadingCorner: inner,
-                                   topTrailingCorner: inner,
-                                   bottomLeadingCorner: outerCorner == .bottomLeading ? outer : inner,
-                                   bottomTrailingCorner: outerCorner == .bottomTrailing ? outer : inner)
-    }
-
-    private var legacyShape: UnevenRoundedRectangle {
-        let outer = DeviceCorners.concentric(inset: edgeInset, minimum: innerRadius)
-        return UnevenRoundedRectangle(
-            cornerRadii: RectangleCornerRadii(topLeading: innerRadius,
-                                              bottomLeading: outerCorner == .bottomLeading ? outer : innerRadius,
-                                              bottomTrailing: outerCorner == .bottomTrailing ? outer : innerRadius,
-                                              topTrailing: innerRadius),
-            style: .continuous)
-    }
-
-    private func styled<S: Shape>(_ shape: S) -> some View {
-        Color.clear
+        Color.white.opacity(isPressed ? 0.08 : 0)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .padGlass(in: shape, pressed: isPressed)
-            .scaleEffect(isPressed ? 0.97 : 1)
             .animation(.easeOut(duration: 0.08), value: isPressed)
-            .contentShape(shape)
+            .contentShape(Rectangle())
             .gesture(
                 DragGesture(minimumDistance: 0)
                     .onChanged { _ in
                         guard !isPressed else { return }
                         isPressed = true
+                        if haptics { impact.impactOccurred() }
                         onPress(true)
                     }
                     .onEnded { _ in
                         guard isPressed else { return }
                         isPressed = false
+                        if haptics { impact.impactOccurred(intensity: 0.6) }
                         onPress(false)
                     }
             )
@@ -203,19 +156,22 @@ struct MouseButtonView: View {
     TrackpadView(client: .preview(connected: false))
 }
 
-#Preview("Mouse buttons") {
-    ZStack {
+#Preview("Surface texture") {
+    ZStack(alignment: .bottom) {
         Color.black.ignoresSafeArea()
-        VStack {
-            Spacer()
-            HStack(spacing: 20) {
-                MouseButtonView(name: "Left", outerCorner: .bottomLeading) { _ in }
-                MouseButtonView(name: "Right", outerCorner: .bottomTrailing) { _ in }
-            }
-            .glassGroup(spacing: 4)
-            .frame(height: 100)
-            .padding(10)
+        SurfaceTexture()
+            .padding(.bottom, 100)
+    }
+}
+
+#Preview("Mouse buttons") {
+    ZStack(alignment: .bottom) {
+        Color.black.ignoresSafeArea()
+        HStack(spacing: 0) {
+            MouseButtonView(name: "Left") { _ in }
+            Rectangle().fill(.white.opacity(0.25)).frame(width: 1, height: 50)
+            MouseButtonView(name: "Right") { _ in }
         }
-        .ignoresSafeArea(edges: .bottom)
+        .frame(height: 100)
     }
 }

@@ -15,6 +15,8 @@ final class NetworkClient: ObservableObject {
     @Published var isLoadingApps = false
     @Published var isScreenStreaming = false
     @Published private(set) var isUnlockAvailable = false
+    /// Whether the Mac's screen is locked, once the server has reported it.
+    @Published private(set) var isScreenLocked: Bool?
     @Published private(set) var hasUnlockPairingKey = false
     @Published var unlockStatus: String?
     @Published var isAuthenticatingForUnlock = false
@@ -30,6 +32,15 @@ final class NetworkClient: ObservableObject {
     init() {
         hasUnlockPairingKey = unlockCredentialStore.hasToken
     }
+
+#if DEBUG
+    /// Preview-only: fake the unlock pairing state without touching the Keychain.
+    func setPreviewUnlockState(paired: Bool, available: Bool, locked: Bool? = nil) {
+        hasUnlockPairingKey = paired
+        isUnlockAvailable = available
+        isScreenLocked = locked
+    }
+#endif
 
     // MARK: - Connection
 
@@ -71,6 +82,7 @@ final class NetworkClient: ObservableObject {
         connection = nil
         isConnected = false
         connectedServerName = nil
+        isScreenLocked = nil
     }
 
     // MARK: - Sending Messages
@@ -315,6 +327,9 @@ final class NetworkClient: ObservableObject {
 
         case .unlockChallenge(let challenge):
             unlockChallenge = challenge
+
+        case .screenLockState(let locked):
+            isScreenLocked = locked
 
         case .welcome, .pairChallenge, .pairResult:
             // Protocol v2 pairing and encrypted transport; client support follows.

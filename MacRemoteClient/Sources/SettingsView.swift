@@ -13,6 +13,8 @@ enum TrackpadSettings {
 
 /// App settings sheet. Currently trackpad options plus a gesture cheat sheet.
 struct SettingsView: View {
+    @ObservedObject var client: NetworkClient
+
     @AppStorage(TrackpadSettings.sensitivityKey) private var sensitivity = TrackpadSettings.defaultSensitivity
     @AppStorage(TrackpadSettings.tapToClickKey) private var tapToClick = true
     @AppStorage(TrackpadSettings.naturalScrollingKey) private var naturalScrolling = true
@@ -46,6 +48,23 @@ struct SettingsView: View {
                     }
                 }
 
+                Section {
+                    if client.hasUnlockPairingKey {
+                        Button(String(localized: "unlock_forget_pairing"), role: .destructive) {
+                            client.removeUnlockPairingKey()
+                        }
+                    } else {
+                        Text(String(localized: "settings_unlock_not_paired"))
+                            .foregroundStyle(.secondary)
+                    }
+                } header: {
+                    Text(String(localized: "system_section_unlock"))
+                } footer: {
+                    if client.hasUnlockPairingKey {
+                        Text(String(localized: "settings_unlock_paired_footer"))
+                    }
+                }
+
                 Section(String(localized: "trackpad_gestures_header")) {
                     GestureRow(icon: "pointer.arrow.ipad",
                                title: String(localized: "trackpad_gesture_move"),
@@ -70,6 +89,7 @@ struct SettingsView: View {
                                detail: String(localized: "trackpad_gesture_zoom_how"))
                 }
             }
+            .softTopEdge()
             .navigationTitle(String(localized: "settings"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -125,8 +145,12 @@ struct GestureRow: View {
     }
 }
 
-#Preview("Settings") {
-    SettingsView()
+#Preview("Settings, paired") {
+    SettingsView(client: .preview(unlockPaired: true))
+}
+
+#Preview("Settings, not paired") {
+    SettingsView(client: .preview())
 }
 
 #Preview("Settings label") {

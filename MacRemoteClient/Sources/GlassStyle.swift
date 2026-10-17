@@ -1,28 +1,13 @@
 import SwiftUI
 
 extension View {
-    /// Liquid Glass tinted towards black on iOS 26 and later, so it sits just above a black
-    /// surface and lightens while pressed; a dark translucent material before that.
+    /// Prominent glass button on iOS 26 and later; bordered prominent before that.
     @ViewBuilder
-    func padGlass<S: Shape>(in shape: S, pressed: Bool = false) -> some View {
+    func prominentGlassButton() -> some View {
         if #available(iOS 26, *) {
-            self.glassEffect(.regular.tint(.black.opacity(pressed ? 0.05 : 0.2)), in: shape)
+            self.buttonStyle(.glassProminent)
         } else {
-            self
-                .background(.ultraThinMaterial, in: shape)
-                .overlay(shape.fill(.black.opacity(pressed ? 0.08 : 0.25)))
-                .clipShape(shape)
-        }
-    }
-
-    /// Groups neighbouring glass views so they are rendered together. On iOS 26 and later
-    /// this is required for correct output when glass elements sit close to each other.
-    @ViewBuilder
-    func glassGroup(spacing: CGFloat) -> some View {
-        if #available(iOS 26, *) {
-            GlassEffectContainer(spacing: spacing) { self }
-        } else {
-            self
+            self.buttonStyle(.borderedProminent)
         }
     }
 
@@ -45,17 +30,5 @@ extension View {
         } else {
             self
         }
-    }
-}
-
-#Preview("Pad glass") {
-    ZStack {
-        Color.black.ignoresSafeArea()
-        HStack(spacing: 10) {
-            Color.clear.padGlass(in: RoundedRectangle(cornerRadius: 24, style: .continuous))
-            Color.clear.padGlass(in: RoundedRectangle(cornerRadius: 24, style: .continuous), pressed: true)
-        }
-        .frame(height: 84)
-        .padding()
     }
 }

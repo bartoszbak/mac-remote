@@ -135,6 +135,8 @@ final class ServerManager: ObservableObject {
 
     private var contexts: [ObjectIdentifier: Context] = [:]
     private var unlockChallenges: [ObjectIdentifier: Data] = [:]
+    private var lockStateTimer: Timer?
+    private var lastReportedLockState: Bool?
     private var plainState: NetworkServer.State = .stopped
     private var secureState: NetworkServer.State = .stopped
     private var userStoppedExplicitly = false
@@ -192,6 +194,7 @@ final class ServerManager: ObservableObject {
     func stop() {
         userStoppedExplicitly = true
         cancelPairing()
+        stopLockStateMonitor()
         Task { await stopScreenStreaming() }
         inputController.releaseAllButtons()
         plainServer.stop()
@@ -510,6 +513,8 @@ final class ServerManager: ObservableObject {
                 to: connection
             )
             self.sendWelcome(to: connection)
+            self.send(.screenLockState(isLocked: InputController.isScreenLocked), to: connection)
+            self.startLockStateMonitor()
         }
 
         server.onClientDisconnected = { [weak self] connection in
@@ -524,11 +529,41 @@ final class ServerManager: ObservableObject {
     private func forget(connectionID id: ObjectIdentifier) {
         contexts.removeValue(forKey: id)
         unlockChallenges.removeValue(forKey: id)
+        if contexts.isEmpty {
+            stopLockStateMonitor()
+        }
         let wasStreaming = devices.first(where: { $0.id == id })?.isStreaming ?? false
         devices.removeAll { $0.id == id }
         inputController.releaseAllButtons()
         if wasStreaming, !devices.contains(where: \.isStreaming) {
             Task { await stopScreenStreaming() }
+        }
+    }
+
+    // MARK: - Lock state
+
+    /// Polls the session lock state while clients are connected and reports changes, so a
+    /// client can show whether the Mac is locked without asking.
+    private func startLockStateMonitor() {
+        guard lockStateTimer == nil else { return }
+        lastReportedLockState = InputController.isScreenLocked
+        lockStateTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { [weak self] _ in
+            Task { @MainActor in self?.pollLockState() }
+        }
+    }
+
+    private func stopLockStateMonitor() {
+        lockStateTimer?.invalidate()
+        lockStateTimer = nil
+        lastReportedLockState = nil
+    }
+
+    private func pollLockState() {
+        let locked = InputController.isScreenLocked
+        guard locked != lastReportedLockState else { return }
+        lastReportedLockState = locked
+        for context in contexts.values {
+            send(.screenLockState(isLocked: locked), to: context.connection)
         }
     }
 

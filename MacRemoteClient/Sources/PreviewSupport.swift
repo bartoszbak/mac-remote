@@ -5,9 +5,13 @@ import Network
 /// Fixtures for Xcode previews. Nothing here ships in release builds.
 extension NetworkClient {
     /// A client that looks connected (or not) without touching the network.
-    static func preview(connected: Bool = true, apps: [AppInfo] = AppInfo.previewApps) -> NetworkClient {
+    static func preview(connected: Bool = true,
+                        apps: [AppInfo] = AppInfo.previewApps,
+                        unlockPaired: Bool = false,
+                        screenLocked: Bool? = nil) -> NetworkClient {
         let client = NetworkClient()
         client.isConnected = connected
+        client.setPreviewUnlockState(paired: unlockPaired, available: connected, locked: connected ? screenLocked : nil)
         client.connectedServerName = connected ? "Studio Mac" : nil
         client.screenSize = CGSize(width: 1920, height: 1080)
         client.apps = connected ? apps : []
