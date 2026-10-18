@@ -42,14 +42,21 @@ struct ModifierState: Equatable {
 /// Plain typing goes to the Mac as Unicode text, so any language or emoji works. When a
 /// modifier is armed, characters are sent as key codes with the modifier flags instead,
 /// which is what shortcuts like ⌘⇧T or ⌥→ need.
+///
+/// Layout is built for the iOS keyboard being up: everything fits the screen width and
+/// sits directly above the keyboard, in Liquid Glass keys on iOS 26.
 struct RemoteKeyboardView: View {
     @ObservedObject var client: NetworkClient
 
     @State private var isKeyboardActive = false
     @State private var modifiers = ModifierState()
+    /// Bumped on every key sent, to drive a light haptic.
+    @State private var keyPresses = 0
+
+    private let rowSpacing: CGFloat = 10
 
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: rowSpacing) {
             KeyInputView(isActive: $isKeyboardActive,
                          onText: handleText,
                          onDeleteBackward: { sendKey(KeyCodes.delete) },
@@ -58,19 +65,30 @@ struct RemoteKeyboardView: View {
 
             Spacer(minLength: 0)
 
-            statusCard
-
-            modifierRow
-
-            VStack(spacing: 10) {
-                navigationRow
-                shortcutRow
-                functionRow
+            if !client.isConnected {
+                NotConnectedBadge()
             }
 
-            Spacer(minLength: 0)
+            Group {
+                modifierRow
+                if !isKeyboardActive {
+                    Text(String(localized: "keyboard_modifiers_hint"))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, 4)
+                }
+                navigationBlock
+                shortcutStrip
+                functionStrip
+            }
+            .disabled(!client.isConnected)
+            .opacity(client.isConnected ? 1 : 0.45)
         }
-        .padding()
+        .padding(.horizontal, 16)
+        .padding(.bottom, 12)
+        .sensoryFeedback(.impact(weight: .light, intensity: 0.6), trigger: keyPresses)
+        .animation(.snappy(duration: 0.2), value: isKeyboardActive)
         .onAppear {
             // Give the tab switch a moment to settle before presenting the keyboard.
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
@@ -85,86 +103,90 @@ struct RemoteKeyboardView: View {
 
     // MARK: - Sections
 
-    private var statusCard: some View {
-        VStack(spacing: 12) {
-            if client.isConnected {
-                Image(systemName: isKeyboardActive ? "keyboard" : "keyboard.badge.ellipsis")
-                    .font(.system(size: 48))
-                    .foregroundStyle(isKeyboardActive ? .blue : .secondary)
-                Text(isKeyboardActive
-                     ? String(localized: "keyboard_type_below")
-                     : String(localized: "keyboard_tap_to_activate"))
-                    .font(.headline)
-                    .foregroundStyle(isKeyboardActive ? .primary : .secondary)
-            } else {
-                Image(systemName: "wifi.slash")
-                    .font(.system(size: 48))
-                    .foregroundStyle(.secondary)
-                Text(String(localized: "not_connected"))
-                    .font(.headline)
-                    .foregroundStyle(.secondary)
-            }
-        }
-        .frame(maxWidth: .infinity)
-        .frame(height: 140)
-        .background(Color(.systemGray6))
-        .cornerRadius(20)
-        .contentShape(Rectangle())
-        .onTapGesture {
-            isKeyboardActive.toggle()
-        }
-    }
-
+    /// ⌘ ⌥ ⌃ ⇧ plus the show/hide keyboard button.
     private var modifierRow: some View {
-        VStack(spacing: 6) {
-            HStack(spacing: 10) {
-                ModifierKeyButton(symbol: "⌘", name: String(localized: "keyboard_modifier_command"), mode: $modifiers.command)
-                ModifierKeyButton(symbol: "⌥", name: String(localized: "keyboard_modifier_option"), mode: $modifiers.option)
-                ModifierKeyButton(symbol: "⌃", name: String(localized: "keyboard_modifier_control"), mode: $modifiers.control)
-                ModifierKeyButton(symbol: "⇧", name: String(localized: "keyboard_modifier_shift"), mode: $modifiers.shift)
+        HStack(spacing: 8) {
+            ModifierKeyButton(symbol: "⌘", name: String(localized: "keyboard_modifier_command"), mode: $modifiers.command)
+            ModifierKeyButton(symbol: "⌥", name: String(localized: "keyboard_modifier_option"), mode: $modifiers.option)
+            ModifierKeyButton(symbol: "⌃", name: String(localized: "keyboard_modifier_control"), mode: $modifiers.control)
+            ModifierKeyButton(symbol: "⇧", name: String(localized: "keyboard_modifier_shift"), mode: $modifiers.shift)
+            Button {
+                isKeyboardActive.toggle()
+            } label: {
+                Image(systemName: isKeyboardActive ? "keyboard.chevron.compact.down" : "keyboard")
+                    .font(.title3)
+                    .contentTransition(.symbolEffect(.replace))
+                    .frame(width: 52, height: 52)
+                    .keyGlass(in: Circle())
             }
-            Text(String(localized: "keyboard_modifiers_hint"))
-                .font(.caption2)
-                .foregroundStyle(.tertiary)
+            .buttonStyle(.plain)
+            .accessibilityLabel(isKeyboardActive ? String(localized: "keyboard_hide") : String(localized: "keyboard_show"))
         }
     }
 
-    private var navigationRow: some View {
-        HStack(spacing: 10) {
-            KeyButton(label: "Esc") { sendKey(KeyCodes.escape) }
-            KeyButton(label: "Tab") { sendKey(KeyCodes.tab) }
-            KeyButton(icon: "arrow.left", name: String(localized: "keyboard_key_left")) { sendKey(KeyCodes.leftArrow) }
-            KeyButton(icon: "arrow.down", name: String(localized: "keyboard_key_down")) { sendKey(KeyCodes.downArrow) }
-            KeyButton(icon: "arrow.up", name: String(localized: "keyboard_key_up")) { sendKey(KeyCodes.upArrow) }
-            KeyButton(icon: "arrow.right", name: String(localized: "keyboard_key_right")) { sendKey(KeyCodes.rightArrow) }
-            Spacer(minLength: 0)
-            KeyButton(icon: "delete.left", name: String(localized: "keyboard_key_delete")) { sendKey(KeyCodes.delete) }
-            KeyButton(icon: "return", name: String(localized: "keyboard_key_return")) { sendKey(KeyCodes.returnKey) }
-        }
-    }
-
-    private var shortcutRow: some View {
-        HStack(spacing: 10) {
-            KeyButton(label: "⌘C") { sendShortcut(KeyCodes.c, flags: KeyCodes.maskCommand) }
-            KeyButton(label: "⌘V") { sendShortcut(KeyCodes.v, flags: KeyCodes.maskCommand) }
-            KeyButton(label: "⌘X") { sendShortcut(KeyCodes.x, flags: KeyCodes.maskCommand) }
-            KeyButton(label: "⌘Z") { sendShortcut(KeyCodes.z, flags: KeyCodes.maskCommand) }
-            KeyButton(label: "⌘A") { sendShortcut(KeyCodes.a, flags: KeyCodes.maskCommand) }
-            KeyButton(label: "⌘␣", name: String(localized: "keyboard_key_spotlight")) {
-                sendShortcut(KeyCodes.space, flags: KeyCodes.maskCommand)
+    /// Esc/Tab, an inverted-T arrow cluster, Delete/Return — laid out like a Mac keyboard.
+    private var navigationBlock: some View {
+        HStack(alignment: .bottom, spacing: 8) {
+            VStack(spacing: 8) {
+                KeyButton(label: "esc") { sendKey(KeyCodes.escape) }
+                KeyButton(label: "tab", icon: "arrow.right.to.line") { sendKey(KeyCodes.tab) }
             }
-            Spacer(minLength: 0)
-        }
-    }
 
-    private var functionRow: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
-                ForEach(1...12, id: \.self) { number in
-                    KeyButton(label: "F\(number)") { sendKey(KeyCodes.functionKey(number)) }
+            Grid(horizontalSpacing: 6, verticalSpacing: 6) {
+                GridRow {
+                    Color.clear.frame(width: 44, height: 44)
+                    KeyButton(icon: "chevron.up", name: String(localized: "keyboard_key_up"), width: 44) { sendKey(KeyCodes.upArrow) }
+                    Color.clear.frame(width: 44, height: 44)
+                }
+                GridRow {
+                    KeyButton(icon: "chevron.left", name: String(localized: "keyboard_key_left"), width: 44) { sendKey(KeyCodes.leftArrow) }
+                    KeyButton(icon: "chevron.down", name: String(localized: "keyboard_key_down"), width: 44) { sendKey(KeyCodes.downArrow) }
+                    KeyButton(icon: "chevron.right", name: String(localized: "keyboard_key_right"), width: 44) { sendKey(KeyCodes.rightArrow) }
                 }
             }
+
+            VStack(spacing: 8) {
+                KeyButton(icon: "delete.left", name: String(localized: "keyboard_key_delete")) { sendKey(KeyCodes.delete) }
+                KeyButton(icon: "return", name: String(localized: "keyboard_key_return"), prominent: true) { sendKey(KeyCodes.returnKey) }
+            }
         }
+    }
+
+    /// Common Mac shortcuts as labelled chips; scrolls sideways.
+    private var shortcutStrip: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                ForEach(MacShortcut.all) { shortcut in
+                    ShortcutChip(shortcut: shortcut) {
+                        sendShortcut(shortcut.keyCode, flags: shortcut.flags)
+                    }
+                }
+            }
+            .padding(.vertical, 2)
+        }
+        .scrollClipDisabled()
+    }
+
+    /// F1–F12 as small chips; scrolls sideways.
+    private var functionStrip: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 6) {
+                ForEach(1...12, id: \.self) { number in
+                    Button {
+                        sendKey(KeyCodes.functionKey(number))
+                    } label: {
+                        Text("F\(number)")
+                            .font(.subheadline.weight(.medium).monospacedDigit())
+                            .frame(minWidth: 40, minHeight: 34)
+                            .padding(.horizontal, 4)
+                            .keyGlass(in: Capsule())
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(.vertical, 2)
+        }
+        .scrollClipDisabled()
     }
 
     // MARK: - Input handling
@@ -197,12 +219,14 @@ struct RemoteKeyboardView: View {
     private func sendKey(_ code: UInt16) {
         client.keyPress(code: code, flags: modifiers.flags)
         modifiers.consume()
+        keyPresses += 1
     }
 
     /// Fixed shortcuts combine their own flags with any armed modifiers, so ⇧ then ⌘Z is ⌘⇧Z.
     private func sendShortcut(_ code: UInt16, flags: UInt64) {
         client.keyPress(code: code, flags: flags | modifiers.flags)
         modifiers.consume()
+        keyPresses += 1
     }
 
     /// Hardware keyboard keys carry their own physical modifiers; add the on-screen ones too.
@@ -214,76 +238,141 @@ struct RemoteKeyboardView: View {
 
 // MARK: - Buttons
 
-/// Modifier key with three states: off, armed for the next key, locked.
+/// Modifier key with three states: off, armed for the next key (tinted glass), locked
+/// (tinted glass with a lock). Tap toggles armed; hold locks.
 struct ModifierKeyButton: View {
     let symbol: String
     let name: String
     @Binding var mode: ModifierState.Mode
 
     var body: some View {
-        VStack(spacing: 2) {
+        VStack(spacing: 1) {
             Text(symbol)
-                .font(.title3.weight(.medium))
+                .font(.title3.weight(.semibold))
             Text(name)
                 .font(.caption2)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
         }
         .frame(maxWidth: .infinity)
         .frame(height: 52)
         .foregroundStyle(mode == .off ? Color.primary : Color.white)
-        .background(background, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .keyGlass(tinted: mode != .off, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
         .overlay(alignment: .topTrailing) {
             if mode == .locked {
                 Image(systemName: "lock.fill")
                     .font(.system(size: 9, weight: .bold))
                     .foregroundStyle(.white)
-                    .padding(5)
+                    .padding(6)
             }
         }
-        .contentShape(Rectangle())
+        .contentShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
         .onTapGesture {
             mode = mode == .off ? .sticky : .off
         }
         .onLongPressGesture(minimumDuration: 0.4) {
             mode = .locked
         }
-        .animation(.easeOut(duration: 0.12), value: mode)
+        .sensoryFeedback(.selection, trigger: mode)
+        .animation(.snappy(duration: 0.15), value: mode)
         .accessibilityLabel(name)
         .accessibilityAddTraits(.isButton)
         .accessibilityValue(mode == .off ? "" : String(localized: "keyboard_modifier_active"))
     }
-
-    private var background: Color {
-        switch mode {
-        case .off: return Color(.systemGray5)
-        case .sticky: return .blue
-        case .locked: return .indigo
-        }
-    }
 }
 
-/// A plain special key or shortcut.
+/// A special key: text, a symbol, or both. Fills the width it is given unless `width` is set.
 struct KeyButton: View {
     var label: String? = nil
     var icon: String? = nil
     var name: String? = nil
+    var width: CGFloat? = nil
+    var prominent = false
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
-            Group {
+            HStack(spacing: 6) {
                 if let icon {
                     Image(systemName: icon)
-                } else if let label {
+                        .font(.body.weight(.semibold))
+                }
+                if let label {
                     Text(label)
+                        .font(.subheadline.weight(.medium))
                 }
             }
-            .font(.system(.body, design: .rounded, weight: .medium))
-            .frame(minWidth: 44, minHeight: 44)
-            .background(Color(.systemGray5))
-            .cornerRadius(10)
+            .foregroundStyle(prominent ? Color.white : Color.primary)
+            .frame(width: width, height: 44)
+            .frame(maxWidth: width == nil ? .infinity : nil)
+            .keyGlass(tinted: prominent, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .contentShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
         }
         .buttonStyle(.plain)
         .accessibilityLabel(name ?? label ?? "")
+    }
+}
+
+/// A Mac shortcut offered as a one-tap chip.
+struct MacShortcut: Identifiable {
+    let id: String
+    let title: String
+    let icon: String
+    let keyCode: UInt16
+    let flags: UInt64
+
+    static let all: [MacShortcut] = [
+        MacShortcut(id: "copy", title: String(localized: "keyboard_shortcut_copy"), icon: "doc.on.doc",
+                    keyCode: KeyCodes.c, flags: KeyCodes.maskCommand),
+        MacShortcut(id: "paste", title: String(localized: "keyboard_shortcut_paste"), icon: "doc.on.clipboard",
+                    keyCode: KeyCodes.v, flags: KeyCodes.maskCommand),
+        MacShortcut(id: "cut", title: String(localized: "keyboard_shortcut_cut"), icon: "scissors",
+                    keyCode: KeyCodes.x, flags: KeyCodes.maskCommand),
+        MacShortcut(id: "undo", title: String(localized: "keyboard_shortcut_undo"), icon: "arrow.uturn.backward",
+                    keyCode: KeyCodes.z, flags: KeyCodes.maskCommand),
+        MacShortcut(id: "redo", title: String(localized: "keyboard_shortcut_redo"), icon: "arrow.uturn.forward",
+                    keyCode: KeyCodes.z, flags: KeyCodes.maskCommand | KeyCodes.maskShift),
+        MacShortcut(id: "selectAll", title: String(localized: "keyboard_shortcut_select_all"), icon: "selection.pin.in.out",
+                    keyCode: KeyCodes.a, flags: KeyCodes.maskCommand),
+        MacShortcut(id: "find", title: String(localized: "keyboard_shortcut_find"), icon: "magnifyingglass",
+                    keyCode: KeyCodes.code(for: "f") ?? 3, flags: KeyCodes.maskCommand),
+        MacShortcut(id: "spotlight", title: String(localized: "keyboard_key_spotlight"), icon: "sparkle.magnifyingglass",
+                    keyCode: KeyCodes.space, flags: KeyCodes.maskCommand),
+        MacShortcut(id: "switchApp", title: String(localized: "keyboard_shortcut_switch_app"), icon: "square.on.square",
+                    keyCode: KeyCodes.tab, flags: KeyCodes.maskCommand),
+        MacShortcut(id: "close", title: String(localized: "keyboard_shortcut_close"), icon: "xmark.square",
+                    keyCode: KeyCodes.code(for: "w") ?? 13, flags: KeyCodes.maskCommand)
+    ]
+}
+
+/// Icon and title in a glass capsule.
+struct ShortcutChip: View {
+    let shortcut: MacShortcut
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Label(shortcut.title, systemImage: shortcut.icon)
+                .labelStyle(.titleAndIcon)
+                .font(.subheadline.weight(.medium))
+                .padding(.horizontal, 14)
+                .frame(minHeight: 40)
+                .keyGlass(in: Capsule())
+                .contentShape(Capsule())
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+/// Shown above the keys while no Mac is connected.
+private struct NotConnectedBadge: View {
+    var body: some View {
+        Label(String(localized: "not_connected"), systemImage: "bolt.horizontal")
+            .font(.subheadline.weight(.medium))
+            .foregroundStyle(.secondary)
+            .padding(.horizontal, 14)
+            .frame(minHeight: 36)
+            .keyGlass(in: Capsule())
     }
 }
 
@@ -315,9 +404,9 @@ struct KeyButton: View {
 
 #Preview("Key buttons") {
     HStack {
-        KeyButton(label: "Esc") {}
-        KeyButton(icon: "arrow.left", name: "Left") {}
-        KeyButton(label: "⌘C") {}
+        KeyButton(label: "esc") {}
+        KeyButton(icon: "chevron.left", name: "Left", width: 44) {}
+        KeyButton(icon: "return", name: "Return", prominent: true) {}
     }
     .padding()
 }

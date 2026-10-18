@@ -2,7 +2,8 @@ import SwiftUI
 import UIKit
 
 /// Raw multitouch surface. Feeds `TrackpadGestureEngine`, coalesces pointer deltas to one
-/// message per display frame, runs scroll momentum after a fling, and plays haptics.
+/// message per display frame, runs scroll momentum after a fling, plays haptics, and draws
+/// a ripple where a click happens.
 final class TrackpadTouchView: UIView {
 
     /// Receives actions ready to send to the Mac. Pointer moves arrive at most once per frame.
@@ -23,6 +24,8 @@ final class TrackpadTouchView: UIView {
     private var lastTickTime: CFTimeInterval = 0
     private var pendingMove = CGVector.zero
     private var momentum: CGVector?
+    /// Where each finger of the current gesture first touched down; clicks ripple from here.
+    private var gestureStartPoints: [Int: CGPoint] = [:]
 
     private let lightImpact = UIImpactFeedbackGenerator(style: .light)
     private let mediumImpact = UIImpactFeedbackGenerator(style: .medium)
@@ -66,6 +69,8 @@ final class TrackpadTouchView: UIView {
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         momentum = nil
+        if !engine.hasActiveTouches { gestureStartPoints.removeAll() }
+        for touch in touches { gestureStartPoints[touch.hash] = touch.location(in: self) }
         prepareHaptics()
         engine.touchesBegan(samples(touches), at: timestamp(touches))
         startDisplayLink()
@@ -105,14 +110,22 @@ final class TrackpadTouchView: UIView {
                 startDisplayLink()
             }
 
-        case .click, .doubleClick:
+        case .click:
             flushMoves()
             haptic(lightImpact)
+            showRipple(.click)
+            onAction?(action)
+
+        case .doubleClick:
+            flushMoves()
+            haptic(lightImpact)
+            showRipple(.doubleClick)
             onAction?(action)
 
         case .rightClick:
             flushMoves()
             haptic(mediumImpact)
+            showRipple(.rightClick)
             onAction?(action)
 
         case .dragBegan, .dragEnded:
@@ -127,6 +140,73 @@ final class TrackpadTouchView: UIView {
         case .scroll:
             onAction?(action)
         }
+    }
+
+    // MARK: - Click ripple
+
+    private enum RippleKind { case click, doubleClick, rightClick }
+
+    /// Middle of the fingers that started the gesture: one finger for a click, two for a
+    /// right click.
+    private var gestureCentroid: CGPoint? {
+        guard !gestureStartPoints.isEmpty else { return nil }
+        let points = Array(gestureStartPoints.values)
+        let x = points.map(\.x).reduce(0, +) / CGFloat(points.count)
+        let y = points.map(\.y).reduce(0, +) / CGFloat(points.count)
+        return CGPoint(x: x, y: y)
+    }
+
+    private func showRipple(_ kind: RippleKind) {
+        guard let center = gestureCentroid else { return }
+        switch kind {
+        case .click:
+            addRipple(at: center, radius: 36)
+        case .doubleClick:
+            addRipple(at: center, radius: 36)
+            addRipple(at: center, radius: 36, delay: 0.12)
+        case .rightClick:
+            addRipple(at: center, radius: 54, lineWidth: 2.5)
+            addRipple(at: center, radius: 32, delay: 0.08)
+        }
+    }
+
+    /// One expanding, fading ring with a soft fill. Reduce Motion gets a plain fade.
+    private func addRipple(at point: CGPoint, radius: CGFloat, lineWidth: CGFloat = 2, delay: CFTimeInterval = 0) {
+        let ring = CAShapeLayer()
+        ring.path = UIBezierPath(ovalIn: CGRect(x: -radius, y: -radius, width: radius * 2, height: radius * 2)).cgPath
+        ring.position = point
+        ring.fillColor = UIColor.white.withAlphaComponent(0.10).cgColor
+        ring.strokeColor = UIColor.white.withAlphaComponent(0.85).cgColor
+        ring.lineWidth = lineWidth
+        ring.opacity = 0
+        layer.addSublayer(ring)
+
+        let duration: CFTimeInterval = 0.55
+        let fade = CAKeyframeAnimation(keyPath: "opacity")
+        fade.values = [0, 1, 0]
+        fade.keyTimes = [0, 0.12, 1]
+
+        let group = CAAnimationGroup()
+        group.duration = duration
+        group.beginTime = CACurrentMediaTime() + delay
+        group.fillMode = .backwards
+        group.timingFunction = CAMediaTimingFunction(controlPoints: 0.2, 0.8, 0.2, 1)
+        if UIAccessibility.isReduceMotionEnabled {
+            group.animations = [fade]
+        } else {
+            let grow = CABasicAnimation(keyPath: "transform.scale")
+            grow.fromValue = 0.3
+            grow.toValue = 1.0
+            let thin = CABasicAnimation(keyPath: "lineWidth")
+            thin.fromValue = lineWidth * 2
+            thin.toValue = lineWidth * 0.5
+            group.animations = [grow, fade, thin]
+        }
+
+        CATransaction.begin()
+        CATransaction.setCompletionBlock { ring.removeFromSuperlayer() }
+        ring.add(group, forKey: "ripple")
+        CATransaction.commit()
     }
 
     private func flushMoves() {

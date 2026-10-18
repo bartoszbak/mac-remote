@@ -4,6 +4,7 @@ import SwiftUI
 enum TrackpadSettings {
     static let sensitivityKey = "trackpad.sensitivity"
     static let tapToClickKey = "trackpad.tapToClick"
+    static let twoFingerRightClickKey = "trackpad.twoFingerRightClick"
     static let naturalScrollingKey = "trackpad.naturalScrolling"
     static let hapticsKey = "trackpad.haptics"
 
@@ -17,6 +18,7 @@ struct SettingsView: View {
 
     @AppStorage(TrackpadSettings.sensitivityKey) private var sensitivity = TrackpadSettings.defaultSensitivity
     @AppStorage(TrackpadSettings.tapToClickKey) private var tapToClick = true
+    @AppStorage(TrackpadSettings.twoFingerRightClickKey) private var twoFingerRightClick = true
     @AppStorage(TrackpadSettings.naturalScrollingKey) private var naturalScrolling = true
     @AppStorage(TrackpadSettings.hapticsKey) private var hapticsEnabled = true
     @Environment(\.dismiss) private var dismiss
@@ -39,6 +41,9 @@ struct SettingsView: View {
                 Section {
                     Toggle(isOn: $tapToClick) {
                         SettingsLabel(String(localized: "trackpad_tap_to_click"), systemImage: "pointer.arrow.ipad.rays")
+                    }
+                    Toggle(isOn: $twoFingerRightClick) {
+                        SettingsLabel(String(localized: "trackpad_two_finger_right_click"), systemImage: "contextualmenu.and.cursorarrow")
                     }
                     Toggle(isOn: $naturalScrolling) {
                         SettingsLabel(String(localized: "trackpad_natural_scrolling"), systemImage: "arrow.up.and.down.text.horizontal")

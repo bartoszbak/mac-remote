@@ -68,6 +68,9 @@ final class NetworkClient: ObservableObject {
     private var upgradeAttempts = 0
     /// Gives up on a Mac that never answers (asleep and not woken, or gone).
     private var connectTimeout: DispatchWorkItem?
+    /// What the Mac said about this phone in its latest `welcome`. The Mac sends one on
+    /// connect and another in reply to `hello`; the latest is authoritative.
+    private var macKnowsThisDevice: Bool?
     private static let connectTimeoutSeconds: TimeInterval = 25
 
     init(knownMacs: KnownMacStore = KnownMacStore(), pairedMacs: PairedMacStore = PairedMacStore()) {
@@ -203,6 +206,7 @@ final class NetworkClient: ObservableObject {
         pairingCode = nil
         pendingPairing = nil
         upgradeAttempts = 0
+        macKnowsThisDevice = nil
     }
 
     // MARK: - TLS upgrade
@@ -269,6 +273,18 @@ final class NetworkClient: ObservableObject {
             print("[Client] TLS rejected: \(error)")
             if let serverID { pairedMacs.forget(serverID: serverID) }
             isPaired = false
+            beginPairing()
+            return
+        }
+
+        // The encrypted port refused us and the Mac says it doesn't know this phone: our key
+        // is stale (the Mac forgot us, or was reinstalled) and its encrypted listener may be
+        // off. Retrying cannot help; pair again over the plaintext link instead.
+        if macKnowsThisDevice == false {
+            print("[Client] Mac doesn't know this device; pairing again")
+            if let serverID { pairedMacs.forget(serverID: serverID) }
+            isPaired = false
+            upgradeAttempts = 0
             beginPairing()
             return
         }
@@ -594,8 +610,9 @@ final class NetworkClient: ObservableObject {
                 knownMacs.update(name: name, interfaces: interfaces, wakeForNetworkAccessEnabled: wakeEnabled)
             }
 
-        case .welcome(let id, let name, _, let port, _, let allowed):
+        case .welcome(let id, let name, _, let port, let macSaysPaired, let allowed):
             serverID = id
+            macKnowsThisDevice = macSaysPaired
             if connectedServerName == nil { connectedServerName = name }
             if connectingName == nil { connectingName = name }
             tlsPort = port

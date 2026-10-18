@@ -11,17 +11,6 @@ extension View {
         }
     }
 
-    /// The iOS 26 search design: the field lives in the bottom toolbar and collapses to a
-    /// button until tapped. No-op before iOS 26, where `searchable` keeps its classic placement.
-    @ViewBuilder
-    func minimizedSearchToolbar() -> some View {
-        if #available(iOS 26, *) {
-            self.searchToolbarBehavior(.minimize)
-        } else {
-            self
-        }
-    }
-
     /// Soft scroll-edge effect under the navigation bar on iOS 26 and later. No-op before that.
     @ViewBuilder
     func softTopEdge() -> some View {
@@ -29,6 +18,17 @@ extension View {
             self.scrollEdgeEffectStyle(.soft, for: .top)
         } else {
             self
+        }
+    }
+
+    /// Background for keyboard keys and chips: Liquid Glass on iOS 26 and later (tinted with
+    /// the accent colour when `tinted`), a plain grey or accent fill before that.
+    @ViewBuilder
+    func keyGlass(tinted: Bool = false, in shape: some Shape) -> some View {
+        if #available(iOS 26, *) {
+            self.glassEffect(tinted ? .regular.tint(.accentColor).interactive() : .regular.interactive(), in: shape)
+        } else {
+            self.background(tinted ? AnyShapeStyle(Color.accentColor) : AnyShapeStyle(Color(.systemGray5)), in: shape)
         }
     }
 }

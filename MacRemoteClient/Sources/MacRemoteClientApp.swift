@@ -6,7 +6,18 @@ struct MacRemoteClientApp: App {
     @StateObject private var client = NetworkClient()
     @State private var showConnectionSheet = false
     @State private var showSettings = false
-    @State private var selectedTab: RemoteTab = .trackpad
+    /// Remembered between launches.
+    @AppStorage("selectedTab") private var selectedTab: RemoteTab = .trackpad
+
+    /// Debug builds launched with `-skipConnectSheet` start without the connect sheet,
+    /// so layouts can be screenshotted in the simulator.
+    private static var skipConnectSheetForScreenshots: Bool {
+        #if DEBUG
+        ProcessInfo.processInfo.arguments.contains("-skipConnectSheet")
+        #else
+        false
+        #endif
+    }
 
     var body: some Scene {
         WindowGroup {
@@ -15,8 +26,8 @@ struct MacRemoteClientApp: App {
                     .softTopEdge()
                     .navigationTitle(selectedTab.title)
                     .navigationBarTitleDisplayMode(.inline)
-                    .toolbarTitleMenu {
-                        RemoteTabMenu(selectedTab: $selectedTab)
+                    .safeAreaInset(edge: .bottom, spacing: 0) {
+                        RemoteTabBar(selection: $selectedTab)
                     }
                     .toolbar {
                         ToolbarItem(placement: .topBarLeading) {
@@ -41,22 +52,16 @@ struct MacRemoteClientApp: App {
                 SettingsView(client: client)
             }
             .onAppear {
-                if !client.isConnected {
+                #if DEBUG
+                // `-fakeConnected` makes screens render as if a Mac were connected, for screenshots.
+                if ProcessInfo.processInfo.arguments.contains("-fakeConnected") {
+                    client.isConnected = true
+                    client.connectedServerName = "BakBook"
+                }
+                #endif
+                if !client.isConnected, !Self.skipConnectSheetForScreenshots {
                     showConnectionSheet = true
                 }
-            }
-        }
-    }
-}
-
-/// Contents of the navigation title's dropdown: one checkmarked entry per section.
-struct RemoteTabMenu: View {
-    @Binding var selectedTab: RemoteTab
-
-    var body: some View {
-        Picker(String(localized: "tab_menu"), selection: $selectedTab) {
-            ForEach(RemoteTab.allCases) { tab in
-                Label(tab.title, systemImage: tab.systemImage).tag(tab)
             }
         }
     }
@@ -77,21 +82,6 @@ struct ConnectionStatusButton: View {
                             ? String(localized: "connection_status_connected")
                             : String(localized: "connection_status_disconnected"))
     }
-}
-
-#Preview("Section menu") {
-    struct Host: View {
-        @State private var tab: RemoteTab = .trackpad
-        var body: some View {
-            NavigationStack {
-                Text(tab.title)
-                    .navigationTitle(tab.title)
-                    .navigationBarTitleDisplayMode(.inline)
-                    .toolbarTitleMenu { RemoteTabMenu(selectedTab: $tab) }
-            }
-        }
-    }
-    return Host()
 }
 
 #Preview("Status buttons") {

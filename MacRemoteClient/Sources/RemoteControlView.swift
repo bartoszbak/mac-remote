@@ -1,8 +1,8 @@
 import SwiftUI
 
-/// The sections of the remote, chosen from the title menu in the toolbar.
+/// The sections of the remote, chosen from the tab bar at the bottom (`RemoteTabBar`).
 enum RemoteTab: String, CaseIterable, Identifiable {
-    case trackpad, screen, media, keyboard, apps, system
+    case trackpad, keyboard, screen, media, apps, system
 
     var id: String { rawValue }
 
@@ -29,8 +29,8 @@ enum RemoteTab: String, CaseIterable, Identifiable {
     }
 }
 
-/// Main remote control interface. Shows the selected section; the section picker lives in
-/// the navigation title's dropdown menu, see `MacRemoteClientApp`.
+/// Main remote control interface. Shows the selected section; the tab bar below it is
+/// added by `MacRemoteClientApp`.
 struct RemoteControlView: View {
     @ObservedObject var client: NetworkClient
     @Binding var selectedTab: RemoteTab
@@ -174,7 +174,7 @@ struct MediaButton: View {
                 RemoteControlView(client: .preview(), selectedTab: $tab)
                     .navigationTitle(tab.title)
                     .navigationBarTitleDisplayMode(.inline)
-                    .toolbarTitleMenu { RemoteTabMenu(selectedTab: $tab) }
+                    .safeAreaInset(edge: .bottom, spacing: 0) { RemoteTabBar(selection: $tab) }
             }
         }
     }

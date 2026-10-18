@@ -32,7 +32,7 @@ struct ConnectionView: View {
                 if client.isConnected {
                     Section(String(localized: "connection_current")) {
                         HStack(spacing: 14) {
-                            ServerGlyph()
+                            ServerGlyph(isConnected: true)
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(client.connectedServerName ?? String(localized: "connection_status_connected"))
                                 Text(String(localized: "connection_status_connected"))
@@ -201,14 +201,16 @@ struct ConnectionView: View {
     }
 }
 
-/// Antenna in a light grey circle, the glyph for a Mac in the list.
+/// Bolt in a light grey circle, the glyph for a Mac in the list. Green when connected,
+/// matching the connection status icon in the toolbar.
 struct ServerGlyph: View {
-    var systemImage = "antenna.radiowaves.left.and.right"
+    var systemImage = "bolt.horizontal.fill"
+    var isConnected = false
 
     var body: some View {
         Image(systemName: systemImage)
             .font(.body.weight(.medium))
-            .foregroundStyle(.secondary)
+            .foregroundStyle(isConnected ? AnyShapeStyle(Color.green) : AnyShapeStyle(.secondary))
             .frame(width: 40, height: 40)
             .background(Color(.systemGray5), in: Circle())
     }
@@ -225,7 +227,7 @@ struct ServerRow: View {
     var body: some View {
         Button(action: action) {
             HStack(spacing: 14) {
-                ServerGlyph()
+                ServerGlyph(isConnected: state == .connected)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(name)
                         .font(.body)

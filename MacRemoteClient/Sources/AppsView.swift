@@ -91,8 +91,8 @@ struct AppsView: View {
                 }
             }
         }
-        .searchable(text: $searchText, prompt: String(localized: "apps_search_placeholder"))
-        .minimizedSearchToolbar()
+        .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always),
+                    prompt: String(localized: "apps_search_placeholder"))
         .onAppear {
             if client.apps.isEmpty && !client.isLoadingApps {
                 client.requestAppList()

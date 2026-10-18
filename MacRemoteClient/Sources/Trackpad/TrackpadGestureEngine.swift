@@ -35,6 +35,8 @@ final class TrackpadGestureEngine {
         /// User multiplier on pointer movement. 1.0 is the default speed.
         var sensitivity: Double = 1.0
         var tapToClick = true
+        /// A quick two-finger tap sends a right click.
+        var twoFingerRightClick = true
         var naturalScrolling = true
 
         var tapMaxDuration: TimeInterval = 0.25
@@ -289,7 +291,7 @@ final class TrackpadGestureEngine {
             case .dragging, .threeFingerDrag:
                 emit(.dragEnded)
             case .twoFinger:
-                if !cancelled, quickTwoFinger {
+                if !cancelled, quickTwoFinger, configuration.twoFingerRightClick {
                     emit(.rightClick)
                 }
             case .scrolling:
@@ -297,7 +299,7 @@ final class TrackpadGestureEngine {
                     emit(.scrollEnded(velocityX: scrollVelocity.dx, velocityY: scrollVelocity.dy))
                 }
             case .waitForLift:
-                if pendingRightClick, !cancelled, quickTwoFinger {
+                if pendingRightClick, !cancelled, quickTwoFinger, configuration.twoFingerRightClick {
                     emit(.rightClick)
                 }
             case .pinching, .idle:

@@ -659,6 +659,23 @@
         }
       }
     },
+    "keyboard_hide": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hide Keyboard"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ocultar teclado"
+          }
+        }
+      }
+    },
     "keyboard_key_delete": {
       "extractionState": "stale",
       "localizations": {
@@ -880,36 +897,172 @@
         }
       }
     },
-    "keyboard_tap_to_activate": {
-      "extractionState": "stale",
+    "keyboard_shortcut_close": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tap to show the keyboard"
+            "value": "Close Window"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Toca para mostrar el teclado"
+            "value": "Cerrar ventana"
           }
         }
       }
     },
-    "keyboard_type_below": {
-      "extractionState": "stale",
+    "keyboard_shortcut_copy": {
+      "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Type on the keyboard below"
+            "value": "Copy"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Escribe en el teclado de abajo"
+            "value": "Copiar"
+          }
+        }
+      }
+    },
+    "keyboard_shortcut_cut": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cut"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cortar"
+          }
+        }
+      }
+    },
+    "keyboard_shortcut_find": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Find"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buscar"
+          }
+        }
+      }
+    },
+    "keyboard_shortcut_paste": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paste"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pegar"
+          }
+        }
+      }
+    },
+    "keyboard_shortcut_redo": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Redo"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rehacer"
+          }
+        }
+      }
+    },
+    "keyboard_shortcut_select_all": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select All"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seleccionar todo"
+          }
+        }
+      }
+    },
+    "keyboard_shortcut_switch_app": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Switch App"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cambiar de app"
+          }
+        }
+      }
+    },
+    "keyboard_shortcut_undo": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Undo"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deshacer"
+          }
+        }
+      }
+    },
+    "keyboard_show": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show Keyboard"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar teclado"
           }
         }
       }
@@ -1509,23 +1662,6 @@
         }
       }
     },
-    "tab_menu": {
-      "extractionState": "stale",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Section"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sección"
-          }
-        }
-      }
-    },
     "tab_screen": {
       "extractionState": "stale",
       "localizations": {
@@ -2100,6 +2236,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tocar para hacer clic"
+          }
+        }
+      }
+    },
+    "trackpad_two_finger_right_click": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Two-Finger Right Click"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clic secundario con dos dedos"
           }
         }
       }

@@ -1,13 +1,14 @@
 import SwiftUI
 
 /// Full-bleed black trackpad tab. The whole background is the tracking surface, textured
-/// with fine vertical lines that fade out towards the top. The bottom strip is split into
-/// left and right click halves by a single separator line.
+/// with fine lines that fade out towards the top. The bottom strip, just above the tab bar,
+/// is split into left and right click halves by a single separator line.
 struct TrackpadView: View {
     @ObservedObject var client: NetworkClient
 
     @AppStorage(TrackpadSettings.sensitivityKey) private var sensitivity = TrackpadSettings.defaultSensitivity
     @AppStorage(TrackpadSettings.tapToClickKey) private var tapToClick = true
+    @AppStorage(TrackpadSettings.twoFingerRightClickKey) private var twoFingerRightClick = true
     @AppStorage(TrackpadSettings.naturalScrollingKey) private var naturalScrolling = true
     @AppStorage(TrackpadSettings.hapticsKey) private var hapticsEnabled = true
 
@@ -17,6 +18,7 @@ struct TrackpadView: View {
         var configuration = TrackpadGestureEngine.Configuration()
         configuration.sensitivity = sensitivity
         configuration.tapToClick = tapToClick
+        configuration.twoFingerRightClick = twoFingerRightClick
         configuration.naturalScrolling = naturalScrolling
         return configuration
     }
@@ -34,7 +36,6 @@ struct TrackpadView: View {
 
             mouseButtons
         }
-        .ignoresSafeArea(edges: .bottom)
     }
 
     // MARK: - Mouse buttons
@@ -114,25 +115,39 @@ struct SurfaceTexture: View {
 }
 
 /// An invisible press-and-hold mouse button: sends down on touch and up on release, so the
-/// user can hold it while moving with another finger to drag. Lights up faintly while held.
+/// user can hold it while moving with another finger to drag. Lights up faintly while held
+/// and sends a ripple out from the press point.
 struct MouseButtonView: View {
     let name: String
     var haptics = true
     let onPress: (_ down: Bool) -> Void
 
     @State private var isPressed = false
+    @State private var ripples: [ClickRipple] = []
     private let impact = UIImpactFeedbackGenerator(style: .light)
 
     var body: some View {
         Color.white.opacity(isPressed ? 0.08 : 0)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .animation(.easeOut(duration: 0.08), value: isPressed)
+            .overlay {
+                ZStack {
+                    ForEach(ripples) { ripple in
+                        ClickRippleView(ripple: ripple) {
+                            ripples.removeAll { $0.id == ripple.id }
+                        }
+                    }
+                }
+                .allowsHitTesting(false)
+            }
+            .clipped()
             .contentShape(Rectangle())
             .gesture(
                 DragGesture(minimumDistance: 0)
-                    .onChanged { _ in
+                    .onChanged { value in
                         guard !isPressed else { return }
                         isPressed = true
+                        ripples.append(ClickRipple(location: value.startLocation))
                         if haptics { impact.impactOccurred() }
                         onPress(true)
                     }
@@ -145,6 +160,38 @@ struct MouseButtonView: View {
             )
             .accessibilityLabel(name)
             .accessibilityAddTraits(.isButton)
+    }
+}
+
+/// One click ripple at a point.
+struct ClickRipple: Identifiable {
+    let id = UUID()
+    let location: CGPoint
+}
+
+/// Ring that grows from the press point and fades, matching the surface's click ripple.
+struct ClickRippleView: View {
+    let ripple: ClickRipple
+    let onFinished: () -> Void
+
+    @State private var expanded = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        Circle()
+            .fill(.white.opacity(0.10))
+            .overlay(Circle().stroke(.white.opacity(0.85), lineWidth: expanded ? 1 : 4))
+            .frame(width: 72, height: 72)
+            .scaleEffect(reduceMotion ? 1 : (expanded ? 1 : 0.3))
+            .opacity(expanded ? 0 : 1)
+            .position(ripple.location)
+            .onAppear {
+                withAnimation(.timingCurve(0.2, 0.8, 0.2, 1, duration: 0.55)) {
+                    expanded = true
+                } completion: {
+                    onFinished()
+                }
+            }
     }
 }
 
