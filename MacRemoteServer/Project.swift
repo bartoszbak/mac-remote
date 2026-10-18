@@ -36,8 +36,13 @@ let project = Project(
                     // No accent colour set exists; stop actool looking for one.
                     "ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME": "",
                     "ASSETCATALOG_COMPILER_APPICON_NAME": "AppIcon",
-                    "CODE_SIGN_STYLE": "Automatic",
+                    // Every build, Debug included, is signed with the same Developer ID so
+                    // macOS sees one app across rebuilds and keeps Accessibility, Screen
+                    // Recording and Keychain grants. Ad-hoc signing would reset them each time.
+                    "CODE_SIGN_STYLE": "Manual",
+                    "CODE_SIGN_IDENTITY": "Developer ID Application",
                     "DEVELOPMENT_TEAM": "TJ3ALYQV5G",
+                    "OTHER_CODE_SIGN_FLAGS": "--timestamp",
                     "ENABLE_HARDENED_RUNTIME": "YES"
                 ]
             )
@@ -56,7 +61,9 @@ let project = Project(
             settings: .settings(
                 base: [
                     "SWIFT_VERSION": "5.9",
-                    "CODE_SIGN_STYLE": "Automatic",
+                    // Must match the app: a hardened-runtime host only loads test bundles from its own team.
+                    "CODE_SIGN_STYLE": "Manual",
+                    "CODE_SIGN_IDENTITY": "Developer ID Application",
                     "DEVELOPMENT_TEAM": "TJ3ALYQV5G"
                 ]
             )

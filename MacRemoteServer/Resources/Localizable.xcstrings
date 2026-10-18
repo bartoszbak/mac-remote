@@ -1,1336 +1,1425 @@
 {
-  "sourceLanguage": "en",
-  "strings": {
-    "%@ · since %@": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ · desde las %@"
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%@" : {
+
+    },
+    "%@ · since %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · desde las %@"
           }
         }
       }
     },
-    "%lld seconds remaining": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Quedan %lld segundos"
+    "%lld seconds remaining" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quedan %lld segundos"
           }
         }
       }
     },
-    "About": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Acerca de"
+    "About" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acerca de"
           }
         }
       }
     },
-    "About MacRemote": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Acerca de MacRemote"
+    "About MacRemote" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acerca de MacRemote"
           }
         }
       }
     },
-    "Access granted": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Acceso concedido"
+    "Access granted" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acceso concedido"
           }
         }
       }
     },
-    "Accessibility": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Accesibilidad"
+    "Accessibility" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accesibilidad"
           }
         }
       }
     },
-    "Accessibility access needed": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Se necesita acceso de Accesibilidad"
+    "Accessibility access needed" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se necesita acceso de Accesibilidad"
           }
         }
       }
     },
-    "Allow Accessibility access": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Permitir acceso de Accesibilidad"
+    "Allow Accessibility access" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permitir acceso de Accesibilidad"
           }
         }
       }
     },
-    "Allow Screen Recording": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Permitir grabación de pantalla"
+    "Allow Screen Recording" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permitir grabación de pantalla"
           }
         }
       }
     },
-    "Allow unencrypted connections": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Permitir conexiones sin cifrar"
+    "Allow unencrypted connections" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permitir conexiones sin cifrar"
           }
         }
       }
     },
-    "Allow unlocking this Mac from a paired iPhone": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Permitir desbloquear este Mac desde un iPhone emparejado"
+    "Allow unlocking this Mac from a paired iPhone" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permitir desbloquear este Mac desde un iPhone emparejado"
           }
         }
       }
     },
-    "Another app is using this port. Choose a different one in Settings.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Otra app está usando este puerto. Elige otro en Ajustes."
+    "Another app is using this port. Choose a different one in Settings." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otra app está usando este puerto. Elige otro en Ajustes."
           }
         }
       }
     },
-    "Back": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Atrás"
+    "Back" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atrás"
           }
         }
       }
     },
-    "Cancel": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cancelar"
+    "Cancel" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar"
           }
         }
       }
     },
-    "Change…": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cambiar…"
+    "Change…" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cambiar…"
           }
         }
       }
     },
-    "Choose Another Port…": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Elegir otro puerto…"
+    "Choose Another Port…" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elegir otro puerto…"
           }
         }
       }
     },
-    "Connected": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Conectado"
+    "Connected" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conectado"
           }
         }
       }
     },
-    "Connected Now": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Conectados ahora"
+    "Connected Now" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conectados ahora"
           }
         }
       }
     },
-    "Connected since %@": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Conectado desde las %@"
+    "Connected since %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conectado desde las %@"
           }
         }
       }
     },
-    "Connecting to %@…": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Conectando con %@…"
+    "Connecting to %@…" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conectando con %@…"
           }
         }
       }
     },
-    "Control this Mac from your iPhone: trackpad, keyboard, media keys, app launcher and screen sharing. Let's set up the permissions it needs.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Controla este Mac desde tu iPhone: trackpad, teclado, teclas multimedia, lanzador de apps y pantalla compartida. Vamos a configurar los permisos necesarios."
+    "Control this Mac from your iPhone: trackpad, keyboard, media keys, app launcher and screen sharing. Let's set up the permissions it needs." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Controla este Mac desde tu iPhone: trackpad, teclado, teclas multimedia, lanzador de apps y pantalla compartida. Vamos a configurar los permisos necesarios."
           }
         }
       }
     },
-    "Couldn't start the server": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No se pudo iniciar el servidor"
+    "Couldn't start the server" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo iniciar el servidor"
           }
         }
       }
     },
-    "Devices": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dispositivos"
+    "Devices" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dispositivos"
           }
         }
       }
     },
-    "Display changes apply the next time a stream starts.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "El cambio de pantalla se aplica la próxima vez que se inicie una transmisión."
+    "Display changes apply the next time a stream starts." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El cambio de pantalla se aplica la próxima vez que se inicie una transmisión."
           }
         }
       }
     },
-    "Display to share": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pantalla que compartir"
+    "Display to share" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pantalla que compartir"
           }
         }
       }
     },
-    "Done": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hecho"
+    "Done" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hecho"
           }
         }
       }
     },
-    "Enable": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Activar"
+    "Enable" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activar"
           }
         }
       }
     },
-    "Enable Remote Unlock": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Activar desbloqueo remoto"
+    "Enable Remote Unlock" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activar desbloqueo remoto"
           }
         }
       }
     },
-    "Encrypted connection": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Conexión cifrada"
+    "Encrypted connection" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conexión cifrada"
           }
         }
       }
     },
-    "Encrypted port": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Puerto cifrado"
+    "Encrypted port" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puerto cifrado"
           }
         }
       }
     },
-    "Encryption": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cifrado"
+    "Encryption" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cifrado"
           }
         }
       }
     },
-    "Enter your Mac login password.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Introduce la contraseña de inicio de sesión de tu Mac."
+    "Enter your Mac login password." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Introduce la contraseña de inicio de sesión de tu Mac."
           }
         }
       }
     },
-    "Finish": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Finalizar"
+    "Finish" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finalizar"
           }
         }
       }
     },
-    "Fix…": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Solucionar…"
+    "Fix…" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solucionar…"
           }
         }
       }
     },
-    "Forget Device": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Olvidar dispositivo"
+    "Forget Device" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Olvidar dispositivo"
           }
         }
       }
     },
-    "General": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "General"
+    "General" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "General"
           }
         }
       }
     },
-    "Hardware address": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dirección de hardware"
+    "Hardware address" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dirección de hardware"
           }
         }
       }
     },
-    "If screen sharing does not work right away, quit and reopen MacRemote.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Si la pantalla compartida no funciona de inmediato, cierra y vuelve a abrir MacRemote."
+    "If screen sharing does not work right away, quit and reopen MacRemote." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si la pantalla compartida no funciona de inmediato, cierra y vuelve a abrir MacRemote."
           }
         }
       }
     },
-    "In System Settings, turn on MacRemote Server under Accessibility, then come back here.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "En Ajustes del Sistema, activa MacRemote Server en Accesibilidad y vuelve aquí."
+    "In System Settings, turn on MacRemote Server under Accessibility, then come back here." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En Ajustes del Sistema, activa MacRemote Server en Accesibilidad y vuelve aquí."
           }
         }
       }
     },
-    "In System Settings, turn on MacRemote Server under Screen & System Audio Recording.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "En Ajustes del Sistema, activa MacRemote Server en Grabación de pantalla y audio del sistema."
+    "In System Settings, turn on MacRemote Server under Screen & System Audio Recording." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En Ajustes del Sistema, activa MacRemote Server en Grabación de pantalla y audio del sistema."
           }
         }
       }
     },
-    "Last seen %@": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Visto por última vez %@"
+    "Last seen %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visto por última vez %@"
           }
         }
       }
     },
-    "Launched %@ %@ ago": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Se abrió %@ hace %@"
+    "Launched %@ %@ ago" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se abrió %@ hace %@"
           }
         }
       }
     },
-    "Lets your iPhone wake this Mac from sleep.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Permite que tu iPhone active este Mac desde el reposo."
+    "Lets your iPhone wake this Mac from sleep." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permite que tu iPhone active este Mac desde el reposo."
           }
         }
       }
     },
-    "Mac login password": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Contraseña de inicio de sesión del Mac"
+    "Mac login password" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contraseña de inicio de sesión del Mac"
           }
         }
       }
     },
-    "Mac name": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nombre del Mac"
+    "Mac name" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre del Mac"
           }
         }
       }
     },
-    "MacRemote Server": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MacRemote Server"
+    "MacRemote lives in your menu bar. Click its icon to see connected devices, pause sharing, or change settings." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MacRemote vive en la barra de menús. Haz clic en su icono para ver los dispositivos conectados, pausar el uso compartido o cambiar los ajustes."
           }
         }
       }
     },
-    "MacRemote lives in your menu bar. Click its icon to see connected devices, pause sharing, or change settings.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MacRemote vive en la barra de menús. Haz clic en su icono para ver los dispositivos conectados, pausar el uso compartido o cambiar los ajustes."
+    "MacRemote moves the mouse and types on your behalf. macOS requires Accessibility access for that." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MacRemote mueve el ratón y escribe por ti. macOS requiere acceso de Accesibilidad para ello."
           }
         }
       }
     },
-    "MacRemote moves the mouse and types on your behalf. macOS requires Accessibility access for that.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MacRemote mueve el ratón y escribe por ti. macOS requiere acceso de Accesibilidad para ello."
+    "MacRemote needs Accessibility access to move the mouse and type on your behalf." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MacRemote necesita acceso de Accesibilidad para mover el ratón y escribir por ti."
           }
         }
       }
     },
-    "MacRemote needs Accessibility access to move the mouse and type on your behalf.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MacRemote necesita acceso de Accesibilidad para mover el ratón y escribir por ti."
+    "MacRemote needs Screen Recording access to share this Mac's screen with your iPhone." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MacRemote necesita acceso de grabación de pantalla para compartir la pantalla de este Mac con tu iPhone."
           }
         }
       }
     },
-    "MacRemote needs Screen Recording access to share this Mac's screen with your iPhone.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MacRemote necesita acceso de grabación de pantalla para compartir la pantalla de este Mac con tu iPhone."
+    "MacRemote Server" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MacRemote Server"
           }
         }
       }
     },
-    "MacRemote shares this Mac's screen with your iPhone. macOS requires Screen Recording access for that.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MacRemote comparte la pantalla de este Mac con tu iPhone. macOS requiere acceso de grabación de pantalla para ello."
+    "MacRemote shares this Mac's screen with your iPhone. macOS requires Screen Recording access for that." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MacRemote comparte la pantalla de este Mac con tu iPhone. macOS requiere acceso de grabación de pantalla para ello."
           }
         }
       }
     },
-    "Main display": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pantalla principal"
+    "Main display" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pantalla principal"
           }
         }
       }
     },
-    "Make this Mac reachable": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Haz que este Mac sea accesible"
+    "Make this Mac reachable" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haz que este Mac sea accesible"
           }
         }
       }
     },
-    "More": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Más"
+    "More" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Más"
           }
         }
       }
     },
-    "Name": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nombre"
+    "Name" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre"
           }
         }
       }
     },
-    "Needs attention": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Requiere atención"
+    "Needs attention" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Requiere atención"
           }
         }
       }
     },
-    "Network": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Red"
+    "Network" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Red"
           }
         }
       }
     },
-    "New Code": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nuevo código"
+    "New Code" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nuevo código"
           }
         }
       }
     },
-    "No devices connected": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No hay dispositivos conectados"
+    "No devices connected" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No hay dispositivos conectados"
           }
         }
       }
     },
-    "No paired devices yet. Pairing gives a device its own encrypted connection to this Mac.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aún no hay dispositivos emparejados. El emparejamiento da a cada dispositivo su propia conexión cifrada con este Mac."
+    "No paired devices yet. Pairing gives a device its own encrypted connection to this Mac." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aún no hay dispositivos emparejados. El emparejamiento da a cada dispositivo su propia conexión cifrada con este Mac."
           }
         }
       }
     },
-    "Not granted": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No concedido"
+    "Not granted" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No concedido"
           }
         }
       }
     },
-    "Off": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Desactivado"
+    "Off" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desactivado"
           }
         }
       }
     },
-    "On": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Activado"
+    "On" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activado"
           }
         }
       }
     },
-    "Open Energy Settings": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Abrir ajustes de energía"
+    "Open Energy Settings" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir ajustes de energía"
           }
         }
       }
     },
-    "Open MacRemote at login": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Abrir MacRemote al iniciar sesión"
+    "Open MacRemote at login" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir MacRemote al iniciar sesión"
           }
         }
       }
     },
-    "Open MacRemote on your iPhone and choose “%@”.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Abre MacRemote en tu iPhone y elige “%@”."
+    "Open MacRemote on your iPhone and choose “%@”." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre MacRemote en tu iPhone y elige “%@”."
           }
         }
       }
     },
-    "Open MacRemote on your iPhone, choose “%@”, and enter this code.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Abre MacRemote en tu iPhone, elige “%@” e introduce este código."
+    "Open MacRemote on your iPhone, choose “%@”, and enter this code." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre MacRemote en tu iPhone, elige “%@” e introduce este código."
           }
         }
       }
     },
-    "Open System Settings": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Abrir Ajustes del Sistema"
+    "Open System Settings" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir Ajustes del Sistema"
           }
         }
       }
     },
-    "Pair a Device": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Emparejar un dispositivo"
+    "Optional" : {
+
+    },
+    "Pair a Device" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Emparejar un dispositivo"
           }
         }
       }
     },
-    "Pair a Device…": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Emparejar un dispositivo…"
+    "Pair a Device…" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Emparejar un dispositivo…"
           }
         }
       }
     },
-    "Paired %@": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Emparejado el %@"
+    "Paired %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Emparejado el %@"
           }
         }
       }
     },
-    "Paired Devices": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dispositivos emparejados"
+    "Paired Devices" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dispositivos emparejados"
           }
         }
       }
     },
-    "Paired devices always connect over TLS. Turn this off once every device you use is paired, and unpaired devices on your network will no longer be able to control this Mac.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Los dispositivos emparejados siempre se conectan mediante TLS. Desactívalo cuando todos tus dispositivos estén emparejados; los dispositivos sin emparejar de tu red ya no podrán controlar este Mac."
+    "Paired devices always connect over TLS. Turn this off once every device you use is paired, and unpaired devices on your network will no longer be able to control this Mac." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los dispositivos emparejados siempre se conectan mediante TLS. Desactívalo cuando todos tus dispositivos estén emparejados; los dispositivos sin emparejar de tu red ya no podrán controlar este Mac."
           }
         }
       }
     },
-    "Paired with %@": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Emparejado con %@"
+    "Paired with %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Emparejado con %@"
           }
         }
       }
     },
-    "Paired with %@ %@ ago": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Emparejado con %@ hace %@"
+    "Paired with %@ %@ ago" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Emparejado con %@ hace %@"
           }
         }
       }
     },
-    "Pairing lets this device connect over an encrypted link, even when unencrypted connections are turned off.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "El emparejamiento permite que este dispositivo se conecte mediante un enlace cifrado, incluso con las conexiones sin cifrar desactivadas."
+    "Pairing lets this device connect over an encrypted link, even when unencrypted connections are turned off." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El emparejamiento permite que este dispositivo se conecte mediante un enlace cifrado, incluso con las conexiones sin cifrar desactivadas."
           }
         }
       }
     },
-    "Password": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Contraseña"
+    "Password" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contraseña"
           }
         }
       }
     },
-    "Permissions": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Permisos"
+    "Permissions" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permisos"
           }
         }
       }
     },
-    "Port": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Puerto"
+    "Port" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puerto"
           }
         }
       }
     },
-    "Port %lld is already in use.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "El puerto %lld ya está en uso."
+    "Port %lld is already in use." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El puerto %lld ya está en uso."
           }
         }
       }
     },
-    "Port %lld is in use": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "El puerto %lld está en uso"
+    "Port %lld is in use" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El puerto %lld está en uso"
           }
         }
       }
     },
-    "Quit MacRemote": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Salir de MacRemote"
+    "Quit MacRemote" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salir de MacRemote"
           }
         }
       }
     },
-    "Reachable": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Accesible"
+    "Reachable" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accesible"
           }
         }
       }
+    },
+    "Reachable · %@ devices" : {
+
     },
-    "Reachable as “%@”": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Accesible como “%@”"
+    "Reachable · %lld devices" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accesible · %lld dispositivos"
           }
         }
       }
     },
-    "Reachable · %lld devices": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Accesible · %lld dispositivos"
+    "Reachable · 1 device" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accesible · 1 dispositivo"
           }
         }
       }
     },
-    "Reachable · 1 device": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Accesible · 1 dispositivo"
+    "Reachable as “%@”" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accesible como “%@”"
           }
         }
       }
     },
-    "Remote Unlock": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Desbloqueo remoto"
+    "Remote Unlock" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desbloqueo remoto"
           }
         }
       }
     },
-    "Rename…": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Renombrar…"
+    "Rename…" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Renombrar…"
           }
         }
       }
     },
-    "Required. Lets MacRemote move the mouse and type.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Obligatorio. Permite a MacRemote mover el ratón y escribir."
+    "Required. Lets MacRemote move the mouse and type." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obligatorio. Permite a MacRemote mover el ratón y escribir."
           }
         }
       }
     },
-    "Required. Lets MacRemote share the screen.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Obligatorio. Permite a MacRemote compartir la pantalla."
+    "Required. Lets MacRemote share the screen." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obligatorio. Permite a MacRemote compartir la pantalla."
           }
         }
       }
     },
-    "Run Setup Again…": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Repetir la configuración…"
+    "Run Setup Again…" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Repetir la configuración…"
           }
         }
       }
     },
-    "Save": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Guardar"
+    "Save" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardar"
           }
         }
       }
     },
-    "Screen Recording": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Grabación de pantalla"
+    "Screen Recording" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grabación de pantalla"
           }
         }
       }
     },
-    "Screen Recording access needed": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Se necesita acceso de grabación de pantalla"
+    "Screen Recording access needed" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se necesita acceso de grabación de pantalla"
           }
         }
       }
     },
-    "Screen Recording permission is not granted on the Mac.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "El Mac no tiene concedido el permiso de grabación de pantalla."
+    "Screen Recording permission is not granted on the Mac." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El Mac no tiene concedido el permiso de grabación de pantalla."
           }
         }
       }
     },
-    "Screen Sharing": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pantalla compartida"
+    "Screen Sharing" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pantalla compartida"
           }
         }
       }
     },
-    "Security": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Seguridad"
+    "Security" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seguridad"
           }
         }
       }
     },
-    "Server": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Servidor"
+    "Server" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Servidor"
           }
         }
       }
     },
-    "Settings…": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ajustes…"
+    "Settings…" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajustes…"
           }
         }
       }
     },
-    "Show the cursor in the shared screen": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mostrar el cursor en la pantalla compartida"
+    "Show the cursor in the shared screen" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar el cursor en la pantalla compartida"
           }
         }
       }
     },
-    "Start": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Iniciar"
+    "Start" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iniciar"
           }
         }
       }
     },
-    "Start the server automatically": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Iniciar el servidor automáticamente"
+    "Start the server automatically" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iniciar el servidor automáticamente"
           }
         }
       }
     },
-    "Starting the server…": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Iniciando el servidor…"
+    "Starting the server…" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iniciando el servidor…"
           }
         }
       }
     },
-    "Starting…": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Iniciando…"
+    "Starting…" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iniciando…"
           }
         }
       }
     },
-    "Step %lld of %lld": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Paso %lld de %lld"
+    "Step %lld of %lld" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paso %lld de %lld"
           }
         }
       }
     },
-    "Stop sharing this Mac": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dejar de compartir este Mac"
+    "Stop sharing this Mac" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dejar de compartir este Mac"
           }
         }
       }
     },
-    "Stored in Keychain": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Guardada en el llavero"
+    "Stored in Keychain" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardada en el llavero"
           }
         }
       }
     },
-    "Streaming": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Transmitiendo"
+    "Streaming" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transmitiendo"
           }
         }
       }
     },
-    "Streaming the screen to this device": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Transmitiendo la pantalla a este dispositivo"
+    "Streaming the screen to this device" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transmitiendo la pantalla a este dispositivo"
           }
         }
       }
     },
-    "Streaming to %@ · %@": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Transmitiendo a %@ · %@"
+    "Streaming to %@ · %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transmitiendo a %@ · %@"
           }
         }
       }
     },
-    "The code entered on the device was wrong.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "El código introducido en el dispositivo era incorrecto."
+    "The code entered on the device was wrong." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El código introducido en el dispositivo era incorrecto."
           }
         }
       }
     },
-    "The code expired.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "El código ha caducado."
+    "The code expired." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El código ha caducado."
           }
         }
       }
     },
-    "The password never leaves this Mac. Only a paired iPhone can unlock it, after authenticating with Face ID or Touch ID, and only while the lock screen is showing.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La contraseña nunca sale de este Mac. Solo un iPhone emparejado puede desbloquearlo, tras autenticarse con Face ID o Touch ID, y solo mientras se muestra la pantalla de bloqueo."
+    "The password never leaves this Mac. Only a paired iPhone can unlock it, after authenticating with Face ID or Touch ID, and only while the lock screen is showing." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La contraseña nunca sale de este Mac. Solo un iPhone emparejado puede desbloquearlo, tras autenticarse con Face ID o Touch ID, y solo mientras se muestra la pantalla de bloqueo."
           }
         }
       }
     },
-    "The server is off. Turn it on from the menu bar first.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "El servidor está apagado. Enciéndelo primero desde la barra de menús."
+    "The server is off. Turn it on from the menu bar first." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El servidor está apagado. Enciéndelo primero desde la barra de menús."
           }
         }
       }
     },
-    "This is the name your iPhone shows when it finds this Mac. Press Return to apply changes to a running server.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Este es el nombre que muestra tu iPhone cuando encuentra este Mac. Pulsa Intro para aplicar los cambios a un servidor en marcha."
+    "This is the name your iPhone shows when it finds this Mac. Press Return to apply changes to a running server." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este es el nombre que muestra tu iPhone cuando encuentra este Mac. Pulsa Intro para aplicar los cambios a un servidor en marcha."
           }
         }
       }
     },
-    "Try Again": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Reintentar"
+    "Try Again" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reintentar"
           }
         }
       }
     },
-    "Turn on the server from the menu bar so your iPhone can find this Mac.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Enciende el servidor desde la barra de menús para que tu iPhone pueda encontrar este Mac."
+    "Turn on the server from the menu bar so your iPhone can find this Mac." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enciende el servidor desde la barra de menús para que tu iPhone pueda encontrar este Mac."
           }
         }
       }
     },
-    "Turn on the server from the menu bar to pair.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Enciende el servidor desde la barra de menús para emparejar."
+    "Turn on the server from the menu bar to pair." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enciende el servidor desde la barra de menús para emparejar."
           }
         }
       }
     },
-    "Turn on the switch to let your iPhone find this Mac.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Activa el interruptor para que tu iPhone encuentre este Mac."
+    "Turn on the switch to let your iPhone find this Mac." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activa el interruptor para que tu iPhone encuentre este Mac."
           }
         }
       }
     },
-    "Unencrypted connection": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Conexión sin cifrar"
+    "Unencrypted connection" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conexión sin cifrar"
           }
         }
       }
     },
-    "Unlock rejected %@ ago": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Desbloqueo rechazado hace %@"
+    "Unlock rejected %@ ago" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desbloqueo rechazado hace %@"
           }
         }
       }
     },
-    "Unlock sent %@ ago": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Desbloqueo enviado hace %@"
+    "Unlock sent %@ ago" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desbloqueo enviado hace %@"
           }
         }
       }
     },
-    "Version %@": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Versión %@"
+    "Version %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versión %@"
           }
         }
       }
     },
-    "View on GitHub": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ver en GitHub"
+    "View on GitHub" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver en GitHub"
           }
         }
       }
     },
-    "Waiting for a device": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Esperando un dispositivo"
+    "Waiting for a device" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esperando un dispositivo"
           }
         }
       }
     },
-    "Waiting for access…": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Esperando el acceso…"
+    "Waiting for access…" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esperando el acceso…"
           }
         }
       }
     },
-    "Wake for network access": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Activar para acceso a la red"
+    "Wake for network access" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activar para acceso a la red"
           }
         }
       }
     },
-    "Wake from Sleep": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Activar desde reposo"
+    "Wake from Sleep" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activar desde reposo"
           }
         }
       }
     },
-    "Welcome to MacRemote": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bienvenido a MacRemote"
+    "Welcome to MacRemote" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bienvenido a MacRemote"
           }
         }
       }
     },
-    "You're all set": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Todo listo"
+    "You're all set" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todo listo"
           }
         }
       }
     },
-    "Your Mac login password is stored only in this Mac's Keychain. Paired devices send a one-time signature, never the password, and unlocking only works while the lock screen is showing.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La contraseña de inicio de sesión de tu Mac se guarda solo en el llavero de este Mac. Los dispositivos emparejados envían una firma de un solo uso, nunca la contraseña, y el desbloqueo solo funciona mientras se muestra la pantalla de bloqueo."
+    "Your iPhone can wake this Mac with a network packet when Wake for network access is on. Works best over Ethernet, or over Wi‑Fi while plugged in." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu iPhone puede activar este Mac con un paquete de red cuando «Activar para acceso a la red» está activado. Funciona mejor por Ethernet, o por Wi‑Fi con el Mac enchufado."
           }
         }
       }
     },
-    "Your iPhone can wake this Mac with a network packet when Wake for network access is on. Works best over Ethernet, or over Wi‑Fi while plugged in.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tu iPhone puede activar este Mac con un paquete de red cuando «Activar para acceso a la red» está activado. Funciona mejor por Ethernet, o por Wi‑Fi con el Mac enchufado."
+    "Your iPhone finds this Mac automatically when both are on the same network." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu iPhone encuentra este Mac automáticamente cuando ambos están en la misma red."
           }
         }
       }
     },
-    "Your iPhone finds this Mac automatically when both are on the same network.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tu iPhone encuentra este Mac automáticamente cuando ambos están en la misma red."
+    "Your Mac login password is stored only in this Mac's Keychain. Paired devices send a one-time signature, never the password, and unlocking only works while the lock screen is showing." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La contraseña de inicio de sesión de tu Mac se guarda solo en el llavero de este Mac. Los dispositivos emparejados envían una firma de un solo uso, nunca la contraseña, y el desbloqueo solo funciona mientras se muestra la pantalla de bloqueo."
           }
         }
       }
     }
   },
-  "version": "1.0"
+  "version" : "1.0"
 }

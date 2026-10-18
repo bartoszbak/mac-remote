@@ -110,16 +110,14 @@ Signing uses team `TJ3ALYQV5G`. Prefer installing the signed Release build into 
 
 ## Testing macOS Server Changes
 
-When making changes to the macOS server (MacRemoteServer), after verifying the build succeeds:
+After the build succeeds, install and relaunch with:
 
 ```bash
-# Build, copy to Applications, and launch
-xcodebuild -workspace MacRemote.xcworkspace -scheme MacRemoteServer -configuration Debug build && \
-cp -R ~/Library/Developer/Xcode/DerivedData/MacRemote-*/Build/Products/Debug/MacRemoteServer.app /Applications/ && \
-open /Applications/MacRemoteServer.app
+scripts/install.sh            # Release (default)
+scripts/install.sh Debug
 ```
 
-This ensures you test with the latest version running from Applications.
+Every configuration is signed with the Developer ID (`CODE_SIGN_STYLE = Manual`, team `TJ3ALYQV5G`), so Debug and Release have the same designated requirement and macOS keeps Accessibility, Screen Recording and Keychain grants across rebuilds. Do not copy ad-hoc signed builds into /Applications: each one is a new identity to TCC and resets every permission.
 
 ## Adding New Features
 
