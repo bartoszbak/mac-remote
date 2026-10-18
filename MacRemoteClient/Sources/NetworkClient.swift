@@ -31,10 +31,20 @@ final class NetworkClient: ObservableObject {
     /// False when the Mac only accepts paired devices and this one is not paired yet.
     @Published private(set) var controlAllowed = true
     @Published private(set) var pairingState: PairingState = .idle
+    /// A connection attempt is under way (before the encrypted link is up).
+    @Published private(set) var isConnecting = false
+    /// Name of the Mac being connected to while `isConnecting`.
+    @Published private(set) var connectingName: String?
 
+    /// Connecting to an unpaired Mac runs this sequence; `isConnected` only becomes true
+    /// once pairing succeeds and the encrypted link is up.
     enum PairingState: Equatable {
         case idle
-        case inProgress
+        /// Asked the Mac to pair; it is about to show a code.
+        case requesting
+        /// The Mac shows a code; waiting for the user to type it.
+        case awaitingCode
+        case verifying
         case succeeded
         case failed(String)
     }
@@ -48,14 +58,14 @@ final class NetworkClient: ObservableObject {
     var onScreenFrameReceived: ((ScreenFrame) -> Void)?
 
     private var connection: NWConnection?
-    /// Plaintext connection kept alive while a TLS upgrade is in flight.
-    private var upgradingFrom: NWConnection?
     private let queue = DispatchQueue(label: "com.macremote.client", qos: .userInteractive)
     private var unlockChallenge: Data?
     private var tlsPort: UInt16?
     private var pairingPrivateKey: Curve25519.KeyAgreement.PrivateKey?
     private var pairingCode: String?
     private var pendingPairing: (sessionKey: SymmetricKey, presharedKey: SymmetricKey)?
+    /// Retries while the Mac's encrypted listener is still coming up after pairing.
+    private var upgradeAttempts = 0
 
     init(knownMacs: KnownMacStore = KnownMacStore(), pairedMacs: PairedMacStore = PairedMacStore()) {
         self.knownMacs = knownMacs
@@ -71,15 +81,27 @@ final class NetworkClient: ObservableObject {
         isScreenLocked = locked
         serverID = "preview-mac"
     }
+
+    /// Preview-only: show the code-entry flow in a given state.
+    func setPreviewPairingState(_ state: PairingState, macName: String = "Studio Mac") {
+        pairingState = state
+        isConnecting = true
+        connectingName = macName
+        connectedServerName = macName
+    }
 #endif
 
     // MARK: - Connection
 
-    /// Connects in plaintext first. The Mac's `welcome` says whether it is paired with
-    /// this phone and where its encrypted port is; if so the connection is upgraded to TLS.
+    /// Connects in plaintext first. That link can only identify this phone and pair; the
+    /// Mac's `welcome` says where its encrypted port is. If this phone is paired with that
+    /// Mac it upgrades to TLS straight away, otherwise pairing starts automatically.
+    /// `isConnected` becomes true only once the encrypted link is up.
     func connect(to endpoint: NWEndpoint, name: String? = nil) {
         disconnect()
         connectedServerName = name
+        connectingName = name
+        isConnecting = true
         let connection = NWConnection(to: endpoint, using: Self.parameters(tls: nil))
         self.connection = connection
         attach(connection, secure: false)
@@ -105,32 +127,26 @@ final class NetworkClient: ObservableObject {
                     if secure {
                         self.finishUpgrade(to: connection)
                     } else {
-                        self.isConnected = true
-                        self.isSecure = false
                         self.connectionError = nil
                     }
                     self.startReceiving(on: connection)
                     self.send(.hello(deviceID: DeviceIdentity.id, deviceName: DeviceIdentity.name,
                                      protocolVersion: NetworkConstants.protocolVersion), on: connection)
-                    print("[Client] Connected (\(secure ? "TLS" : "plaintext"))")
+                    print("[Client] Link up (\(secure ? "TLS" : "plaintext"))")
 
-                case .waiting(let error) where secure:
-                    // A rejected PSK handshake surfaces here: the Mac no longer knows this device.
-                    print("[Client] TLS rejected: \(error)")
-                    self.abandonUpgrade(forgetPairing: true)
+                case .waiting(let error) where secure, .failed(let error) where secure:
+                    self.handleUpgradeProblem(error)
 
                 case .failed(let error):
-                    if secure {
-                        self.abandonUpgrade(forgetPairing: false)
-                    } else {
-                        self.isConnected = false
-                        self.connectionError = error.localizedDescription
-                    }
+                    self.isConnected = false
+                    self.isConnecting = false
+                    self.connectionError = error.localizedDescription
                     print("[Client] Failed: \(error)")
 
                 case .cancelled:
                     if !secure, connection === self.connection {
                         self.isConnected = false
+                        self.isConnecting = false
                     }
 
                 default:
@@ -153,9 +169,13 @@ final class NetworkClient: ObservableObject {
         tlsPort = nil
         connectedServerName = nil
         isScreenLocked = nil
+        isConnecting = false
+        connectingName = nil
         pairingState = .idle
         pairingPrivateKey = nil
+        pairingCode = nil
         pendingPairing = nil
+        upgradeAttempts = 0
     }
 
     // MARK: - TLS upgrade
@@ -197,62 +217,93 @@ final class NetworkClient: ObservableObject {
         isSecure = true
         isPaired = true
         isConnected = true
+        isConnecting = false
+        upgradeAttempts = 0
         connectionError = nil
+        if pairingState == .succeeded {
+            // Let the success state show briefly before the sheet goes away.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) { [weak self] in
+                if self?.pairingState == .succeeded { self?.pairingState = .idle }
+            }
+        } else {
+            pairingState = .idle
+        }
     }
 
-    private func abandonUpgrade(forgetPairing: Bool) {
+    /// The encrypted link did not come up. Right after pairing the Mac's listener may still
+    /// be starting (connection refused): retry briefly. A TLS failure means the Mac no
+    /// longer has this phone's key: forget it and pair again over the open plaintext link.
+    private func handleUpgradeProblem(_ error: NWError) {
+        pendingSecure?.stateUpdateHandler = nil
         pendingSecure?.cancel()
         pendingSecure = nil
-        if forgetPairing, let serverID {
-            pairedMacs.forget(serverID: serverID)
+
+        if case .tls = error {
+            print("[Client] TLS rejected: \(error)")
+            if let serverID { pairedMacs.forget(serverID: serverID) }
             isPaired = false
-            unlockStatus = String(localized: "pairing_lost")
+            beginPairing()
+            return
+        }
+
+        upgradeAttempts += 1
+        guard upgradeAttempts <= 15, let serverID, let tlsPort else {
+            isConnecting = false
+            pairingState = .idle
+            connectionError = error.localizedDescription
+            return
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { [weak self] in
+            guard let self, self.isConnecting, !self.isSecure else { return }
+            self.upgradeToTLS(serverID: serverID, port: tlsPort)
         }
     }
 
     // MARK: - Pairing
 
-    /// Runs the pairing handshake over the current plaintext connection.
-    func pair(code: String) {
-        guard let connection, isConnected, !isSecure else { return }
-        guard let normalized = PairingCrypto.normalizedCode(code) else {
-            pairingState = .failed(String(localized: "pairing_invalid_code"))
-            return
-        }
+    /// Asks the Mac to pair. The Mac opens a window with a 6-digit code.
+    private func beginPairing() {
+        guard let connection, !isSecure else { return }
         let privateKey = Curve25519.KeyAgreement.PrivateKey()
         pairingPrivateKey = privateKey
-        pairingCode = normalized
-        pairingState = .inProgress
+        pairingCode = nil
+        pendingPairing = nil
+        pairingState = .requesting
         send(.pairRequest(deviceID: DeviceIdentity.id, deviceName: DeviceIdentity.name,
                           publicKey: privateKey.publicKey.rawRepresentation), on: connection)
     }
 
-    func resetPairingState() {
-        if pairingState != .inProgress { pairingState = .idle }
+    /// Sends proof of the code shown on the Mac.
+    func submitPairingCode(_ code: String) {
+        guard pairingState == .awaitingCode, let pending = pendingPairing, let connection else { return }
+        guard let normalized = PairingCrypto.normalizedCode(code) else {
+            pairingState = .failed(String(localized: "pairing_invalid_code"))
+            return
+        }
+        pairingCode = normalized
+        pairingState = .verifying
+        send(.pairConfirm(proof: PairingCrypto.clientProof(sessionKey: pending.sessionKey, code: normalized)), on: connection)
     }
 
-    /// Drops the pairing with the connected Mac and falls back to a plaintext connection.
+    /// Requests a fresh code after a wrong or expired one.
+    func retryPairing() {
+        beginPairing()
+    }
+
+    /// Forgets this Mac and disconnects. Connecting again asks for a new code.
     func forgetPairing() {
-        guard let serverID else { return }
-        pairedMacs.forget(serverID: serverID)
-        isPaired = false
+        if let serverID { pairedMacs.forget(serverID: serverID) }
         unlockStatus = nil
-        if isSecure, let plain = connection, case .hostPort(let host, let port)? = plain.currentPath?.remoteEndpoint {
-            // Reconnect in plaintext to the discovery port.
-            _ = port
-            let name = connectedServerName
-            disconnect()
-            connect(to: .hostPort(host: host, port: NWEndpoint.Port(rawValue: NetworkConstants.defaultPort)!), name: name)
-        }
+        disconnect()
     }
 
     private func handlePairChallenge(serverPublicKey: Data, salt: Data) {
-        guard let privateKey = pairingPrivateKey, let code = pairingCode, let connection else { return }
+        guard let privateKey = pairingPrivateKey else { return }
         do {
             let secret = try PairingCrypto.sharedSecret(privateKey: privateKey, peerPublicKey: serverPublicKey)
-            let sessionKey = PairingCrypto.sessionKey(from: secret, salt: salt)
-            pendingPairing = (sessionKey, PairingCrypto.presharedKey(from: secret, salt: salt))
-            send(.pairConfirm(proof: PairingCrypto.clientProof(sessionKey: sessionKey, code: code)), on: connection)
+            pendingPairing = (PairingCrypto.sessionKey(from: secret, salt: salt),
+                              PairingCrypto.presharedKey(from: secret, salt: salt))
+            pairingState = .awaitingCode
         } catch {
             pairingState = .failed(String(localized: "pairing_failed"))
         }
@@ -267,7 +318,7 @@ final class NetworkClient: ObservableObject {
         guard success, let pending = pendingPairing, let code = pairingCode, let serverProof,
               PairingCrypto.constantTimeEquals(serverProof, PairingCrypto.serverProof(sessionKey: pending.sessionKey, code: code)),
               let serverID else {
-            pairingState = .failed(success ? String(localized: "pairing_failed") : message)
+            pairingState = .failed(success || message.isEmpty ? String(localized: "pairing_failed") : message)
             return
         }
         pairedMacs.upsert(PairedMac(serverID: serverID,
@@ -519,11 +570,16 @@ final class NetworkClient: ObservableObject {
         case .welcome(let id, let name, _, let port, _, let allowed):
             serverID = id
             if connectedServerName == nil { connectedServerName = name }
+            if connectingName == nil { connectingName = name }
             tlsPort = port
             controlAllowed = allowed || isSecure
             isPaired = isSecure || pairedMacs.presharedKey(for: id) != nil
-            if !isSecure, isPaired, let port {
-                upgradeToTLS(serverID: id, port: port)
+            if !isSecure, pendingSecure == nil, pairingState == .idle {
+                if isPaired, let port {
+                    upgradeToTLS(serverID: id, port: port)
+                } else {
+                    beginPairing()
+                }
             }
 
         case .pairChallenge(let publicKey, let salt):

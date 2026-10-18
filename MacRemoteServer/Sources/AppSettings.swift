@@ -12,7 +12,6 @@ final class AppSettings: ObservableObject {
         static let hasCompletedOnboarding = "hasCompletedOnboarding"
         static let showCursorInStream = "showCursorInStream"
         static let sharedDisplayID = "sharedDisplayID"
-        static let allowUnencryptedConnections = "allowUnencryptedConnections"
         static let serverID = "serverID"
     }
 
@@ -44,12 +43,6 @@ final class AppSettings: ObservableObject {
         didSet { defaults.set(Int(sharedDisplayID), forKey: Keys.sharedDisplayID) }
     }
 
-    /// Legacy mode: accept control messages on the plaintext port from unpaired
-    /// devices. Pairing and encryption always work regardless of this flag.
-    @Published var allowUnencryptedConnections: Bool {
-        didSet { defaults.set(allowUnencryptedConnections, forKey: Keys.allowUnencryptedConnections) }
-    }
-
     /// Stable identity of this Mac for clients, generated once.
     let serverID: String
 
@@ -67,8 +60,7 @@ final class AppSettings: ObservableObject {
             Keys.port: Int(NetworkConstants.defaultPort),
             Keys.hasCompletedOnboarding: false,
             Keys.showCursorInStream: true,
-            Keys.sharedDisplayID: 0,
-            Keys.allowUnencryptedConnections: true
+            Keys.sharedDisplayID: 0
         ])
         autoStartServer = defaults.bool(forKey: Keys.autoStartServer)
         serviceName = defaults.string(forKey: Keys.serviceName) ?? Self.defaultServiceName
@@ -76,7 +68,6 @@ final class AppSettings: ObservableObject {
         hasCompletedOnboarding = defaults.bool(forKey: Keys.hasCompletedOnboarding)
         showCursorInStream = defaults.bool(forKey: Keys.showCursorInStream)
         sharedDisplayID = UInt32(clamping: max(0, defaults.integer(forKey: Keys.sharedDisplayID)))
-        allowUnencryptedConnections = defaults.bool(forKey: Keys.allowUnencryptedConnections)
         if let existing = defaults.string(forKey: Keys.serverID) {
             serverID = existing
         } else {

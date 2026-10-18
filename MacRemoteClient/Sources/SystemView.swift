@@ -71,9 +71,6 @@ struct SystemView: View {
                 if let status = client.unlockStatus {
                     Text(status)
                 }
-                if !client.isPaired {
-                    Text(String(localized: "system_unlock_footer"))
-                }
             }
         }
     }

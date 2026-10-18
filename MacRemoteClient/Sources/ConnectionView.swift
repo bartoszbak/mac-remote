@@ -58,10 +58,11 @@ struct ConnectionView: View {
                             emptyRow
                         } else {
                             ForEach(otherServers) { server in
-                                ServerRow(name: server.name, state: .available) {
+                                ServerRow(name: server.name,
+                                          state: client.isConnecting && client.connectingName == server.name ? .connecting : .available) {
                                     client.connect(to: server.endpoint, name: server.name)
-                                    dismiss()
                                 }
+                                .disabled(client.isConnecting)
                             }
                         }
                     }
@@ -99,6 +100,15 @@ struct ConnectionView: View {
         }
         .presentationDetents([.height(min(estimatedHeight, maxSheetHeight)), .large])
         .presentationDragIndicator(.visible)
+        .sheet(isPresented: pairingSheetBinding) {
+            PairingCodeView(client: client)
+        }
+        .onChange(of: client.isConnected) { wasConnected, isConnected in
+            // Close once the encrypted link is up, after the success tick if pairing ran.
+            guard isConnected, !wasConnected else { return }
+            let delay: Double = client.pairingState == .succeeded ? 1.2 : 0
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay) { dismiss() }
+        }
         .onAppear {
             browser.startBrowsing()
         }
@@ -115,6 +125,16 @@ struct ConnectionView: View {
             didAutoWake = true
             wake(mac)
         }
+    }
+
+    /// The code sheet is up whenever a pairing is in progress. Swiping it away cancels.
+    private var pairingSheetBinding: Binding<Bool> {
+        Binding(
+            get: { client.pairingState != .idle },
+            set: { presented in
+                if !presented, !client.isConnected { client.disconnect() }
+            }
+        )
     }
 
     /// Known Macs that are neither discovered nor connected right now.
@@ -190,7 +210,7 @@ struct ServerGlyph: View {
 
 /// One Mac in the list.
 struct ServerRow: View {
-    enum State { case available, connected }
+    enum State { case available, connecting, connected }
 
     let name: String
     let state: State
@@ -204,22 +224,33 @@ struct ServerRow: View {
                     Text(name)
                         .font(.body)
                         .foregroundStyle(.primary)
-                    Text(state == .connected
-                         ? String(localized: "connection_status_connected")
-                         : String(localized: "connection_tap_to_connect"))
+                    Text(subtitle)
                         .font(.footnote)
                         .foregroundStyle(state == .connected ? Color.green : Color.secondary)
                 }
                 Spacer()
-                if state == .available {
+                switch state {
+                case .available:
                     Image(systemName: "chevron.right")
                         .font(.footnote.weight(.semibold))
                         .foregroundStyle(Color(.tertiaryLabel))
+                case .connecting:
+                    ProgressView()
+                case .connected:
+                    EmptyView()
                 }
             }
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+    }
+
+    private var subtitle: String {
+        switch state {
+        case .available: return String(localized: "connection_tap_to_connect")
+        case .connecting: return String(localized: "connection_connecting")
+        case .connected: return String(localized: "connection_status_connected")
+        }
     }
 }
 
@@ -300,6 +331,7 @@ struct SleepingMacRow: View {
     List {
         ServerRow(name: "Studio Mac", state: .connected) {}
         ServerRow(name: "MacBook Pro", state: .available) {}
+        ServerRow(name: "Office iMac", state: .connecting) {}
     }
     .listStyle(.insetGrouped)
 }

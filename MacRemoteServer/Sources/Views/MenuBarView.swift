@@ -75,10 +75,6 @@ struct MenuBarView: View {
 
     private var overflowMenu: some View {
         Menu {
-            Button("Pair a Device…") {
-                manager.pairingRequested = true
-            }
-            .disabled(!manager.isRunning)
             Button("Settings…") {
                 showSettings()
             }
@@ -227,24 +223,8 @@ struct MenuBarView: View {
                 }
             } else {
                 ForEach(manager.devices) { device in
-                    HStack(spacing: 10) {
-                        StatusDot(color: .green)
-                        VStack(alignment: .leading, spacing: 1) {
-                            Text(device.displayName)
-                                .font(.callout)
-                            Text("Connected since \(device.connectedAt, style: .time)")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                        Spacer()
-                        Image(systemName: device.isSecure ? "lock.fill" : "lock.open")
-                            .foregroundStyle(.secondary)
-                            .help(device.isSecure ? "Encrypted connection" : "Unencrypted connection")
-                        if device.isStreaming {
-                            Image(systemName: "display")
-                                .foregroundStyle(.secondary)
-                                .help("Streaming the screen to this device")
-                        }
+                    ConnectedDeviceRow(device: device) {
+                        manager.disconnect(device: device.id)
                     }
                 }
             }
@@ -299,5 +279,45 @@ struct MenuBarView: View {
     private func showSettings() {
         openSettings()
         NSApp.activate(ignoringOtherApps: true)
+    }
+}
+
+/// A connected device. Hovering reveals a Disconnect button in place of the status icons.
+private struct ConnectedDeviceRow: View {
+    let device: ServerManager.ConnectedDevice
+    let onDisconnect: () -> Void
+    @State private var isHovering = false
+
+    var body: some View {
+        HStack(spacing: 10) {
+            StatusDot(color: .green)
+            VStack(alignment: .leading, spacing: 1) {
+                Text(device.displayName)
+                    .font(.callout)
+                Text("Connected since \(device.connectedAt, style: .time)")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            if isHovering {
+                Button("Disconnect", action: onDisconnect)
+                    .controlSize(.small)
+                    .transition(.opacity)
+            } else {
+                Image(systemName: "lock.fill")
+                    .foregroundStyle(.secondary)
+                    .help("Encrypted connection")
+                if device.isStreaming {
+                    Image(systemName: "display")
+                        .foregroundStyle(.secondary)
+                        .help("Streaming the screen to this device")
+                }
+            }
+        }
+        .frame(minHeight: 32)
+        .contentShape(Rectangle())
+        .onHover { hovering in
+            withAnimation(.easeInOut(duration: 0.12)) { isHovering = hovering }
+        }
     }
 }

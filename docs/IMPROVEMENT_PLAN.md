@@ -129,7 +129,7 @@ Goal: only paired devices can talk to the Mac, and the traffic is encrypted.
 
 - [x] **Pairing flow.** Both halves done (see `docs/PAIRING_PROTOCOL.md`): 6-digit code for 60 s, X25519 key agreement with HKDF-derived keys, code proven by HMAC, one attempt per code. iOS pairs from Settings.
 - [x] **TLS with pre-shared keys.** Mac listener on port+1 with one PSK per paired device; iOS connects in plaintext and upgrades to TLS once `welcome` identifies a paired Mac.
-- [~] **Refuse all input from unpaired devices.** Gated by Security → Allow unencrypted connections (default on until the iOS client ships pairing).
+- [x] **Refuse all input from unpaired devices.** No pairing, no connection: the plaintext port only pairs; there is no opt-out.
 - [x] **Frame length cap.** Reject any frame larger than a configurable limit (e.g. 16 MB for video, 64 KB for control) and close the connection.
 - [x] **Paired devices list** in Settings → Devices with Rename and Forget; connected devices show a lock for encrypted links.
 - [x] **Lock-state check before unlock.** Read `CGSessionCopyCurrentDictionary()["CGSSessionScreenIsLocked"]` and refuse to type the password unless the screen is locked. Drop the "wake with Space" keystroke in favour of a harmless key (e.g. Shift) or `IOPMAssertionDeclareUserActivity`.

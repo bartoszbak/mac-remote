@@ -1,15 +1,15 @@
 import SwiftUI
 
-/// Enter the 6-digit code shown on the Mac. Lives in Settings; the System section
-/// only points here.
-struct PairingSheet: View {
+/// Shown on top of the connect sheet the first time this phone connects to a Mac.
+/// The Mac pops up a window with a 6-digit code; typing it here finishes connecting.
+struct PairingCodeView: View {
     @ObservedObject var client: NetworkClient
     @Environment(\.dismiss) private var dismiss
     @State private var code = ""
     @FocusState private var codeFocused: Bool
 
     private var macName: String {
-        client.connectedServerName ?? String(localized: "pairing_this_mac")
+        client.connectingName ?? client.connectedServerName ?? String(localized: "pairing_this_mac")
     }
 
     var body: some View {
@@ -22,10 +22,10 @@ struct PairingSheet: View {
                     .foregroundStyle(.secondary)
 
                 VStack(spacing: 8) {
-                    Text(String(localized: "pairing_title \(macName)"))
+                    Text(String(localized: "pairing_code_title \(macName)"))
                         .font(.title2.weight(.semibold))
                         .multilineTextAlignment(.center)
-                    Text(String(localized: "pairing_instructions"))
+                    Text(String(localized: "pairing_code_hint"))
                         .font(.callout)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
@@ -35,43 +35,46 @@ struct PairingSheet: View {
                 codeField
 
                 statusView
+                    .frame(minHeight: 44)
 
                 Spacer()
-
-                Button {
-                    client.pair(code: code)
-                } label: {
-                    Text(String(localized: "pairing_pair_button"))
-                        .frame(maxWidth: .infinity)
-                }
-                .prominentGlassButton()
-                .controlSize(.large)
-                .disabled(code.count != PairingCrypto.codeLength || client.pairingState == .inProgress || !client.isConnected)
-                .padding(.horizontal)
             }
             .padding(.bottom, 24)
             .navigationTitle(String(localized: "pairing_nav_title"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "cancel")) { dismiss() }
-                }
-            }
-            .onAppear {
-                client.resetPairingState()
-                codeFocused = true
-            }
-            .onChange(of: client.pairingState) { _, state in
-                if state == .succeeded {
-                    Task {
-                        try? await Task.sleep(for: .seconds(1.2))
+                    Button(String(localized: "cancel")) {
+                        client.disconnect()
                         dismiss()
                     }
                 }
             }
+            .onAppear { codeFocused = true }
+            .onChange(of: code) { _, value in
+                let digits = String(value.filter(\.isNumber).prefix(PairingCrypto.codeLength))
+                if digits != value { code = digits }
+                submitIfReady()
+            }
+            .onChange(of: client.pairingState) { _, _ in
+                submitIfReady()
+            }
         }
-        .presentationDetents([.medium, .large])
-        .presentationDragIndicator(.visible)
+        .presentationDetents([.large])
+        .interactiveDismissDisabled(client.pairingState == .verifying)
+    }
+
+    /// Sends the code as soon as all six digits are in and the Mac is ready for it.
+    private func submitIfReady() {
+        guard code.count == PairingCrypto.codeLength, client.pairingState == .awaitingCode else { return }
+        client.submitPairingCode(code)
+    }
+
+    private var isEditable: Bool {
+        switch client.pairingState {
+        case .requesting, .awaitingCode: return true
+        default: return false
+        }
     }
 
     private var codeField: some View {
@@ -81,12 +84,9 @@ struct PairingSheet: View {
                 .keyboardType(.numberPad)
                 .textContentType(.oneTimeCode)
                 .focused($codeFocused)
+                .disabled(!isEditable)
                 .opacity(0.02)
                 .frame(height: 1)
-                .onChange(of: code) { _, value in
-                    let digits = value.filter(\.isNumber)
-                    code = String(digits.prefix(PairingCrypto.codeLength))
-                }
 
             HStack(spacing: 10) {
                 ForEach(0..<PairingCrypto.codeLength, id: \.self) { index in
@@ -97,10 +97,12 @@ struct PairingSheet: View {
                         .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 12))
                         .overlay(
                             RoundedRectangle(cornerRadius: 12)
-                                .stroke(index == digits.count && codeFocused ? Color.accentColor : Color.clear, lineWidth: 2)
+                                .stroke(index == digits.count && codeFocused && isEditable ? Color.accentColor : Color.clear,
+                                        lineWidth: 2)
                         )
                 }
             }
+            .opacity(isEditable || client.pairingState == .verifying ? 1 : 0.5)
             .contentShape(Rectangle())
             .onTapGesture { codeFocused = true }
         }
@@ -109,13 +111,16 @@ struct PairingSheet: View {
     @ViewBuilder
     private var statusView: some View {
         switch client.pairingState {
-        case .idle:
-            if !client.isConnected {
-                Text(String(localized: "pairing_not_connected"))
+        case .idle, .awaitingCode:
+            EmptyView()
+        case .requesting:
+            HStack(spacing: 8) {
+                ProgressView()
+                Text(String(localized: "pairing_requesting \(macName)"))
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
-        case .inProgress:
+        case .verifying:
             HStack(spacing: 8) {
                 ProgressView()
                 Text(String(localized: "pairing_in_progress"))
@@ -127,17 +132,39 @@ struct PairingSheet: View {
                 .font(.footnote)
                 .foregroundStyle(.green)
         case .failed(let reason):
-            Text(reason)
-                .font(.footnote)
-                .foregroundStyle(.red)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal)
+            VStack(spacing: 12) {
+                Text(reason)
+                    .font(.footnote)
+                    .foregroundStyle(.red)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal)
+                Button(String(localized: "pairing_try_again")) {
+                    code = ""
+                    client.retryPairing()
+                    codeFocused = true
+                }
+                .buttonStyle(.bordered)
+            }
         }
     }
 }
 
-#Preview("Pairing") {
+#Preview("Waiting for code") {
     Color.clear.sheet(isPresented: .constant(true)) {
-        PairingSheet(client: .preview())
+        PairingCodeView(client: {
+            let client = NetworkClient.preview(connected: false)
+            client.setPreviewPairingState(.awaitingCode)
+            return client
+        }())
+    }
+}
+
+#Preview("Wrong code") {
+    Color.clear.sheet(isPresented: .constant(true)) {
+        PairingCodeView(client: {
+            let client = NetworkClient.preview(connected: false)
+            client.setPreviewPairingState(.failed("Wrong code. Try again to get a new one."))
+            return client
+        }())
     }
 }

@@ -134,23 +134,17 @@ private struct DevicesSettings: View {
         Form {
             Section {
                 if manager.pairedDevices.isEmpty {
-                    Text("No paired devices yet. Pairing gives a device its own encrypted connection to this Mac.")
+                    Text("No devices yet.")
                         .foregroundStyle(.secondary)
                 } else {
                     ForEach(manager.pairedDevices) { device in
                         pairedRow(device)
                     }
                 }
-                Button("Pair a Device…") {
-                    manager.pairingRequested = true
-                }
-                .disabled(!manager.isRunning)
             } header: {
                 Text("Paired Devices")
             } footer: {
-                if !manager.isRunning {
-                    Text("Turn on the server from the menu bar to pair.")
-                }
+                Text("To add a device, open MacRemote on it and choose this Mac. A code appears here to confirm it. Forgetting a device disconnects it and it must enter a new code to reconnect.")
             }
 
             Section {
@@ -162,9 +156,9 @@ private struct DevicesSettings: View {
                 } else {
                     ForEach(manager.devices) { device in
                         HStack(spacing: 10) {
-                            Image(systemName: device.isSecure ? "lock.fill" : "lock.open")
+                            Image(systemName: "lock.fill")
                                 .foregroundStyle(.secondary)
-                                .help(device.isSecure ? "Encrypted connection" : "Unencrypted connection")
+                                .help("Encrypted connection")
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(device.displayName)
                                 Text("\(device.address) · since \(device.connectedAt, style: .time)")
@@ -262,18 +256,6 @@ private struct SecuritySettings: View {
     var body: some View {
         Form {
             Section {
-                Toggle("Allow unencrypted connections", isOn: $settings.allowUnencryptedConnections)
-                LabeledContent("Encrypted port") {
-                    Text(manager.securePort.map(String.init) ?? String(settings.tlsPort))
-                        .foregroundStyle(.secondary)
-                }
-            } header: {
-                Text("Encryption")
-            } footer: {
-                Text("Paired devices always connect over TLS. Turn this off once every device you use is paired, and unpaired devices on your network will no longer be able to control this Mac.")
-            }
-
-            Section {
                 Toggle("Allow unlocking this Mac from a paired iPhone", isOn: unlockBinding)
 
                 if manager.isRemoteUnlockConfigured {
@@ -293,7 +275,7 @@ private struct SecuritySettings: View {
             }
         }
         .formStyle(.grouped)
-        .frame(height: 440)
+        .frame(height: 320)
         .sheet(isPresented: $showingUnlockSheet) {
             RemoteUnlockSheet(manager: manager)
         }

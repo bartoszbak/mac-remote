@@ -10,8 +10,8 @@ import SwiftUI
 ///
 /// Two listeners run side by side:
 /// - the **plaintext** listener on the configured port, advertised over Bonjour.
-///   It handles discovery and pairing, and (while `allowUnencryptedConnections`
-///   is on) legacy control from unpaired clients;
+///   It handles discovery and pairing only; no control messages are accepted on it.
+///   A device connecting here for the first time triggers the pairing window;
 /// - the **encrypted** listener on the next port, TLS 1.2 with one pre-shared key
 ///   per paired device. Only paired devices can complete its handshake.
 @MainActor
@@ -63,23 +63,22 @@ final class ServerManager: ObservableObject {
         var id: Int { rawValue }
     }
 
-    /// An active "Pair a Device" window.
+    /// A device asking to connect. Started by the device's `pairRequest`; the Mac shows
+    /// the code and the device must send proof of it.
     struct PairingSession: Equatable {
         enum Phase: Equatable {
-            case waiting
-            case inProgress(deviceName: String)
-            case succeeded(deviceName: String)
+            case waitingForCode
+            case succeeded
             case failed(reason: String)
         }
         let code: String
+        let deviceName: String
         let startedAt: Date
         let expiresAt: Date
-        var phase: Phase = .waiting
+        var phase: Phase = .waitingForCode
 
         var isOpen: Bool {
-            if case .waiting = phase { return Date() < expiresAt }
-            if case .inProgress = phase { return Date() < expiresAt }
-            return false
+            phase == .waitingForCode && Date() < expiresAt
         }
     }
 
@@ -103,6 +102,8 @@ final class ServerManager: ObservableObject {
     @Published var requestedOnboardingStep: OnboardingStep?
     /// Set when the UI should open the pairing window.
     @Published var pairingRequested = false
+    /// Connection that the open pairing session belongs to.
+    private var pairingConnectionID: ObjectIdentifier?
 
     // MARK: - Private
 
@@ -196,7 +197,7 @@ final class ServerManager: ObservableObject {
 
     func stop() {
         userStoppedExplicitly = true
-        cancelPairing()
+        closePairing()
         stopLockStateMonitor()
         Task { await stopScreenStreaming() }
         input.perform { $0.releaseAllButtons() }
@@ -228,39 +229,64 @@ final class ServerManager: ObservableObject {
         secureServer.start(port: settings.tlsPort, serviceName: nil, tls: .init(presharedKeys: keys))
     }
 
-    /// Called whenever the set of paired devices changes: the TLS options are fixed
-    /// per listener, so it is restarted with the new key set.
+    /// Called whenever the set of paired devices changes. TLS options are fixed per
+    /// listener, so the listener is replaced; already-connected devices stay connected.
     private func reloadSecureServer() {
         pairedDevices = pairedStore.devices
         guard case .running = plainState else { return }
-        secureServer.stop()
-        startSecureServerIfPossible()
+        let keys = pairedDevices.map { NetworkServer.TLSConfiguration.PresharedKey(identity: $0.id, key: $0.presharedKey) }
+        if keys.isEmpty {
+            secureServer.stop()
+        } else if case .running = secureState {
+            secureServer.replaceListener(port: settings.tlsPort, serviceName: nil, tls: .init(presharedKeys: keys))
+        } else {
+            secureServer.start(port: settings.tlsPort, serviceName: nil, tls: .init(presharedKeys: keys))
+        }
     }
 
     // MARK: - Pairing
 
-    func startPairing() {
+    /// Opens a pairing session for the device on `connectionID` and asks the UI to show it.
+    private func openPairing(deviceName: String, connectionID: ObjectIdentifier) {
         pairingExpiryTask?.cancel()
         let now = Date()
-        pairingSession = PairingSession(code: PairingCrypto.randomCode(), startedAt: now,
+        pairingSession = PairingSession(code: PairingCrypto.randomCode(), deviceName: deviceName, startedAt: now,
                                         expiresAt: now.addingTimeInterval(Self.pairingWindow))
+        pairingConnectionID = connectionID
+        pairingRequested = true
         pairingExpiryTask = Task { [weak self] in
             try? await Task.sleep(for: .seconds(Self.pairingWindow))
             guard !Task.isCancelled, let self else { return }
-            if let session = self.pairingSession, session.isOpen == false, case .waiting = session.phase {
-                self.pairingSession?.phase = .failed(reason: String(localized: "The code expired."))
-            } else if let session = self.pairingSession, case .inProgress = session.phase {
-                self.pairingSession?.phase = .failed(reason: String(localized: "The code expired."))
-            }
+            self.failPairing(reason: String(localized: "The code expired."), tellDevice: "The code expired. Try again.")
         }
-        print("[Pairing] Window opened")
+        print("[Pairing] \(deviceName) asked to connect")
     }
 
-    func cancelPairing() {
+    /// Ends an open session as failed and tells the waiting device why.
+    private func failPairing(reason: String, tellDevice message: String) {
+        guard var session = pairingSession, session.phase == .waitingForCode else { return }
+        session.phase = .failed(reason: reason)
+        pairingSession = session
+        pairingExpiryTask?.cancel()
+        if let id = pairingConnectionID, let context = contexts[id] {
+            contexts[id]?.pairing = nil
+            send(.pairResult(success: false, serverProof: nil, message: message), to: context.connection)
+        }
+        pairingConnectionID = nil
+    }
+
+    /// The user refused the request on the Mac.
+    func denyPairing() {
+        failPairing(reason: String(localized: "You declined the request."), tellDevice: "The Mac declined the request.")
+    }
+
+    /// Called when the pairing window closes. Closing an open request declines it.
+    func closePairing() {
+        if pairingSession?.isOpen == true { denyPairing() }
         pairingExpiryTask?.cancel()
         pairingExpiryTask = nil
         pairingSession = nil
-        for id in contexts.keys { contexts[id]?.pairing = nil }
+        pairingConnectionID = nil
     }
 
     func forgetDevice(id: String) {
@@ -270,6 +296,13 @@ final class ServerManager: ObservableObject {
             contexts.removeValue(forKey: key)
         }
         reloadSecureServer()
+    }
+
+    /// Drops a connected device. It stays paired and can reconnect from the phone.
+    func disconnect(device id: ObjectIdentifier) {
+        guard let context = contexts[id] else { return }
+        context.connection.cancel()
+        forget(connectionID: id)
     }
 
     func renameDevice(id: String, to name: String) {
@@ -287,12 +320,17 @@ final class ServerManager: ObservableObject {
         guard var context = contexts[id] else { return }
 
         guard !context.isSecure else {
-            plainServer.send(.pairResult(success: false, serverProof: nil, message: "Already paired."), to: connection)
+            send(.pairResult(success: false, serverProof: nil, message: "Already paired."), to: connection)
             return
         }
-        guard var session = pairingSession, session.isOpen, case .waiting = session.phase else {
+        guard permissions.allRequiredGranted else {
+            send(.pairResult(success: false, serverProof: nil, message: "The Mac is missing permissions. Check MacRemote on the Mac."), to: connection)
+            return
+        }
+        // One request at a time. A device retrying replaces its own request.
+        if pairingSession?.isOpen == true, pairingConnectionID != id {
             send(.pairResult(success: false, serverProof: nil,
-                             message: "No pairing in progress. Choose Pair a Device on the Mac first."), to: connection)
+                             message: "Another device is connecting to this Mac. Try again in a moment."), to: connection)
             return
         }
 
@@ -315,11 +353,9 @@ final class ServerManager: ObservableObject {
             presharedKey: PairingCrypto.presharedKey(from: secret, salt: salt)
         )
         contexts[id] = context
-        session.phase = .inProgress(deviceName: deviceName)
-        pairingSession = session
+        openPairing(deviceName: deviceName, connectionID: id)
 
         send(.pairChallenge(publicKey: privateKey.publicKey.rawRepresentation, salt: salt), to: connection)
-        print("[Pairing] Challenge sent to \(deviceName)")
     }
 
     private func handlePairConfirm(proof: Data, from connection: NWConnection) {
@@ -331,19 +367,17 @@ final class ServerManager: ObservableObject {
         context.pairing = nil
         contexts[id] = context
 
-        guard var session = pairingSession, session.isOpen else {
-            send(.pairResult(success: false, serverProof: nil, message: "The code expired."), to: connection)
+        guard var session = pairingSession, session.isOpen, pairingConnectionID == id else {
+            send(.pairResult(success: false, serverProof: nil, message: "The code expired. Try again."), to: connection)
             return
         }
 
         let expected = PairingCrypto.clientProof(sessionKey: exchange.sessionKey, code: session.code)
         guard PairingCrypto.constantTimeEquals(proof, expected) else {
-            // One attempt per code: close the window so the code cannot be brute-forced.
-            session.phase = .failed(reason: String(localized: "The code entered on the device was wrong."))
-            pairingSession = session
-            pairingExpiryTask?.cancel()
-            send(.pairResult(success: false, serverProof: nil, message: "Wrong code."), to: connection)
+            // One attempt per code so it cannot be brute-forced; a retry gets a new code.
             print("[Pairing] Wrong code from \(exchange.deviceName)")
+            failPairing(reason: String(localized: "The code entered on the device was wrong."),
+                        tellDevice: "Wrong code. Try again to get a new one.")
             return
         }
 
@@ -358,18 +392,18 @@ final class ServerManager: ObservableObject {
             devices[index].isPaired = true
         }
 
-        session.phase = .succeeded(deviceName: device.name)
+        session.phase = .succeeded
         pairingSession = session
         pairingExpiryTask?.cancel()
+        pairingConnectionID = nil
         lastActivity = .paired(device.name, Date())
 
+        // Accept the new key before telling the device, so its TLS connection finds it.
+        reloadSecureServer()
         send(.pairResult(success: true,
                          serverProof: PairingCrypto.serverProof(sessionKey: exchange.sessionKey, code: session.code),
                          message: "Paired."), to: connection)
-        sendWelcome(to: connection)
         print("[Pairing] Paired with \(device.name)")
-
-        reloadSecureServer()
     }
 
     // MARK: - Remote Unlock configuration
@@ -462,18 +496,6 @@ final class ServerManager: ObservableObject {
         settings.$sharedDisplayID
             .sink { [weak self] value in self?.screenCaptureManager.preferredDisplayID = value }
             .store(in: &cancellables)
-        settings.$allowUnencryptedConnections
-            .dropFirst()
-            .sink { [weak self] _ in
-                guard let self else { return }
-                // Plaintext clients must pass the gate again before using the fast path.
-                self.input.revokeAll()
-                // Tell every plaintext client whether it may still send control messages.
-                for context in self.contexts.values where !context.isSecure {
-                    self.sendWelcome(to: context.connection)
-                }
-            }
-            .store(in: &cancellables)
     }
 
     // MARK: - Server callbacks
@@ -510,6 +532,13 @@ final class ServerManager: ObservableObject {
             guard let self else { return }
             let id = ObjectIdentifier(connection)
             self.contexts[id] = Context(connection: connection, isSecure: secure)
+
+            // A plaintext connection is only a doorway: it can identify itself and pair.
+            // It is not a connected device and receives nothing about this Mac.
+            guard secure else {
+                self.sendWelcome(to: connection)
+                return
+            }
             self.devices.append(ConnectedDevice(id: id, address: connection.peerDescription,
                                                 connectedAt: Date(), isSecure: secure))
 
@@ -548,6 +577,9 @@ final class ServerManager: ObservableObject {
         if let context = contexts[id] {
             input.setAuthorized(false, for: context.connection)
         }
+        if pairingConnectionID == id {
+            failPairing(reason: String(localized: "The device disconnected."), tellDevice: "")
+        }
         contexts.removeValue(forKey: id)
         unlockChallenges.removeValue(forKey: id)
         if contexts.isEmpty {
@@ -583,7 +615,7 @@ final class ServerManager: ObservableObject {
         let locked = InputController.isScreenLocked
         guard locked != lastReportedLockState else { return }
         lastReportedLockState = locked
-        for context in contexts.values {
+        for context in contexts.values where context.isSecure {
             send(.screenLockState(isLocked: locked), to: context.connection)
         }
     }
@@ -599,7 +631,7 @@ final class ServerManager: ObservableObject {
             serverID: settings.serverID,
             serverName: settings.effectiveServiceName,
             protocolVersion: NetworkConstants.protocolVersion,
-            tlsPort: securePort,
+            tlsPort: securePort ?? settings.tlsPort,
             isPaired: isPaired(context),
             controlAllowed: controlAllowed(context)
         ), to: connection)
@@ -610,9 +642,9 @@ final class ServerManager: ObservableObject {
         return context.isSecure || pairedStore.device(id: deviceID) != nil
     }
 
-    /// Control is allowed over TLS always, and over plaintext only in legacy mode.
+    /// Control is only ever allowed over the encrypted link of a paired device.
     private func controlAllowed(_ context: Context) -> Bool {
-        context.isSecure || settings.allowUnencryptedConnections
+        context.isSecure
     }
 
     // MARK: - Message handling
@@ -643,7 +675,7 @@ final class ServerManager: ObservableObject {
             input.setAuthorized(false, for: connection)
             if !context.warnedUnauthorized {
                 contexts[id]?.warnedUnauthorized = true
-                send(.error(message: "This Mac only accepts paired devices. Open MacRemote on the Mac and choose Pair a Device."), to: connection)
+                send(.error(message: "Pair this iPhone with the Mac to control it."), to: connection)
             }
             return
         }

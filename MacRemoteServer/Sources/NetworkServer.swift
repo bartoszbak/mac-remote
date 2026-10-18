@@ -145,6 +145,27 @@ final class NetworkServer {
         }
     }
 
+    /// Replaces the listener, e.g. with a new TLS key set, keeping every accepted
+    /// connection open. TLS options are fixed per listener, so this is how a newly
+    /// paired device becomes acceptable without kicking the others off.
+    func replaceListener(port: UInt16, serviceName: String?, txtRecord: [String: String] = [:], tls: TLSConfiguration? = nil) {
+        queue.async { [self] in
+            guard let old = listener else {
+                start(port: port, serviceName: serviceName, txtRecord: txtRecord, tls: tls)
+                return
+            }
+            listener = nil
+            old.newConnectionHandler = nil
+            old.serviceRegistrationUpdateHandler = nil
+            // The port is only free once the old listener has fully cancelled.
+            old.stateUpdateHandler = { [weak self] state in
+                guard case .cancelled = state else { return }
+                self?.start(port: port, serviceName: serviceName, txtRecord: txtRecord, tls: tls)
+            }
+            old.cancel()
+        }
+    }
+
     func stop() {
         queue.async { [self] in
             tearDown()

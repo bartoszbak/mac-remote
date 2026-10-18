@@ -20,7 +20,6 @@ struct SettingsView: View {
     @AppStorage(TrackpadSettings.naturalScrollingKey) private var naturalScrolling = true
     @AppStorage(TrackpadSettings.hapticsKey) private var hapticsEnabled = true
     @Environment(\.dismiss) private var dismiss
-    @State private var showingPairing = false
 
     var body: some View {
         NavigationStack {
@@ -52,30 +51,18 @@ struct SettingsView: View {
                 Section {
                     if client.isConnected {
                         HStack(spacing: 12) {
-                            Image(systemName: client.isPaired ? "lock.fill" : "lock.open")
+                            Image(systemName: "lock.fill")
                                 .foregroundStyle(.secondary)
                                 .frame(width: 28)
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(client.connectedServerName ?? String(localized: "pairing_this_mac"))
-                                Text(client.isPaired
-                                     ? (client.isSecure
-                                        ? String(localized: "settings_mac_paired_encrypted")
-                                        : String(localized: "settings_mac_paired"))
-                                     : String(localized: "settings_mac_not_paired"))
+                                Text(String(localized: "settings_mac_paired_encrypted"))
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                             }
                         }
-                        if client.isPaired {
-                            Button(String(localized: "unlock_forget_pairing"), role: .destructive) {
-                                client.forgetPairing()
-                            }
-                        } else {
-                            Button {
-                                showingPairing = true
-                            } label: {
-                                SettingsLabel(String(localized: "settings_pair_button"), systemImage: "link")
-                            }
+                        Button(String(localized: "settings_forget_mac"), role: .destructive) {
+                            client.forgetPairing()
                         }
                     } else {
                         Text(String(localized: "settings_mac_disconnected"))
@@ -84,9 +71,7 @@ struct SettingsView: View {
                 } header: {
                     Text(String(localized: "settings_section_mac"))
                 } footer: {
-                    Text(client.isPaired
-                         ? String(localized: "settings_mac_paired_footer")
-                         : String(localized: "settings_mac_unpaired_footer"))
+                    Text(String(localized: "settings_mac_paired_footer"))
                 }
 
                 Section(String(localized: "trackpad_gestures_header")) {
@@ -112,9 +97,6 @@ struct SettingsView: View {
                                title: String(localized: "trackpad_gesture_zoom"),
                                detail: String(localized: "trackpad_gesture_zoom_how"))
                 }
-            }
-            .sheet(isPresented: $showingPairing) {
-                PairingSheet(client: client)
             }
             .softTopEdge()
             .navigationTitle(String(localized: "settings"))

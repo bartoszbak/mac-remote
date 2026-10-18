@@ -45,7 +45,7 @@ iOS Client ←→ TCP (JSON + 4-byte length prefix) ←→ macOS Server
 - `Views/MenuBarView.swift` - Popover: status + switch, devices list, problem state, footer
 - `Views/OnboardingView.swift` - First-run window: permissions with live polling, start, launch at login
 - `Views/SettingsView.swift` - Settings scene (General, Devices, Security, Permissions, About)
-- `Views/PairingView.swift` - "Pair a Device" window: code, countdown, outcome
+- `Views/PairingView.swift` - Opens itself when a device asks to connect: device name, code, countdown, Decline
 - `Views/Components.swift` - Menu bar icon renderer (template `MenuBarIcon` asset + state badge), shared rows
 
 **MacRemoteClient/** - iOS app
@@ -53,7 +53,7 @@ iOS Client ←→ TCP (JSON + 4-byte length prefix) ←→ macOS Server
 - `BonjourBrowser.swift` - Service discovery using `NWBrowser`
 - `TrackpadView.swift` - Gesture handling for mouse control
 - `RemoteControlView.swift` - Tab container with embedded keyboard input
-- `Pairing/` - `DeviceIdentity` (stable per-install ID), `PairedMacStore` (serverID → PSK in the Keychain), `PairingSheet` (6-digit code entry, opened from Settings)
+- `Pairing/` - `DeviceIdentity` (stable per-install ID), `PairedMacStore` (serverID → PSK in the Keychain), `PairingCodeView` (6-digit entry shown over the connect sheet on first connect)
 
 ### Message Framing
 
@@ -61,9 +61,9 @@ All TCP messages use 4-byte big-endian length prefix + JSON payload. See `Messag
 
 ### Security model
 
-- Pairing happens once per device over the plaintext port while the Mac shows a 6-digit code; it yields a per-device 32-byte pre-shared key.
-- Paired devices connect to the TLS-PSK port (identity = device ID). Unpaired devices can only pair, or use legacy plaintext control while **Allow unencrypted connections** is on.
-- iOS always connects in plaintext first; `welcome` carries `serverID` and `tlsPort`, and the client upgrades to TLS when it holds a key for that Mac. Remote unlock requires pairing; there is no separate pairing key.
+- **No pairing, no connection.** The plaintext port (5150) only carries `hello`, `welcome` and pairing. Control, screen, apps, wake info and lock state only flow over TLS-PSK (5151) from a paired device. There is no opt-out.
+- Connecting to a new Mac *is* pairing: the phone sends `pairRequest` automatically, the Mac pops a window with the device name and a 6-digit code, the phone shows code entry over its connect sheet.
+- Each paired device has its own 32-byte pre-shared key. Adding one swaps the TLS listener (`NetworkServer.replaceListener`) without dropping connected devices.
 - Adding enum cases to `RemoteMessage`/`ServerMessage` is backward compatible on the wire (unknown cases fail to decode and are dropped), but every `switch` over them must stay exhaustive in both apps.
 
 ## Development Notes

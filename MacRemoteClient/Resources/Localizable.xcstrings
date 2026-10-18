@@ -319,6 +319,23 @@
         }
       }
     },
+    "connection_connecting": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connecting…"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conectando…"
+          }
+        }
+      }
+    },
     "connection_current": {
       "extractionState": "stale",
       "localizations": {
@@ -965,19 +982,53 @@
         }
       }
     },
+    "pairing_code_hint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The first time you connect, the Mac shows a 6-digit code to confirm it's you."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La primera vez que te conectas, el Mac muestra un código de 6 dígitos para confirmar que eres tú."
+          }
+        }
+      }
+    },
+    "pairing_code_title %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter the code shown on %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Introduce el código que aparece en %@"
+          }
+        }
+      }
+    },
     "pairing_failed": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pairing failed. Get a new code on the Mac and try again."
+            "value": "Couldn't connect. Get a new code and try again."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "El emparejamiento ha fallado. Genera un código nuevo en el Mac e inténtalo de nuevo."
+            "value": "No se pudo conectar. Obtén un código nuevo e inténtalo de nuevo."
           }
         }
       }
@@ -988,30 +1039,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pairing…"
+            "value": "Checking the code…"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Emparejando…"
-          }
-        }
-      }
-    },
-    "pairing_instructions": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Enter the 6-digit code shown in the Pair a Device window on the Mac."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Introduce el código de 6 dígitos que muestra la ventana Emparejar un dispositivo del Mac."
+            "value": "Comprobando el código…"
           }
         }
       }
@@ -1033,70 +1067,36 @@
         }
       }
     },
-    "pairing_lost": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The Mac no longer recognizes this iPhone. Pair again in Settings."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "El Mac ya no reconoce este iPhone. Vuelve a emparejar en Ajustes."
-          }
-        }
-      }
-    },
     "pairing_nav_title": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pair"
+            "value": "Connect"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Emparejar"
+            "value": "Conectar"
           }
         }
       }
     },
-    "pairing_not_connected": {
+    "pairing_requesting %@": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Connect to the Mac first."
+            "value": "Waiting for %@…"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Conéctate primero al Mac."
-          }
-        }
-      }
-    },
-    "pairing_pair_button": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pair"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Emparejar"
+            "value": "Esperando a %@…"
           }
         }
       }
@@ -1107,13 +1107,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Paired. Switching to an encrypted connection."
+            "value": "Connected"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Emparejado. Cambiando a una conexión cifrada."
+            "value": "Conectado"
           }
         }
       }
@@ -1135,19 +1135,19 @@
         }
       }
     },
-    "pairing_title %@": {
+    "pairing_try_again": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pair with %@"
+            "value": "Get a New Code"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Emparejar con %@"
+            "value": "Obtener un código nuevo"
           }
         }
       }
@@ -1271,53 +1271,36 @@
         }
       }
     },
+    "settings_forget_mac": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Forget This Mac"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Olvidar este Mac"
+          }
+        }
+      }
+    },
     "settings_mac_disconnected": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Connect to a Mac to pair with it."
+            "value": "Not connected to a Mac."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Conéctate a un Mac para emparejarlo."
-          }
-        }
-      }
-    },
-    "settings_mac_not_paired": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Not paired"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sin emparejar"
-          }
-        }
-      }
-    },
-    "settings_mac_paired": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Paired"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Emparejado"
+            "value": "No hay ningún Mac conectado."
           }
         }
       }
@@ -1328,13 +1311,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Paired · Encrypted connection"
+            "value": "Connected · Encrypted"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Emparejado · Conexión cifrada"
+            "value": "Conectado · Cifrado"
           }
         }
       }
@@ -1345,47 +1328,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pairing gives this iPhone an encrypted connection and lets it unlock the Mac with Face ID or Touch ID."
+            "value": "This iPhone connects to the Mac over an encrypted link. Forgetting the Mac disconnects, and connecting again asks for a new code."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "El emparejamiento da a este iPhone una conexión cifrada y le permite desbloquear el Mac con Face ID o Touch ID."
-          }
-        }
-      }
-    },
-    "settings_mac_unpaired_footer": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "On the Mac, click the MacRemote menu bar icon, choose Pair a Device, then enter the code here."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "En el Mac, haz clic en el icono de MacRemote en la barra de menús, elige Emparejar un dispositivo e introduce aquí el código."
-          }
-        }
-      }
-    },
-    "settings_pair_button": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pair with this Mac…"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Emparejar con este Mac…"
+            "value": "Este iPhone se conecta al Mac mediante un enlace cifrado. Si olvidas el Mac, se desconecta y al volver a conectar se pedirá un código nuevo."
           }
         }
       }
@@ -1475,36 +1424,19 @@
         }
       }
     },
-    "system_unlock_footer": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pair this iPhone with the Mac in Settings. Unlocking then requires Face ID or Touch ID."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Empareja este iPhone con el Mac en Ajustes. Desbloquear requerirá Face ID o Touch ID."
-          }
-        }
-      }
-    },
     "system_unlock_not_paired": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Not paired with this Mac"
+            "value": "Not connected to a Mac"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sin emparejar con este Mac"
+            "value": "No hay ningún Mac conectado"
           }
         }
       }
@@ -2219,23 +2151,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Comando de desbloqueo enviado al Mac."
-          }
-        }
-      }
-    },
-    "unlock_forget_pairing": {
-      "extractionState": "stale",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Forget Pairing"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Olvidar emparejamiento"
           }
         }
       }

@@ -86,6 +86,50 @@ final class NetworkServerTLSTests: XCTestCase {
         client.cancel()
     }
 
+    /// Pairing a new device swaps the listener's key set. A device already connected must
+    /// stay connected, and the new device must be accepted.
+    func testReplacingListenerKeepsConnectionsAndAcceptsNewKey() throws {
+        let port = try startSecureServer()
+
+        let (first, firstReady, firstFailed) = connect(port: port, identity: "device-a", key: keyA)
+        firstFailed.isInverted = true
+        wait(for: [firstReady], timeout: 5)
+
+        let keyC = PairingCrypto.randomBytes(32)
+        let restarted = expectation(description: "listener running again")
+        server.onStateChanged = { state in
+            if case .running = state { restarted.fulfill() }
+        }
+        server.replaceListener(port: port, serviceName: nil, tls: .init(presharedKeys: [
+            .init(identity: "device-a", key: keyA),
+            .init(identity: "device-c", key: keyC)
+        ]))
+        wait(for: [restarted], timeout: 5)
+
+        // The first device can still talk over its original connection.
+        let stillHeard = expectation(description: "message from existing connection")
+        let fromC = expectation(description: "message from new device")
+        server.onMessageReceived = { message, _ in
+            if case .hello(let id, _, _) = message {
+                if id == "device-a" { stillHeard.fulfill() }
+                if id == "device-c" { fromC.fulfill() }
+            }
+        }
+        first.send(content: try MessageFrame.encode(RemoteMessage.hello(deviceID: "device-a", deviceName: "A", protocolVersion: 2)),
+                   completion: .contentProcessed { _ in })
+        wait(for: [stillHeard, firstFailed], timeout: 5)
+
+        let (second, secondReady, secondFailed) = connect(port: port, identity: "device-c", key: keyC)
+        secondFailed.isInverted = true
+        wait(for: [secondReady], timeout: 5)
+        second.send(content: try MessageFrame.encode(RemoteMessage.hello(deviceID: "device-c", deviceName: "C", protocolVersion: 2)),
+                    completion: .contentProcessed { _ in })
+        wait(for: [fromC, secondFailed], timeout: 5)
+
+        first.cancel()
+        second.cancel()
+    }
+
     func testWrongKeyCannotCompleteHandshake() throws {
         let port = try startSecureServer()
         let never = expectation(description: "server never reports a ready client")
