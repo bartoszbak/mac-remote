@@ -12,7 +12,9 @@ concurrency:
 jobs:
   build:
     name: Build and test
-    runs-on: macos-15
+    # Xcode 26's asset compiler crashes on the macOS 15 image (missing system symbols);
+    # the macOS 26 image matches the toolchain.
+    runs-on: macos-26
     timeout-minutes: 40
     env:
       SIGNING_FLAGS: CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
