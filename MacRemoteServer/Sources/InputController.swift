@@ -211,6 +211,92 @@ final class InputController {
 
     /// Types arbitrary Unicode text regardless of the Mac's keyboard layout.
     func typeText(_ text: String) {
+        typeCharacters(text, interval: 0)
+    }
+
+    /// Where synthetic events go. `.hid` is the real input stream (what the lock screen
+    /// reads); `.process` delivers to one app only, which tests use so keystrokes can
+    /// never land in whatever app is in front.
+    enum EventTarget {
+        case hid
+        case process(pid_t)
+    }
+
+    private func post(_ event: CGEvent, to target: EventTarget) {
+        switch target {
+        case .hid: event.post(tap: .cghidEventTap)
+        case .process(let pid): event.postToPid(pid)
+        }
+    }
+
+    /// Types text as real key presses (key code + Shift/Option) on the current keyboard
+    /// layout, holding modifier keys down around each character like a person would.
+    /// Needed for the lock screen, which ignores text attached to synthetic events.
+    /// Characters the layout cannot type in one keystroke fall back to a text event.
+    /// - Returns: the characters that had no key on this layout.
+    @discardableResult
+    func typeAsKeyPresses(_ text: String, interval: useconds_t = 20_000, target: EventTarget = .hid) -> [Character] {
+        let map = KeyboardLayoutMap.current()
+        var unmapped: [Character] = []
+        let shiftKey: CGKeyCode = 56
+        let optionKey: CGKeyCode = 58
+
+        func key(_ code: CGKeyCode, down: Bool, flags: CGEventFlags) {
+            guard let event = CGEvent(keyboardEventSource: eventSource, virtualKey: code, keyDown: down) else { return }
+            event.flags = flags
+            post(event, to: target)
+        }
+
+        for character in text {
+            guard let stroke = map?.stroke(for: character) else {
+                unmapped.append(character)
+                var utf16 = Array(String(character).utf16)
+                if let down = CGEvent(keyboardEventSource: eventSource, virtualKey: 0, keyDown: true),
+                   let up = CGEvent(keyboardEventSource: eventSource, virtualKey: 0, keyDown: false) {
+                    down.keyboardSetUnicodeString(stringLength: utf16.count, unicodeString: &utf16)
+                    up.keyboardSetUnicodeString(stringLength: utf16.count, unicodeString: &utf16)
+                    post(down, to: target)
+                    post(up, to: target)
+                }
+                usleep(interval)
+                continue
+            }
+
+            var flags: CGEventFlags = []
+            if stroke.shift {
+                flags.insert(.maskShift)
+                key(shiftKey, down: true, flags: flags)
+            }
+            if stroke.option {
+                flags.insert(.maskAlternate)
+                key(optionKey, down: true, flags: flags)
+            }
+            key(stroke.keyCode, down: true, flags: flags)
+            key(stroke.keyCode, down: false, flags: flags)
+            if stroke.option {
+                flags.remove(.maskAlternate)
+                key(optionKey, down: false, flags: flags)
+            }
+            if stroke.shift {
+                flags.remove(.maskShift)
+                key(shiftKey, down: false, flags: flags)
+            }
+            usleep(interval)
+        }
+        if !unmapped.isEmpty {
+            print("[InputController] \(unmapped.count) character(s) have no key on layout \(map?.layoutID ?? "unknown")")
+        }
+        return unmapped
+    }
+
+    /// Posts one key press per Unicode scalar, each carrying just that character.
+    ///
+    /// One character per event matters: macOS truncates the string attached to a single
+    /// key event (about 20 UTF-16 units), and secure fields such as the lock screen do not
+    /// reliably take several characters from one event. Verified against a focused
+    /// NSSecureTextField with Secure Event Input on.
+    /// - Parameter interval: pause between characters, for receivers that drop fast input.
+    private func typeCharacters(_ text: String, interval: useconds_t) {
         for scalar in text.unicodeScalars {
             var utf16 = Array(String(scalar).utf16)
             guard let down = CGEvent(keyboardEventSource: eventSource, virtualKey: 0, keyDown: true),
@@ -219,6 +305,7 @@ final class InputController {
             up.keyboardSetUnicodeString(stringLength: utf16.count, unicodeString: &utf16)
             down.post(tap: .cghidEventTap)
             up.post(tap: .cghidEventTap)
+            if interval > 0 { usleep(interval) }
         }
     }
 
@@ -315,23 +402,37 @@ final class InputController {
 
         guard Self.isScreenLocked else { return .screenNotLocked }
 
-        guard let passwordDown = CGEvent(keyboardEventSource: eventSource, virtualKey: 0, keyDown: true),
-              let passwordUp = CGEvent(keyboardEventSource: eventSource, virtualKey: 0, keyDown: false),
-              let returnDown = CGEvent(keyboardEventSource: eventSource, virtualKey: 36, keyDown: true),
-              let returnUp = CGEvent(keyboardEventSource: eventSource, virtualKey: 36, keyDown: false) else {
-            return .failed
+        let unmapped = typePasswordAndSubmit(password)
+        if !unmapped.isEmpty {
+            print("[InputController] Unlock may fail: password has characters with no key on this layout")
         }
-
-        var utf16 = Array(password.utf16)
-        passwordDown.keyboardSetUnicodeString(stringLength: utf16.count, unicodeString: &utf16)
-        passwordUp.keyboardSetUnicodeString(stringLength: utf16.count, unicodeString: &utf16)
-        passwordDown.post(tap: .cghidEventTap)
-        passwordUp.post(tap: .cghidEventTap)
-        usleep(100_000)
-        returnDown.post(tap: .cghidEventTap)
-        returnUp.post(tap: .cghidEventTap)
         print("[InputController] Remote unlock events posted")
         return .posted
+    }
+
+    /// Types `password` as real key presses (the lock screen reads key codes and ignores
+    /// attached text), then presses Return.
+    ///
+    /// Return is created at the moment it is sent. An event is stamped when it is created,
+    /// and a Return created before the password would arrive stamped *earlier* than the
+    /// characters it follows; the lock screen drops such an out-of-order event, leaving
+    /// the password typed but never submitted. It also carries no modifier flags.
+    @discardableResult
+    func typePasswordAndSubmit(_ password: String, interval: useconds_t = 20_000,
+                               target: EventTarget = .hid) -> [Character] {
+        let unmapped = typeAsKeyPresses(password, interval: interval, target: target)
+        usleep(150_000)
+        let returnKey: CGKeyCode = 36
+        if let down = CGEvent(keyboardEventSource: eventSource, virtualKey: returnKey, keyDown: true) {
+            down.flags = []
+            post(down, to: target)
+        }
+        usleep(15_000)
+        if let up = CGEvent(keyboardEventSource: eventSource, virtualKey: returnKey, keyDown: false) {
+            up.flags = []
+            post(up, to: target)
+        }
+        return unmapped
     }
 
     // MARK: - Screen Info
