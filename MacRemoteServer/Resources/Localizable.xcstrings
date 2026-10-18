@@ -211,26 +211,6 @@
         }
       }
     },
-    "Copied": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Copiado"
-          }
-        }
-      }
-    },
-    "Copy": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Copiar"
-          }
-        }
-      }
-    },
     "Couldn't start the server": {
       "localizations": {
         "es": {
@@ -387,26 +367,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dirección de hardware"
-          }
-        }
-      }
-    },
-    "Hidden": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Oculta"
-          }
-        }
-      }
-    },
-    "Hide": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ocultar"
           }
         }
       }
@@ -791,16 +751,6 @@
         }
       }
     },
-    "Pairing key": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Clave de emparejamiento"
-          }
-        }
-      }
-    },
     "Pairing lets this device connect over an encrypted link, even when unencrypted connections are turned off.": {
       "localizations": {
         "es": {
@@ -947,16 +897,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Obligatorio. Permite a MacRemote compartir la pantalla."
-          }
-        }
-      }
-    },
-    "Reveal": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mostrar"
           }
         }
       }
@@ -1181,12 +1121,12 @@
         }
       }
     },
-    "The password never leaves this Mac. Your iPhone proves it holds the pairing key with a one-time signature and must authenticate with Face ID or Touch ID first. Unlocking only works while the lock screen is showing.": {
+    "The password never leaves this Mac. Only a paired iPhone can unlock it, after authenticating with Face ID or Touch ID, and only while the lock screen is showing.": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "La contraseña nunca sale de este Mac. Tu iPhone demuestra que tiene la clave de emparejamiento con una firma de un solo uso y antes debe autenticarse con Face ID o Touch ID. El desbloqueo solo funciona mientras se muestra la pantalla de bloqueo."
+            "value": "La contraseña nunca sale de este Mac. Solo un iPhone emparejado puede desbloquearlo, tras autenticarse con Face ID o Touch ID, y solo mientras se muestra la pantalla de bloqueo."
           }
         }
       }

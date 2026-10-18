@@ -5,8 +5,6 @@ struct SystemView: View {
     @ObservedObject var client: NetworkClient
 
     @State private var showingLockConfirmation = false
-    @State private var pairingKey = ""
-    @State private var pairingKeyError = false
 
     var body: some View {
         List {
@@ -34,7 +32,7 @@ struct SystemView: View {
     @ViewBuilder
     private var unlockSection: some View {
         Section {
-            if client.hasUnlockPairingKey {
+            if client.isPaired {
                 if client.isScreenLocked == false {
                     Label {
                         Text(String(localized: "unlock_state_unlocked"))
@@ -58,31 +56,22 @@ struct SystemView: View {
                     .listRowBackground(Color.clear)
                 }
             } else {
-                TextField(String(localized: "unlock_pairing_key"), text: $pairingKey)
-                    .textInputAutocapitalization(.characters)
-                    .autocorrectionDisabled()
-                    .font(.system(.body, design: .monospaced))
-
-                Button(String(localized: "unlock_save_pairing")) {
-                    pairingKeyError = !client.saveUnlockPairingKey(pairingKey)
-                    if !pairingKeyError {
-                        pairingKey = ""
-                    }
+                Label {
+                    Text(String(localized: "system_unlock_not_paired"))
+                        .foregroundStyle(.secondary)
+                } icon: {
+                    Image(systemName: "lock.slash")
+                        .foregroundStyle(.secondary)
                 }
-                .disabled(pairingKey.isEmpty)
             }
         } header: {
             Text(String(localized: "system_section_unlock"))
         } footer: {
             VStack(alignment: .leading, spacing: 4) {
-                if pairingKeyError {
-                    Text(String(localized: "unlock_invalid_pairing_key"))
-                        .foregroundStyle(.red)
-                }
                 if let status = client.unlockStatus {
                     Text(status)
                 }
-                if !client.hasUnlockPairingKey {
+                if !client.isPaired {
                     Text(String(localized: "system_unlock_footer"))
                 }
             }

@@ -120,20 +120,20 @@ Goal: a safe base to refactor on.
 - [x] Make `NetworkServer` thread-safe: confine `connections` to its queue or make it an actor.
 - [x] Rename `Tuist/Config.swift` → `Tuist.swift`.
 - [ ] Delete `KeyboardView` struct (keep `KeyCodes` in its own file), the `MagnificationGesture` stub, and the no-op in `ScreenView.handleDragEnd`.
-- [~] Add a `hello(version:)` client message and `welcome(version:)` server reply (done on the Mac; iOS to send `hello`).
+- [x] Add a `hello(version:)` client message and `welcome(version:)` server reply.
 - [ ] Localize every remaining string on iOS and the Mac popover. Add a Mac `Localizable.xcstrings`.
 
 ### Phase 2: Security (3–4 days)
 
 Goal: only paired devices can talk to the Mac, and the traffic is encrypted.
 
-- [~] **Pairing flow.** Mac half done (see `docs/PAIRING_PROTOCOL.md`): 6-digit code for 60 s, X25519 key agreement with HKDF-derived keys, code proven by HMAC, one attempt per code. iOS half pending.
-- [~] **TLS with pre-shared keys.** Mac listener done on port+1 with one PSK per paired device (loopback-tested: second identity connects; wrong key, unknown identity and plaintext are rejected). iOS client pending.
+- [x] **Pairing flow.** Both halves done (see `docs/PAIRING_PROTOCOL.md`): 6-digit code for 60 s, X25519 key agreement with HKDF-derived keys, code proven by HMAC, one attempt per code. iOS pairs from Settings.
+- [x] **TLS with pre-shared keys.** Mac listener on port+1 with one PSK per paired device; iOS connects in plaintext and upgrades to TLS once `welcome` identifies a paired Mac.
 - [~] **Refuse all input from unpaired devices.** Gated by Security → Allow unencrypted connections (default on until the iOS client ships pairing).
 - [x] **Frame length cap.** Reject any frame larger than a configurable limit (e.g. 16 MB for video, 64 KB for control) and close the connection.
 - [x] **Paired devices list** in Settings → Devices with Rename and Forget; connected devices show a lock for encrypted links.
 - [x] **Lock-state check before unlock.** Read `CGSessionCopyCurrentDictionary()["CGSSessionScreenIsLocked"]` and refuse to type the password unless the screen is locked. Drop the "wake with Space" keystroke in favour of a harmless key (e.g. Shift) or `IOPMAssertionDeclareUserActivity`.
-- [~] Reuse the new shared key for the unlock HMAC (done; legacy pairing-key flow kept for v1 clients).
+- [x] Reuse the new shared key for the unlock HMAC. The legacy 64-character pairing key is removed on both sides.
 
 ### Phase 3: Input that feels native (4–5 days)
 

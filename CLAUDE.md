@@ -53,6 +53,7 @@ iOS Client ←→ TCP (JSON + 4-byte length prefix) ←→ macOS Server
 - `BonjourBrowser.swift` - Service discovery using `NWBrowser`
 - `TrackpadView.swift` - Gesture handling for mouse control
 - `RemoteControlView.swift` - Tab container with embedded keyboard input
+- `Pairing/` - `DeviceIdentity` (stable per-install ID), `PairedMacStore` (serverID → PSK in the Keychain), `PairingSheet` (6-digit code entry, opened from Settings)
 
 ### Message Framing
 
@@ -62,6 +63,7 @@ All TCP messages use 4-byte big-endian length prefix + JSON payload. See `Messag
 
 - Pairing happens once per device over the plaintext port while the Mac shows a 6-digit code; it yields a per-device 32-byte pre-shared key.
 - Paired devices connect to the TLS-PSK port (identity = device ID). Unpaired devices can only pair, or use legacy plaintext control while **Allow unencrypted connections** is on.
+- iOS always connects in plaintext first; `welcome` carries `serverID` and `tlsPort`, and the client upgrades to TLS when it holds a key for that Mac. Remote unlock requires pairing; there is no separate pairing key.
 - Adding enum cases to `RemoteMessage`/`ServerMessage` is backward compatible on the wire (unknown cases fail to decode and are dropped), but every `switch` over them must stay exhaustive in both apps.
 
 ## Development Notes

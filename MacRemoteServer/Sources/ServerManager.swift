@@ -386,12 +386,6 @@ final class ServerManager: ObservableObject {
         refreshRemoteUnlockConfiguration()
     }
 
-    /// Reads the legacy pairing key from the Keychain. Only call on explicit user intent
-    /// (Reveal / Copy), because it may show a Keychain prompt.
-    func revealPairingKey() -> String? {
-        remoteUnlockStore.formattedPairingKey
-    }
-
     private func refreshRemoteUnlockConfiguration() {
         isRemoteUnlockConfigured = remoteUnlockStore.isConfigured
     }
@@ -602,6 +596,7 @@ final class ServerManager: ObservableObject {
     private func sendWelcome(to connection: NWConnection) {
         guard let context = contexts[ObjectIdentifier(connection)] else { return }
         send(.welcome(
+            serverID: settings.serverID,
             serverName: settings.effectiveServiceName,
             protocolVersion: NetworkConstants.protocolVersion,
             tlsPort: securePort,
@@ -795,29 +790,22 @@ final class ServerManager: ObservableObject {
             return
         }
 
-        // Paired devices sign with their pre-shared key; legacy clients with the old token.
-        let expected: Data?
-        if let deviceID = contexts[id]?.deviceID, let paired = pairedStore.device(id: deviceID) {
-            expected = PairingCrypto.unlockSignature(presharedKey: paired.presharedKey, challenge: challenge)
-            print("[Unlock] Verifying with paired-device key for \(paired.name)")
-        } else if let token = remoteUnlockStore.token {
-            expected = Data(HMAC<SHA256>.authenticationCode(for: challenge + Data("unlock".utf8), using: SymmetricKey(data: token)))
-            print("[Unlock] Verifying with legacy pairing key")
-        } else {
-            expected = nil
-            print("[Unlock] No pairing key available on the Mac (Keychain read denied?)")
-        }
-
+        // Only paired devices may unlock: the signature is an HMAC with the device's pre-shared key.
         let nextChallenge = RemoteUnlockStore.randomBytes(count: 32)
         unlockChallenges[id] = nextChallenge
 
-        guard let expected, PairingCrypto.constantTimeEquals(signature, expected) else {
+        guard let deviceID = contexts[id]?.deviceID, let paired = pairedStore.device(id: deviceID) else {
+            print("[Unlock] Rejected: device is not paired")
+            send(.unlockResult(success: false, message: "Pair this iPhone with the Mac first."), to: connection)
+            send(.unlockChallenge(nextChallenge), to: connection)
+            return
+        }
+
+        let expected = PairingCrypto.unlockSignature(presharedKey: paired.presharedKey, challenge: challenge)
+        guard PairingCrypto.constantTimeEquals(signature, expected) else {
             lastActivity = .unlockRejected(Date())
-            let reason = expected == nil
-                ? "The Mac could not read its pairing key. Open Settings → Security on the Mac and re-enable Remote Unlock."
-                : "The pairing key is invalid. Copy it again from Settings → Security on the Mac."
-            print("[Unlock] Rejected: \(reason)")
-            send(.unlockResult(success: false, message: reason), to: connection)
+            print("[Unlock] Rejected: bad signature from \(paired.name)")
+            send(.unlockResult(success: false, message: "The unlock request could not be verified. Pair the iPhone again."), to: connection)
             send(.unlockChallenge(nextChallenge), to: connection)
             return
         }

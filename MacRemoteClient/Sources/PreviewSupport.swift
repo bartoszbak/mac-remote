@@ -9,7 +9,7 @@ extension NetworkClient {
                         apps: [AppInfo] = AppInfo.previewApps,
                         unlockPaired: Bool = false,
                         screenLocked: Bool? = nil) -> NetworkClient {
-        let client = NetworkClient(knownMacs: .preview())
+        let client = NetworkClient(knownMacs: .preview(), pairedMacs: PairedMacStore(inMemory: true))
         client.isConnected = connected
         client.setPreviewUnlockState(paired: unlockPaired, available: connected, locked: connected ? screenLocked : nil)
         client.connectedServerName = connected ? "Studio Mac" : nil

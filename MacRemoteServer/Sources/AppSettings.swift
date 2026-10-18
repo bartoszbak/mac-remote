@@ -13,6 +13,7 @@ final class AppSettings: ObservableObject {
         static let showCursorInStream = "showCursorInStream"
         static let sharedDisplayID = "sharedDisplayID"
         static let allowUnencryptedConnections = "allowUnencryptedConnections"
+        static let serverID = "serverID"
     }
 
     private let defaults: UserDefaults
@@ -49,6 +50,9 @@ final class AppSettings: ObservableObject {
         didSet { defaults.set(allowUnencryptedConnections, forKey: Keys.allowUnencryptedConnections) }
     }
 
+    /// Stable identity of this Mac for clients, generated once.
+    let serverID: String
+
     @Published private(set) var launchAtLogin: Bool
     @Published var launchAtLoginError: String?
 
@@ -73,6 +77,12 @@ final class AppSettings: ObservableObject {
         showCursorInStream = defaults.bool(forKey: Keys.showCursorInStream)
         sharedDisplayID = UInt32(clamping: max(0, defaults.integer(forKey: Keys.sharedDisplayID)))
         allowUnencryptedConnections = defaults.bool(forKey: Keys.allowUnencryptedConnections)
+        if let existing = defaults.string(forKey: Keys.serverID) {
+            serverID = existing
+        } else {
+            serverID = UUID().uuidString
+            defaults.set(serverID, forKey: Keys.serverID)
+        }
         launchAtLogin = SMAppService.mainApp.status == .enabled
     }
 

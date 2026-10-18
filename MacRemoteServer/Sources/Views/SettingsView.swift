@@ -258,8 +258,6 @@ private struct SecuritySettings: View {
     @ObservedObject var manager: ServerManager
     @ObservedObject var settings: AppSettings
     @State private var showingUnlockSheet = false
-    @State private var revealedPairingKey: String?
-    @State private var copiedKey = false
 
     var body: some View {
         Form {
@@ -287,29 +285,11 @@ private struct SecuritySettings: View {
                         }
                     }
 
-                    LabeledContent("Pairing key") {
-                        HStack {
-                            if let key = revealedPairingKey {
-                                Text(key)
-                                    .font(.system(.caption, design: .monospaced))
-                                    .textSelection(.enabled)
-                            } else {
-                                Text("Hidden")
-                                    .foregroundStyle(.secondary)
-                            }
-                            Button(revealedPairingKey == nil ? "Reveal" : "Hide") {
-                                revealedPairingKey = revealedPairingKey == nil ? manager.revealPairingKey() : nil
-                            }
-                            Button(copiedKey ? "Copied" : "Copy") {
-                                copyPairingKey()
-                            }
-                        }
-                    }
                 }
             } header: {
                 Text("Remote Unlock")
             } footer: {
-                Text("The password never leaves this Mac. Your iPhone proves it holds the pairing key with a one-time signature and must authenticate with Face ID or Touch ID first. Unlocking only works while the lock screen is showing.")
+                Text("The password never leaves this Mac. Only a paired iPhone can unlock it, after authenticating with Face ID or Touch ID, and only while the lock screen is showing.")
             }
         }
         .formStyle(.grouped)
@@ -327,18 +307,9 @@ private struct SecuritySettings: View {
                     showingUnlockSheet = true
                 } else {
                     manager.disableRemoteUnlock()
-                    revealedPairingKey = nil
                 }
             }
         )
-    }
-
-    private func copyPairingKey() {
-        guard let key = revealedPairingKey ?? manager.revealPairingKey() else { return }
-        NSPasteboard.general.clearContents()
-        NSPasteboard.general.setString(key, forType: .string)
-        copiedKey = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { copiedKey = false }
     }
 }
 

@@ -1,7 +1,7 @@
 # Pairing and Encryption (protocol v2)
 
 Implemented on the Mac in `ServerManager`, `NetworkServer`, `PairedDeviceStore` and
-`Shared/PairingCrypto.swift`. This document is the contract the iOS client implements.
+`Shared/PairingCrypto.swift`, and on iOS in `NetworkClient` and `Pairing/`. Both halves are done; this is the contract they follow.
 
 ## Ports and discovery
 
@@ -18,7 +18,7 @@ Read `tlsPort` from the browse result's TXT record; fall back to port + 1.
 On every connection (either port) the server sends, in order:
 
 1. `connected(screenWidth:screenHeight:unlockChallenge:unlockAvailable:)` (v1, unchanged)
-2. `welcome(serverName:protocolVersion:tlsPort:isPaired:controlAllowed:)`
+2. `welcome(serverID:serverName:protocolVersion:tlsPort:isPaired:controlAllowed:)` — `serverID` is a stable UUID the phone keys its pairing by
 
 The client should send `hello(deviceID:deviceName:protocolVersion:)` first.
 `deviceID` is a stable per-install UUID (store it in the Keychain). The server
@@ -81,15 +81,15 @@ If the handshake fails (device was forgotten on the Mac), the connection sits in
 ## Unlock with a paired device
 
 Paired devices sign the unlock challenge with the PSK:
-`PairingCrypto.unlockSignature(presharedKey:challenge:)`. The legacy pairing-key
-flow still works for v1 clients and can be removed once the client ships pairing.
+`PairingCrypto.unlockSignature(presharedKey:challenge:)`. Unpaired devices cannot
+unlock. The old 64-character pairing key is gone on both sides.
 
 ## Client checklist
 
-- [ ] Generate and persist `deviceID`
-- [ ] Send `hello` on connect; handle `welcome`
-- [ ] Read `tlsPort` from TXT; prefer the TLS port when a PSK for this Mac is stored
-- [ ] Pairing UI: 6-digit code entry; run the flow above on the plaintext port
-- [ ] Store `{macID or service name → psk}` in the Keychain
-- [ ] Handle `controlAllowed == false` with a "Pair this Mac" prompt
-- [ ] Switch unlock to `unlockSignature(presharedKey:challenge:)`
+- [x] Generate and persist `deviceID` (`DeviceIdentity`)
+- [x] Send `hello` on connect; handle `welcome`
+- [x] Connect in plaintext, then upgrade to the TLS port from `welcome` when a PSK for `serverID` is stored; a rejected handshake forgets the pairing
+- [x] Pairing UI in Settings: 6-digit code entry (`PairingSheet`)
+- [x] Store `{serverID → psk}` in the Keychain (`PairedMacStore`)
+- [ ] Handle `controlAllowed == false` with an inline "Pair this Mac" prompt (state is exposed as `client.controlAllowed`; UI pending)
+- [x] Unlock uses `unlockSignature(presharedKey:challenge:)`

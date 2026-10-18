@@ -94,7 +94,7 @@ enum ServerMessage: Codable {
 
     /// Sent right after `connected`. Tells the client how to reach the encrypted
     /// endpoint and whether this connection is allowed to send control messages.
-    case welcome(serverName: String, protocolVersion: Int, tlsPort: UInt16?, isPaired: Bool, controlAllowed: Bool)
+    case welcome(serverID: String, serverName: String, protocolVersion: Int, tlsPort: UInt16?, isPaired: Bool, controlAllowed: Bool)
 
     /// Reply to `pairRequest`: the server's Curve25519 public key and HKDF salt.
     case pairChallenge(publicKey: Data, salt: Data)
