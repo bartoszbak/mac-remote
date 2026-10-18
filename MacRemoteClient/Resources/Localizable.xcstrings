@@ -557,6 +557,23 @@
         }
       }
     },
+    "connection_timed_out %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ didn't respond. If it's asleep, make sure it's plugged in with Wake for network access on."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ no ha respondido. Si está en reposo, comprueba que esté enchufado y con «Activar para acceso a la red» activado."
+          }
+        }
+      }
+    },
     "connection_title": {
       "extractionState": "stale",
       "localizations": {

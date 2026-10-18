@@ -701,6 +701,16 @@
         }
       }
     },
+    "On while plugged in": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activado con el cargador conectado"
+          }
+        }
+      }
+    },
     "Open Energy Settings": {
       "extractionState": "stale",
       "localizations": {

@@ -174,7 +174,9 @@ struct WakeStatusRow: View {
             HStack(spacing: 8) {
                 if permissions.wakeForNetworkAccess {
                     Image(systemName: "checkmark.circle.fill").foregroundStyle(.secondary)
-                    Text("On").foregroundStyle(.secondary)
+                    // Laptops only wake from the network on power; say so when battery is off.
+                    Text(permissions.wakeForNetworkAccessOnBattery == false ? "On while plugged in" : "On")
+                        .foregroundStyle(.secondary)
                 } else {
                     Text("Off").foregroundStyle(.secondary)
                     Button("Open Energy Settings") { permissions.requestWakeForNetworkAccess() }

@@ -88,7 +88,9 @@ final class ServerManager: ObservableObject {
     let permissions: PermissionsMonitor
 
     @Published private(set) var status: Status = .stopped
-    @Published private(set) var devices: [ConnectedDevice] = []
+    @Published private(set) var devices: [ConnectedDevice] = [] {
+        didSet { power.setKeepAwake(!devices.isEmpty) }
+    }
     @Published private(set) var pairedDevices: [PairedDevice] = []
     @Published private(set) var pairingSession: PairingSession?
     @Published private(set) var isScreenStreaming = false
@@ -116,6 +118,7 @@ final class ServerManager: ObservableObject {
     private let remoteUnlockStore = RemoteUnlockStore()
     private let pairedStore: PairedDeviceStore
     private let appCatalog = AppCatalog()
+    private let power = PowerAssertions()
 
     /// Per-connection state. Keyed by the connection's identity.
     private struct Context {
@@ -353,6 +356,8 @@ final class ServerManager: ObservableObject {
             presharedKey: PairingCrypto.presharedKey(from: secret, salt: salt)
         )
         contexts[id] = context
+        // The user has to read the code off the screen, so make sure it is on.
+        power.declareUserActivity()
         openPairing(deviceName: deviceName, connectionID: id)
 
         send(.pairChallenge(publicKey: privateKey.publicKey.rawRepresentation, salt: salt), to: connection)
@@ -539,6 +544,8 @@ final class ServerManager: ObservableObject {
                 self.sendWelcome(to: connection)
                 return
             }
+            // After a network wake the Mac is in a dark wake; bring the display up.
+            self.power.declareUserActivity()
             self.devices.append(ConnectedDevice(id: id, address: connection.peerDescription,
                                                 connectedAt: Date(), isSecure: secure))
 

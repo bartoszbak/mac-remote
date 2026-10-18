@@ -51,9 +51,7 @@ struct ConnectionView: View {
                 }
 
                 if !client.isConnected || !otherServers.isEmpty {
-                    Section(client.isConnected
-                            ? String(localized: "connection_other_available")
-                            : String(localized: "connection_available")) {
+                    Section {
                         if otherServers.isEmpty {
                             emptyRow
                         } else {
@@ -64,6 +62,14 @@ struct ConnectionView: View {
                                 }
                                 .disabled(client.isConnecting)
                             }
+                        }
+                    } header: {
+                        Text(client.isConnected
+                             ? String(localized: "connection_other_available")
+                             : String(localized: "connection_available"))
+                    } footer: {
+                        if let error = client.connectionError, !client.isConnecting, !client.isConnected {
+                            Text(error)
                         }
                     }
                 }

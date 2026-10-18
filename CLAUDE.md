@@ -37,7 +37,8 @@ iOS Client ←→ TCP (JSON + 4-byte length prefix) ←→ macOS Server
 - `ServerManager.swift` - Single observable state for the UI: status, connected/paired devices, pairing session, activity. Runs two `NetworkServer`s: plaintext (discovery, pairing, legacy control) and TLS-PSK (paired devices)
 - `NetworkServer.swift` - TCP/TLS server using `NWListener`; Bonjour via `NWListener.Service` with TXT record; optional TLS 1.2 PSK with one key per paired device; all state queue-confined, callbacks on main
 - `PairedDeviceStore.swift` - Paired devices (id, name, PSK) in a 0600 JSON file under Application Support
-- `NetworkInterfaces.swift` - Active `en*` interfaces with hardware/IPv4 addresses; `WakeSettings` reads `pmset -g` for Wake for network access
+- `NetworkInterfaces.swift` - Active `en*` interfaces with hardware/IPv4 addresses; `WakeSettings` reads the on-power and on-battery Wake for network access from `pmset -g custom`
+- `PowerAssertions.swift` - Declares user activity on connect (dark wake → full wake) and prevents idle sleep while a device is connected
 - `InputController.swift` - Mouse/keyboard injection via `CGEvent`. Cursor moves are relative to the real cursor position and clamped to the union of all displays
 - `PermissionsMonitor.swift` - Polls Accessibility and Screen Recording permissions every second; deep-links to System Settings
 - `AppSettings.swift` - UserDefaults-backed preferences, launch at login via `SMAppService`
@@ -117,7 +118,7 @@ scripts/install.sh            # Release (default)
 scripts/install.sh Debug
 ```
 
-Every configuration is signed with the Developer ID (`CODE_SIGN_STYLE = Manual`, team `TJ3ALYQV5G`), so Debug and Release have the same designated requirement and macOS keeps Accessibility, Screen Recording and Keychain grants across rebuilds. Do not copy ad-hoc signed builds into /Applications: each one is a new identity to TCC and resets every permission.
+Every configuration is signed with the Developer ID (`CODE_SIGN_STYLE = Manual`, team `TJ3ALYQV5G`), and it installs as `/Applications/MacRemote Server.app`, the same name the DMG uses, so Debug and Release have the same designated requirement and macOS keeps Accessibility, Screen Recording and Keychain grants across rebuilds. Do not copy ad-hoc signed builds into /Applications: each one is a new identity to TCC and resets every permission.
 
 ## Adding New Features
 

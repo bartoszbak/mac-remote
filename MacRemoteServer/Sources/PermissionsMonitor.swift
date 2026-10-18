@@ -17,8 +17,11 @@ final class PermissionsMonitor: ObservableObject {
 
     @Published private(set) var accessibility = false
     @Published private(set) var screenRecording = false
-    /// "Wake for network access" in Energy settings. Not a permission, but polled the same way.
+    /// "Wake for network access" while on power, which is when network wake works.
+    /// Not a permission, but polled the same way.
     @Published private(set) var wakeForNetworkAccess = false
+    /// The same setting on battery; `nil` on Macs without a battery.
+    @Published private(set) var wakeForNetworkAccessOnBattery: Bool?
 
     private var timer: Timer?
     private var tick = 0
@@ -71,17 +74,21 @@ final class PermissionsMonitor: ObservableObject {
         }
         if tick % 5 == 0 {
             Task.detached(priority: .utility) { [weak self] in
-                let wake = WakeSettings.isWakeForNetworkAccessEnabled
-                await self?.updateWakeForNetworkAccess(wake)
+                let profile = WakeSettings.profile
+                await self?.updateWakeForNetworkAccess(profile)
             }
         }
         tick += 1
     }
 
-    private func updateWakeForNetworkAccess(_ wake: Bool) {
-        guard wake != wakeForNetworkAccess else { return }
-        print("[Permissions] Wake for network access: \(wake)")
-        wakeForNetworkAccess = wake
+    private func updateWakeForNetworkAccess(_ profile: WakeSettings.Profile) {
+        if profile.onPower != wakeForNetworkAccess {
+            print("[Permissions] Wake for network access (on power): \(profile.onPower)")
+            wakeForNetworkAccess = profile.onPower
+        }
+        if profile.onBattery != wakeForNetworkAccessOnBattery {
+            wakeForNetworkAccessOnBattery = profile.onBattery
+        }
     }
 
     func requestWakeForNetworkAccess() {

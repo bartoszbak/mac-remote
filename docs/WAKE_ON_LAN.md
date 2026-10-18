@@ -1,6 +1,27 @@
 # Waking the Mac from sleep
 
-The Mac side is done. This is the contract for the iOS client.
+Both sides are implemented. Tested 2026-10-18 on a MacBook Pro (M5 Max) on Wi‑Fi.
+
+## How a sleeping Mac gets woken
+
+1. **Bonjour Sleep Proxy (preferred).** With "Wake for network access" on for the current
+   power source, the sleeping Mac hands its Bonjour service to a Sleep Proxy (Apple TV,
+   HomePod, always-on Mac). The Mac stays listed on the phone, and connecting to it makes
+   the proxy wake the Mac. No magic packet or entitlement involved.
+2. **Magic packet (fallback).** The phone sends one on every connect to a known Mac and
+   from the Wake button: unicast to the last known IPv4 (works without entitlements) and
+   broadcast (refused on iOS without the multicast entitlement; harmless).
+3. **Full wake.** A network wake is a dark wake. When a paired device connects (or a new
+   one asks to pair), the Mac declares user activity so the display comes on, and holds a
+   no-idle-sleep assertion while any device is connected (`PowerAssertions`).
+
+## Limits
+
+- Laptops: network wake only works **on power**. On battery macOS ignores it.
+- On power a laptop usually never idle-sleeps, so the real case is *plugged in, lid closed*.
+- Closing the lid still sleeps the Mac even while a phone is connected.
+- The phone times out after 25 s with a hint if the Mac never answers.
+
 
 ## What the Mac sends
 
@@ -19,18 +40,17 @@ case wakeInfo(interfaces: [NetworkInterfaceInfo], wakeForNetworkAccessEnabled: B
 | `ipv4Address` | `192.168.1.161` | last known address |
 | `ipv4Broadcast` | `192.168.1.255` | where to send the packet |
 
-`wakeForNetworkAccessEnabled` mirrors the Mac's Energy setting (`pmset -g` → `womp`).
+`wakeForNetworkAccessEnabled` is the **on-power** setting (`pmset -g custom` → AC Power → `womp`), regardless of the current power source.
 If it is false, show "Wake isn't enabled on the Mac" rather than a wake button.
 
 ## What the client does
 
 1. **Store** the `wakeInfo` per Mac (keyed by the Bonjour service name or, once paired,
    the Mac's identity) in UserDefaults. It changes rarely.
-2. **Wake** by sending `WakeOnLAN.magicPacket(hardwareAddress:)` over UDP to
-   `ipv4Broadcast` on port `WakeOnLAN.port` (9), and again on
-   `WakeOnLAN.alternatePort` (7). Also send to `255.255.255.255`. Repeat three times,
-   300 ms apart. With `NWConnection` use `.udp` parameters; broadcast requires the
-   local-network permission the app already has.
+2. **Wake** by sending `WakeOnLAN.magicPacket(hardwareAddress:)` with a plain UDP socket
+   (`WakeOnLANSender`): unicast to `ipv4Address`, broadcast with `SO_BROADCAST` to
+   `ipv4Broadcast` and `255.255.255.255`, ports 9 and 7, three times 300 ms apart.
+   Do not use `NWConnection` for broadcast: it fails with EACCES (verified).
 3. **When** to wake:
    - a "Wake Mac" button on the connect screen next to a Mac that was seen before but
      is not currently discoverable;

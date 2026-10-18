@@ -68,17 +68,38 @@ enum NetworkInterfaces {
 /// Reads the "Wake for network access" power setting.
 enum WakeSettings {
 
-    /// True when the active power profile has Wake On LAN ("womp") enabled.
-    /// Reads `pmset -g`, which reports the settings in effect for the current power source.
-    static var isWakeForNetworkAccessEnabled: Bool {
-        guard let output = run("/usr/bin/pmset", ["-g"]) else { return false }
-        for line in output.split(separator: "\n") {
+    struct Profile: Equatable {
+        /// "Wake for network access" while on the power adapter. This is what matters for
+        /// waking: a laptop only honours network wake on power, and a desktop is always on it.
+        var onPower: Bool
+        /// Same setting on battery. `nil` on Macs without a battery.
+        var onBattery: Bool?
+    }
+
+    /// Reads both power profiles from `pmset -g custom`, independent of the current source.
+    static var profile: Profile {
+        parse(customOutput: run("/usr/bin/pmset", ["-g", "custom"]) ?? "")
+    }
+
+    /// Kept for callers that want a single answer: can a phone wake this Mac?
+    static var isWakeForNetworkAccessEnabled: Bool { profile.onPower }
+
+    /// Parses `pmset -g custom`, which lists settings per section ("Battery Power:", "AC Power:").
+    static func parse(customOutput: String) -> Profile {
+        var section: String?
+        var values: [String: Bool] = [:]
+        for raw in customOutput.split(separator: "\n") {
+            let line = raw.trimmingCharacters(in: .whitespaces)
+            if line.hasSuffix(":") {
+                section = String(line.dropLast())
+                continue
+            }
             let parts = line.split(whereSeparator: { $0 == " " || $0 == "\t" })
-            if parts.count >= 2, parts[0] == "womp" {
-                return parts[1] == "1"
+            if let section, parts.count >= 2, parts[0] == "womp" {
+                values[section] = parts[1] == "1"
             }
         }
-        return false
+        return Profile(onPower: values["AC Power"] ?? false, onBattery: values["Battery Power"])
     }
 
     private static func run(_ path: String, _ arguments: [String]) -> String? {

@@ -66,6 +66,9 @@ final class NetworkClient: ObservableObject {
     private var pendingPairing: (sessionKey: SymmetricKey, presharedKey: SymmetricKey)?
     /// Retries while the Mac's encrypted listener is still coming up after pairing.
     private var upgradeAttempts = 0
+    /// Gives up on a Mac that never answers (asleep and not woken, or gone).
+    private var connectTimeout: DispatchWorkItem?
+    private static let connectTimeoutSeconds: TimeInterval = 25
 
     init(knownMacs: KnownMacStore = KnownMacStore(), pairedMacs: PairedMacStore = PairedMacStore()) {
         self.knownMacs = knownMacs
@@ -102,10 +105,32 @@ final class NetworkClient: ObservableObject {
         connectedServerName = name
         connectingName = name
         isConnecting = true
+
+        // The Mac may be asleep with a Sleep Proxy answering for it; connecting through
+        // the proxy wakes it. A magic packet alongside covers the cases without one.
+        if let name, let known = knownMacs.mac(named: name), known.canWake {
+            WakeOnLANSender.wake(known)
+        }
+
         let connection = NWConnection(to: endpoint, using: Self.parameters(tls: nil))
         self.connection = connection
         attach(connection, secure: false)
         connection.start(queue: queue)
+        armConnectTimeout()
+    }
+
+    /// A waking Mac can take several seconds to answer; past that, stop spinning.
+    /// Pairing has its own pace (the user is typing), so the timer stops once it starts.
+    private func armConnectTimeout() {
+        connectTimeout?.cancel()
+        let work = DispatchWorkItem { [weak self] in
+            guard let self, self.isConnecting, !self.isConnected, self.pairingState == .idle else { return }
+            let name = self.connectingName
+            self.disconnect()
+            self.connectionError = String(localized: "connection_timed_out \(name ?? String(localized: "pairing_this_mac"))")
+        }
+        connectTimeout = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + Self.connectTimeoutSeconds, execute: work)
     }
 
     /// Pointer moves are tiny packets sent every frame. Nagle's algorithm would hold
@@ -157,6 +182,8 @@ final class NetworkClient: ObservableObject {
     }
 
     func disconnect() {
+        connectTimeout?.cancel()
+        connectTimeout = nil
         pendingSecure?.cancel()
         pendingSecure = nil
         connection?.cancel()
