@@ -19,6 +19,13 @@ struct MenuBarView: View {
             content
                 .padding(.horizontal, 14)
                 .padding(.vertical, 12)
+
+            Divider()
+
+            footer
+                .padding(.leading, 14)
+                .padding(.trailing, 8)
+                .padding(.vertical, 6)
         }
         .frame(width: 300)
         .buttonBorderShape(.capsule)
@@ -46,8 +53,24 @@ struct MenuBarView: View {
                 .controlSize(.small)
                 .disabled(manager.problem == .accessibilityMissing || manager.problem == .screenRecordingMissing)
                 .help(manager.isRunning ? "Stop sharing this Mac" : "Make this Mac reachable")
+        }
+    }
+
+    // MARK: - Footer
+
+    /// Last row: app name and version, with the overflow menu.
+    private var footer: some View {
+        HStack {
+            Text("MacRemote \(Self.version)")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            Spacer()
             overflowMenu
         }
+    }
+
+    private static var version: String {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0"
     }
 
     private var overflowMenu: some View {
