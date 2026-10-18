@@ -54,6 +54,9 @@ final class NetworkServer {
     var onClientConnected: ((NWConnection) -> Void)?
     var onClientDisconnected: ((NWConnection) -> Void)?
     var onMessageReceived: ((RemoteMessage, NWConnection) -> Void)?
+    /// Optional fast path for `move` and `scroll`, called on the receive queue. Return true
+    /// to consume the message; otherwise it is delivered through `onMessageReceived`.
+    var onPointerMessage: ((RemoteMessage, NWConnection) -> Bool)?
 
     // MARK: - Lifecycle
 
@@ -304,7 +307,12 @@ final class NetworkServer {
 
                 do {
                     let message = try MessageFrame.decode(payload, as: RemoteMessage.self)
-                    DispatchQueue.main.async { self.onMessageReceived?(message, connection) }
+                    if message.isPointerMessage, let fastPath = self.onPointerMessage,
+                       fastPath(message, connection) {
+                        // Consumed off the main queue.
+                    } else {
+                        DispatchQueue.main.async { self.onMessageReceived?(message, connection) }
+                    }
                 } catch {
                     print("[Server] Decode error: \(error)")
                 }
@@ -332,6 +340,16 @@ extension NWConnection {
             }
         default:
             return endpoint.debugDescription
+        }
+    }
+}
+
+private extension RemoteMessage {
+    /// High-rate messages that are safe to handle without the main queue.
+    var isPointerMessage: Bool {
+        switch self {
+        case .move, .scroll: return true
+        default: return false
         }
     }
 }

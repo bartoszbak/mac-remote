@@ -108,7 +108,9 @@ final class ServerManager: ObservableObject {
 
     private let plainServer = NetworkServer()
     private let secureServer = NetworkServer()
-    private let inputController = InputController()
+    private let input = InputDispatcher(controller: InputController())
+    /// Direct access for main-queue reads and one-off actions; input events go through `input`.
+    private var inputController: InputController { input.controller }
     private let screenCaptureManager = ScreenCaptureManager()
     private let remoteUnlockStore = RemoteUnlockStore()
     private let pairedStore: PairedDeviceStore
@@ -197,7 +199,7 @@ final class ServerManager: ObservableObject {
         cancelPairing()
         stopLockStateMonitor()
         Task { await stopScreenStreaming() }
-        inputController.releaseAllButtons()
+        input.perform { $0.releaseAllButtons() }
         plainServer.stop()
         secureServer.stop()
     }
@@ -470,6 +472,8 @@ final class ServerManager: ObservableObject {
             .dropFirst()
             .sink { [weak self] _ in
                 guard let self else { return }
+                // Plaintext clients must pass the gate again before using the fast path.
+                self.input.revokeAll()
                 // Tell every plaintext client whether it may still send control messages.
                 for context in self.contexts.values where !context.isSecure {
                     self.sendWelcome(to: context.connection)
@@ -541,9 +545,15 @@ final class ServerManager: ObservableObject {
         server.onMessageReceived = { [weak self] message, connection in
             self?.handleMessage(message, from: connection)
         }
+        server.onPointerMessage = { [input] message, connection in
+            input.handlePointerMessage(message, from: connection)
+        }
     }
 
     private func forget(connectionID id: ObjectIdentifier) {
+        if let context = contexts[id] {
+            input.setAuthorized(false, for: context.connection)
+        }
         contexts.removeValue(forKey: id)
         unlockChallenges.removeValue(forKey: id)
         if contexts.isEmpty {
@@ -551,7 +561,7 @@ final class ServerManager: ObservableObject {
         }
         let wasStreaming = devices.first(where: { $0.id == id })?.isStreaming ?? false
         devices.removeAll { $0.id == id }
-        inputController.releaseAllButtons()
+        input.perform { $0.releaseAllButtons() }
         if wasStreaming, !devices.contains(where: \.isStreaming) {
             Task { await stopScreenStreaming() }
         }
@@ -635,32 +645,35 @@ final class ServerManager: ObservableObject {
         }
 
         guard controlAllowed(context) else {
+            input.setAuthorized(false, for: connection)
             if !context.warnedUnauthorized {
                 contexts[id]?.warnedUnauthorized = true
                 send(.error(message: "This Mac only accepts paired devices. Open MacRemote on the Mac and choose Pair a Device."), to: connection)
             }
             return
         }
+        // From here on, pointer messages from this connection may skip the main queue.
+        input.setAuthorized(true, for: connection)
 
         switch message {
         case .move(let dx, let dy):
-            inputController.moveMouse(dx: dx, dy: dy)
+            input.perform { $0.moveMouse(dx: dx, dy: dy) }
         case .click(let button):
-            inputController.click(button: button)
+            input.perform { $0.click(button: button) }
         case .doubleClick(let button):
-            inputController.doubleClick(button: button)
+            input.perform { $0.doubleClick(button: button) }
         case .mouseDown(let button):
-            inputController.mouseDown(button: button)
+            input.perform { $0.mouseDown(button: button) }
         case .mouseUp(let button):
-            inputController.mouseUp(button: button)
+            input.perform { $0.mouseUp(button: button) }
         case .scroll(let dx, let dy):
-            inputController.scroll(dx: dx, dy: dy)
+            input.perform { $0.scroll(dx: dx, dy: dy) }
         case .key(let code, let down, let flags):
-            inputController.keyEvent(code: code, down: down, flags: flags)
+            input.perform { $0.keyEvent(code: code, down: down, flags: flags) }
         case .text(let text):
-            inputController.typeText(text)
+            input.perform { $0.typeText(text) }
         case .media(let action):
-            inputController.mediaAction(action)
+            input.perform { $0.mediaAction(action) }
         case .system(let action):
             inputController.systemAction(action)
         case .requestAppList:

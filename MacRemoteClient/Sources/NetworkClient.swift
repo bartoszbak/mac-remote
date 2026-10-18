@@ -52,7 +52,13 @@ final class NetworkClient: ObservableObject {
         disconnect()
         connectedServerName = name
 
-        connection = NWConnection(to: endpoint, using: .tcp)
+        // Pointer moves are tiny packets sent every frame. Nagle's algorithm would hold
+        // each one until the previous is acknowledged, which reads as a stuttering cursor.
+        let tcp = NWProtocolTCP.Options()
+        tcp.noDelay = true
+        let parameters = NWParameters(tls: nil, tcp: tcp)
+        parameters.serviceClass = .responsiveData
+        connection = NWConnection(to: endpoint, using: parameters)
 
         connection?.stateUpdateHandler = { [weak self] state in
             DispatchQueue.main.async {
@@ -267,7 +273,6 @@ final class NetworkClient: ObservableObject {
             }
 
             let length = lengthData.withUnsafeBytes { $0.load(as: UInt32.self).bigEndian }
-            print("[Client] Expecting message of \(length) bytes")
 
             connection.receive(minimumIncompleteLength: Int(length), maximumLength: Int(length)) { [weak self] messageData, _, _, error in
                 guard let self = self else { return }
@@ -277,7 +282,6 @@ final class NetworkClient: ObservableObject {
                 }
 
                 if let data = messageData {
-                    print("[Client] Received \(data.count) bytes")
                     do {
                         let message = try MessageFrame.decode(data, as: ServerMessage.self)
                         DispatchQueue.main.async {
