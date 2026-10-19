@@ -17,7 +17,9 @@ jobs:
     runs-on: macos-26
     timeout-minutes: 40
     env:
-      SIGNING_FLAGS: CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+      # The app icons are Icon Composer files from Xcode 27; the runner's Xcode 26 cannot
+      # open them ("Could not open AppIcon.icon"), so CI builds without icons.
+      SIGNING_FLAGS: CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO EXCLUDED_SOURCE_FILE_NAMES=AppIcon.icon ASSETCATALOG_COMPILER_APPICON_NAME=
     steps:
       - uses: actions/checkout@v4
 
